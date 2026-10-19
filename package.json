@@ -53,6 +53,7 @@
     "jspdf-autotable": "^5.0.7",
     "oxc-transform-react": "^0.153.0",
     "playwright": "^1.62.1",
+    "publint": "^0.3.25",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2",

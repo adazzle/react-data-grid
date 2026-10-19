@@ -34,7 +34,9 @@ website/              # demo site (Vite + TanStack Router)
 - **Dual classnames** — components apply both a semantic class (`rdg-cell`) and a generated hash. Preserve both.
 - **Light/dark mode** — handled via CSS `light-dark()` + `color-scheme`, not JS.
 - **Accessibility first** — ARIA attributes (e.g. `aria-colindex`, `aria-rowindex`, `aria-selected`, roles) are required. Tests query by role.
-- **Build** — `vp pack` bundles the library to `lib/`; `ecij` plugin prefixes classes with `rdg-{version}-` (dots→dashes) to avoid cross-version conflicts.
+- **Build** — `vp pack` bundles the library to `lib/`, then lints the packed package with publint; `ecij` plugin prefixes classes with `rdg-{version}-` (dots→dashes) to avoid cross-version conflicts.
+- **Workflows** — pin every action to a full commit SHA with its version in a comment (Dependabot updates both), pass expressions to `run` steps through `env` instead of inlining `${{ }}`, grant each job only the `permissions` it uses, and check out with `persist-credentials: false`. Jobs that install dependencies only get read permissions: publishing, pushing, and editing PRs happen in separate jobs that receive build output as artifacts and never run dependency code.
+- **Releases** — the header of `.github/workflows/publish.yml` explains how to publish. Its read-only `build` job hands `lib/` to the `publish` job, so no dependency code runs with the `id-token: write` permission that npm's trusted publishing relies on.
 
 ## Testing
 
