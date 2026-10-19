@@ -201,7 +201,6 @@ export default defineConfig({
       build: true,
       tsconfig: './tsconfig.src.json'
     },
-    // lint the packed package, its warnings are errors
     publint: {
       strict: true
     },
