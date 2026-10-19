@@ -60,7 +60,7 @@ jobs:
 
       - run: vp install --frozen-lockfile
 
-      - run: rm -r test/visual/screenshots
+      - run: rm -r test/**/screenshots/**
 
       - run: vp run test test/visual --update
         timeout-minutes: 4
@@ -68,7 +68,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if [ -n "$(git status --porcelain -- test/visual/screenshots)" ]; then
+          if [ -n "$(git status --porcelain -- "test/**/screenshots/**")" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: screenshots
-          path: test/visual/screenshots/
+          path: test/**/screenshots/**
           if-no-files-found: error
           retention-days: 1
 
@@ -98,19 +98,20 @@ jobs:
           persist-credentials: false
 
       # removed screenshots are deleted too
-      - run: rm -r test/visual/screenshots
+      - run: rm -r test/**/screenshots/**
 
+      # the artifact keeps the paths after `test/`, where the upload's wildcard starts
       - name: Download screenshots
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: screenshots
-          path: test/visual/screenshots
+          path: test
 
       - name: Push new screenshots
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR_ID+$GITHUB_ACTOR@users.noreply.github.com"
-          git add test/visual/screenshots
+          git add "test/**/screenshots/**"
           git commit -m "Update screenshots"
           gh auth setup-git
           git push origin "HEAD:refs/heads/$BRANCH"
