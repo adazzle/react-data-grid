@@ -11,6 +11,8 @@ cache-mode: none
 
 env:
   FORCE_COLOR: 1
+  # as a git pathspec and an upload-artifact glob, it matches screenshots at any depth
+  SCREENSHOTS: 'test/**/screenshots/**'
 
 # dependencies only run in the read-only `screenshots` job,
 # the jobs with write permissions only run gh and git
@@ -60,7 +62,9 @@ jobs:
 
       - run: vp install --frozen-lockfile
 
-      - run: rm -r test/**/screenshots/**
+      # so that removed screenshots are detected
+      - name: Delete screenshots
+        run: git ls-files -z -- "$SCREENSHOTS" | xargs -0 --no-run-if-empty rm
 
       - run: vp run test test/visual --update
         timeout-minutes: 4
@@ -68,7 +72,7 @@ jobs:
       - name: Check for changes
         id: changes
         run: |
-          if [ -n "$(git status --porcelain -- "test/**/screenshots/**")" ]; then
+          if [ -n "$(git status --porcelain -- "$SCREENSHOTS")" ]; then
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
@@ -77,7 +81,7 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: screenshots
-          path: test/**/screenshots/**
+          path: ${{ env.SCREENSHOTS }}
           if-no-files-found: error
           retention-days: 1
 
@@ -97,8 +101,9 @@ jobs:
           ref: ${{ needs.screenshots.outputs.commit }}
           persist-credentials: false
 
-      # removed screenshots are deleted too
-      - run: rm -r test/**/screenshots/**
+      # so that removed screenshots are deleted too
+      - name: Delete screenshots
+        run: git ls-files -z -- "$SCREENSHOTS" | xargs -0 --no-run-if-empty rm
 
       # the artifact keeps the paths after `test/`, where the upload's wildcard starts
       - name: Download screenshots
@@ -111,7 +116,7 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR_ID+$GITHUB_ACTOR@users.noreply.github.com"
-          git add "test/**/screenshots/**"
+          git add -- "$SCREENSHOTS"
           git commit -m "Update screenshots"
           gh auth setup-git
           git push origin "HEAD:refs/heads/$BRANCH"
