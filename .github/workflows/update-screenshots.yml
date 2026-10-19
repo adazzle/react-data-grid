@@ -11,8 +11,9 @@ cache-mode: none
 
 env:
   FORCE_COLOR: 1
-  # as a git pathspec and an upload-artifact glob, it matches screenshots at any depth
-  SCREENSHOTS: 'test/**/screenshots/**'
+  # as a git pathspec and an upload-artifact glob, it matches screenshots at any depth,
+  # and only images, so the job that pushes can only commit images
+  SCREENSHOTS: 'test/**/screenshots/**/*.png'
 
 # dependencies only run in the read-only `screenshots` job,
 # the jobs with write permissions only run gh and git
