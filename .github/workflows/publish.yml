@@ -3,13 +3,13 @@
 #   git fetch --prune --prune-tags origin
 #   git reset --keep origin/main
 #   npm version <prerelease|patch|minor|major|x.y.z>
-#   git push --atomic origin main "v$(npm pkg get version)"
+#   git push --atomic --no-follow-tags origin main "v$(npm pkg get version)"
 #
 # The fetch also deletes local tags that aren't on GitHub, and the reset moves main to GitHub's main,
 # keeping uncommitted changes, which `npm version` refuses to run with.
 # `npm version` commits the new version and tags it.
-# Naming the tag makes the push fail if the tag is missing, and leaves other local tags out,
-# while `--atomic` pushes main and the tag together, or neither.
+# Naming the tag makes the push fail if the tag is missing, and `--no-follow-tags` leaves other
+# local tags out, even with `push.followTags` set. `--atomic` pushes main and the tag together, or neither.
 #
 # Until it's pushed, any fetch that prunes tags, like an editor's auto-fetch, deletes the new tag.
 # If the push can't find it, recreate it and push again:
