@@ -21,10 +21,6 @@
     "src/index.ts",
     "**/*.css"
   ],
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "browser": "./lib/index.js",
-  "types": "./lib/index.d.ts",
   "exports": {
     "./lib/styles.css": "./lib/styles.css",
     ".": {
