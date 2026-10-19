@@ -6,13 +6,8 @@
     "data grid",
     "react"
   ],
-  "homepage": "https://github.com/Comcast/react-data-grid#readme",
-  "bugs": "https://github.com/Comcast/react-data-grid/issues",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Comcast/react-data-grid.git"
-  },
+  "repository": "github:Comcast/react-data-grid",
   "files": [
     "lib"
   ],
@@ -21,16 +16,15 @@
     "src/index.ts",
     "**/*.css"
   ],
-  "main": "./lib/index.js",
-  "module": "./lib/index.js",
-  "browser": "./lib/index.js",
-  "types": "./lib/index.d.ts",
   "exports": {
     "./lib/styles.css": "./lib/styles.css",
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     }
+  },
+  "publishConfig": {
+    "provenance": true
   },
   "scripts": {
     "prepare": "vp config"
@@ -53,6 +47,7 @@
     "jspdf-autotable": "^5.0.7",
     "oxc-transform-react": "^0.153.0",
     "playwright": "^1.62.1",
+    "publint": "^0.3.25",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "typescript": "^7.0.2",

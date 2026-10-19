@@ -113,6 +113,19 @@ export default defineConfig({
           // `vp pack` cleans `lib/` before writing to it
           input: [{ auto: true }, '!lib/**']
         }
+      },
+      // the first step of a release, see the header of `.github/workflows/publish.yml`:
+      // arguments are passed to `npm version`, as `vp run` appends them to the last command
+      version: {
+        command: [
+          'git switch main',
+          // also deletes local tags that aren't on GitHub
+          'git fetch --prune --prune-tags origin',
+          // keeps uncommitted changes, which `npm version` refuses to run with
+          'git reset --keep origin/main',
+          'npm version'
+        ],
+        cache: false
       }
     }
   },
@@ -200,6 +213,9 @@ export default defineConfig({
     dts: {
       build: true,
       tsconfig: './tsconfig.src.json'
+    },
+    publint: {
+      strict: true
     },
     plugins: [
       ecij({
