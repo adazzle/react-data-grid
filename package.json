@@ -6,13 +6,8 @@
     "data grid",
     "react"
   ],
-  "homepage": "https://github.com/Comcast/react-data-grid#readme",
-  "bugs": "https://github.com/Comcast/react-data-grid/issues",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Comcast/react-data-grid.git"
-  },
+  "repository": "github:Comcast/react-data-grid",
   "files": [
     "lib"
   ],
@@ -27,6 +22,9 @@
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
     }
+  },
+  "publishConfig": {
+    "provenance": true
   },
   "scripts": {
     "prepare": "vp config"
