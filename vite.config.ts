@@ -201,8 +201,10 @@ export default defineConfig({
       build: true,
       tsconfig: './tsconfig.src.json'
     },
-    // lint the packed package, `failOnWarn` also applies to its warnings
-    publint: true,
+    // lint the packed package, its warnings are errors
+    publint: {
+      strict: true
+    },
     plugins: [
       ecij({
         // We add the package version as prefix to avoid style conflicts
