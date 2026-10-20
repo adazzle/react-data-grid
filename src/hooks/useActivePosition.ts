@@ -51,7 +51,7 @@ export function useActivePosition<R, SR>({
    * Returns whether the given position represents a valid cell or row position in the grid.
    * Active bounds: any valid position in the grid
    * Viewport: any valid position in the grid outside of header rows and summary rows
-   * Row positions are only allowed in TreeDataGrid
+   * Only TreeDataGrid allows the active position to be on a row (`idx: -1`)
    */
   function validatePosition({ idx, rowIdx }: Position) {
     // check column position
