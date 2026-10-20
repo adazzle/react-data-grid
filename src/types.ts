@@ -354,12 +354,21 @@ export interface RenderSortPriorityProps {
 
 export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 
-export interface RenderCheckboxProps extends Pick<
-  React.ComponentProps<'input'>,
-  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
-> {
+export interface RenderCheckboxProps {
+  /** Whether the checkbox is checked */
+  checked?: boolean | undefined;
+  /** Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected */
   indeterminate?: boolean | undefined;
+  /** Whether the checkbox is disabled */
+  disabled?: boolean | undefined;
+  /** Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows */
   onChange: (checked: boolean, shift: boolean) => void;
+  /** `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox */
+  tabIndex?: number | undefined;
+  /** Accessible label for the checkbox */
+  'aria-label'?: string | undefined;
+  /** ID of the element that labels the checkbox */
+  'aria-labelledby'?: string | undefined;
 }
 
 export interface Renderers<TRow, TSummaryRow> {

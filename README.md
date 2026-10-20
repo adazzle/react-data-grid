@@ -1085,15 +1085,7 @@ Renders the sort priority number for multi-column sorting.
 
 Renders a checkbox input with proper styling and accessibility.
 
-**Props:**
-
-- `checked?: boolean` - Whether the checkbox is checked
-- `indeterminate?: boolean` - Whether the checkbox is in an indeterminate state
-- `disabled?: boolean` - Whether the checkbox is disabled
-- `onChange: (checked: boolean, shift: boolean) => void` - Change handler
-- `tabIndex?: number` - Tab index for keyboard navigation
-- `aria-label?: string` - Accessible label
-- `aria-labelledby?: string` - ID of the labeling element
+**Props:** [`RenderCheckboxProps`](#rendercheckboxprops)
 
 **Example:**
 
@@ -2009,6 +2001,14 @@ interface RenderCheckboxProps {
   'aria-labelledby'?: string;
 }
 ```
+
+- `checked`: Whether the checkbox is checked
+- `indeterminate`: Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected
+- `disabled`: Whether the checkbox is disabled
+- `onChange`: Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows
+- `tabIndex`: `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox
+- `aria-label`: Accessible label for the checkbox
+- `aria-labelledby`: ID of the element that labels the checkbox
 
 #### `RenderSortStatusProps`
 
