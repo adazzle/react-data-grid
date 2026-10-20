@@ -104,7 +104,7 @@ const columns: readonly Column<Row>[] = [
     key: 'bronze',
     name: 'Bronze',
     renderGroupCell({ childRows }) {
-      return childRows.reduce((prev, { silver }) => prev + silver, 0);
+      return childRows.reduce((prev, { bronze }) => prev + bronze, 0);
     }
   },
   {
