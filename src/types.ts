@@ -80,8 +80,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  /** The column group that contains the column, or `undefined` if the column is not in a group */
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
+  /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
   readonly idx: number;
+  /** Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups */
   readonly level: number;
   readonly width: number | string;
   readonly minWidth: number;
@@ -117,7 +120,9 @@ export type CalculatedColumnOrColumnGroup<R, SR> =
   | CalculatedColumn<R, SR>;
 
 export interface Position {
+  /** Column index, or `-1` for the whole row in `TreeDataGrid` */
   readonly idx: number;
+  /** Row index: `0` is the first row, header rows and top summary rows have negative indexes, and bottom summary rows come after the last row */
   readonly rowIdx: number;
 }
 
@@ -185,7 +190,9 @@ export interface CellRendererProps<TRow, TSummaryRow> extends BaseCellRendererPr
 }
 
 export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  /** Prevents the default grid behavior for this event */
   preventGridDefault: () => void;
+  /** Returns whether `preventGridDefault` was called */
   isGridDefaultPrevented: () => boolean;
 };
 
@@ -286,7 +293,9 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown> extends BaseRenderR
 }
 
 export interface RowsChangeData<R, SR = unknown> {
+  /** Indexes of the rows that changed */
   indexes: number[];
+  /** The column of the cells that changed */
   column: CalculatedColumn<R, SR>;
 }
 
@@ -345,10 +354,12 @@ export type RowHeightArgs<TRow> =
   | { type: 'GROUP'; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
+  /** The sort direction of the column, or `undefined` if it is not sorted */
   sortDirection: SortDirection | undefined;
 }
 
 export interface RenderSortPriorityProps {
+  /** The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise */
   priority: number | undefined;
 }
 

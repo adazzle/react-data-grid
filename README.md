@@ -923,33 +923,7 @@ A formatter component for rendering row selection checkboxes.
 
 ##### Props
 
-###### `value: boolean`
-
-Whether the checkbox is checked.
-
-###### `tabIndex?: number | undefined`
-
-The tab index for keyboard navigation.
-
-###### `indeterminate?: boolean | undefined`
-
-Whether the checkbox is in an indeterminate state.
-
-###### `disabled?: boolean | undefined`
-
-Whether the checkbox is disabled.
-
-###### `onChange: (checked: boolean, shift: boolean) => void`
-
-Callback when the checkbox state changes.
-
-###### `'aria-label'?: string | undefined`
-
-Accessible label for the checkbox.
-
-###### `'aria-labelledby'?: string | undefined`
-
-ID of the element that labels the checkbox.
+The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
 
 #### `<ToggleGroup />`
 
@@ -1032,6 +1006,8 @@ function CustomSelectCell({ row }: RenderCellProps<Row>) {
 
 The default header cell renderer. Renders sortable columns with sort indicators.
 
+**Props:** [`RenderHeaderCellProps<TRow, TSummaryRow>`](#renderheadercellpropstrow-tsummaryrow)
+
 **Example:**
 
 ```tsx
@@ -1051,6 +1027,8 @@ const columns: readonly Column<Row>[] = [
 
 A basic text editor provided for convenience.
 
+**Props:** [`RenderEditCellProps<TRow, TSummaryRow>`](#rendereditcellpropstrow-tsummaryrow)
+
 **Example:**
 
 ```tsx
@@ -1069,17 +1047,13 @@ const columns: readonly Column<Row>[] = [
 
 Renders the sort direction arrow icon.
 
-**Props:**
-
-- `sortDirection: SortDirection | undefined` - 'ASC', 'DESC', or undefined
+**Props:** [`RenderSortIconProps`](#rendersorticonprops)
 
 #### `renderSortPriority(props: RenderSortPriorityProps)`
 
 Renders the sort priority number for multi-column sorting.
 
-**Props:**
-
-- `priority: number | undefined` - The sort priority (1, 2, 3, etc.)
+**Props:** [`RenderSortPriorityProps`](#rendersortpriorityprops)
 
 #### `renderCheckbox(props: RenderCheckboxProps)`
 
@@ -1103,9 +1077,7 @@ import { DataGrid, renderCheckbox } from 'react-data-grid';
 
 The default group cell renderer for the columns used for grouping (`groupBy` prop). This renders the expand/collapse toggle.
 
-##### Props
-
-[`RenderGroupCellProps<TRow, TSummaryRow>`](#rendergroupcellpropstrow-tsummaryrow)
+**Props:** [`RenderGroupCellProps<TRow, TSummaryRow>`](#rendergroupcellpropstrow-tsummaryrow)
 
 **Example:**
 
@@ -1124,6 +1096,8 @@ const columns: readonly Column<Row>[] = [
 #### `renderValue<R, SR>(props: RenderCellProps<R, SR>)`
 
 The default cell renderer that renders the value of `row[column.key]`.
+
+**Props:** [`RenderCellProps<TRow, TSummaryRow>`](#rendercellpropstrow-tsummaryrow)
 
 **Example:**
 
@@ -1442,6 +1416,7 @@ Defines a group of columns that share a common header.
 
 ```tsx
 interface ColumnGroup<R, SR = unknown> {
+  /** The name of the column group. It will be displayed in the header cell */
   readonly name: string | ReactElement;
   readonly headerCellClass?: Maybe<string>;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];
@@ -1470,14 +1445,27 @@ Union type representing either a `Column` or a `ColumnGroup`.
 
 #### `CalculatedColumn<TRow, TSummaryRow>`
 
-Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions.
+Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. The `Column` properties it redeclares, like `width` and `renderCell`, are resolved to their default values when not set.
 
-**Additional properties:**
-
-- `idx: number` - The column index
-- `level: number` - Nesting level when using column groups
-- `parent: CalculatedColumnParent | undefined` - Parent column group if nested
-- Some `Column` properties, like `width`, `minWidth`, `resizable`, and `renderCell`, are resolved to their default values when not set
+```tsx
+interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  /** The column group that contains the column, or `undefined` if the column is not in a group */
+  readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
+  /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
+  readonly idx: number;
+  /** Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups */
+  readonly level: number;
+  readonly width: number | string;
+  readonly minWidth: number;
+  readonly maxWidth: number | undefined;
+  readonly resizable: boolean;
+  readonly sortable: boolean;
+  readonly draggable: boolean;
+  readonly frozen: ColumnFrozen;
+  readonly renderCell: (props: RenderCellProps<TRow, TSummaryRow>) => ReactNode;
+  readonly renderHeaderCell: (props: RenderHeaderCellProps<TRow, TSummaryRow>) => ReactNode;
+}
+```
 
 #### `CalculatedColumnParent<TRow, TSummaryRow>`
 
@@ -1705,17 +1693,26 @@ type CellMouseEventHandler<TRow, TSummaryRow> = Maybe<
 >;
 ```
 
+#### `CellEvent<E>` (internal)
+
+Adds grid-specific methods to a React event. This helper type is not exported; the shape is shown for reference.
+
+```tsx
+type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  /** Prevents the default grid behavior for this event */
+  preventGridDefault: () => void;
+  /** Returns whether `preventGridDefault` was called */
+  isGridDefaultPrevented: () => boolean;
+};
+```
+
 #### `CellMouseEvent`
 
 Extends `React.MouseEvent<HTMLDivElement>` with grid-specific methods.
 
-##### `event.preventGridDefault(): void`
-
-Prevents the default grid behavior for this event.
-
-##### `event.isGridDefaultPrevented(): boolean`
-
-Returns whether `preventGridDefault` was called.
+```tsx
+type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
+```
 
 **Example:**
 
@@ -1733,13 +1730,9 @@ function onCellMouseDown(args: CellMouseArgs<Row>, event: CellMouseEvent) {
 
 Extends `React.KeyboardEvent<HTMLDivElement>` with grid-specific methods.
 
-##### `event.preventGridDefault(): void`
-
-Prevents the default grid behavior for this keyboard event.
-
-##### `event.isGridDefaultPrevented(): boolean`
-
-Returns whether `preventGridDefault` was called.
+```tsx
+type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
+```
 
 #### `CellClipboardEvent`
 
@@ -1887,13 +1880,12 @@ Data provided to the `onRowsChange` callback.
 
 ```tsx
 interface RowsChangeData<R, SR = unknown> {
+  /** Indexes of the rows that changed */
   indexes: number[];
+  /** The column of the cells that changed */
   column: CalculatedColumn<R, SR>;
 }
 ```
-
-- `indexes`: Array of row indexes that changed
-- `column`: The column where changes occurred
 
 #### `SelectRowEvent<TRow>`
 
@@ -1970,8 +1962,10 @@ Represents a cell position in the grid.
 
 ```tsx
 interface Position {
-  readonly idx: number; // Column index
-  readonly rowIdx: number; // Row index
+  /** Column index, or `-1` for the whole row in `TreeDataGrid` */
+  readonly idx: number;
+  /** Row index: `0` is the first row, header rows and top summary rows have negative indexes, and bottom summary rows come after the last row */
+  readonly rowIdx: number;
 }
 ```
 
@@ -1992,33 +1986,29 @@ Props for custom checkbox renderers.
 
 ```tsx
 interface RenderCheckboxProps {
-  checked?: boolean;
-  indeterminate?: boolean;
-  disabled?: boolean;
+  /** Whether the checkbox is checked */
+  checked?: boolean | undefined;
+  /** Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected */
+  indeterminate?: boolean | undefined;
+  /** Whether the checkbox is disabled */
+  disabled?: boolean | undefined;
+  /** Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows */
   onChange: (checked: boolean, shift: boolean) => void;
-  tabIndex?: number;
-  'aria-label'?: string;
-  'aria-labelledby'?: string;
+  /** `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox */
+  tabIndex?: number | undefined;
+  /** Accessible label for the checkbox */
+  'aria-label'?: string | undefined;
+  /** ID of the element that labels the checkbox */
+  'aria-labelledby'?: string | undefined;
 }
 ```
-
-- `checked`: Whether the checkbox is checked
-- `indeterminate`: Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected
-- `disabled`: Whether the checkbox is disabled
-- `onChange`: Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows
-- `tabIndex`: `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox
-- `aria-label`: Accessible label for the checkbox
-- `aria-labelledby`: ID of the element that labels the checkbox
 
 #### `RenderSortStatusProps`
 
 Props for custom sort status renderers.
 
 ```tsx
-interface RenderSortStatusProps {
-  sortDirection: SortDirection | undefined;
-  priority: number | undefined;
-}
+interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 ```
 
 #### `RenderSortIconProps`
@@ -2027,6 +2017,7 @@ Props for custom sort icon renderers.
 
 ```tsx
 interface RenderSortIconProps {
+  /** The sort direction of the column, or `undefined` if it is not sorted */
   sortDirection: SortDirection | undefined;
 }
 ```
@@ -2037,6 +2028,7 @@ Props for custom sort priority renderers.
 
 ```tsx
 interface RenderSortPriorityProps {
+  /** The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise */
   priority: number | undefined;
 }
 ```
