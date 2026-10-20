@@ -197,6 +197,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> extends Sha
   onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>;
   /** Callback triggered when columns are reordered */
   onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
+  /** Callback triggered when the value of the active cell is dragged to fill other cells */
   onFill?: Maybe<(event: FillEvent<NoInfer<R>>) => NoInfer<R>>;
 
   /**
@@ -708,7 +709,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function handleColumnResizeEnd() {
-    // This check is needed as double click on the resize handle triggers onPointerMove
+    // This check is needed as double-clicking the resize handle triggers onLostPointerCapture without resizing the column
     if (isColumnResizing) {
       onColumnWidthsChangeRaw?.(columnWidths);
       setIsColumnResizing(false);

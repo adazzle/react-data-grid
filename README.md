@@ -603,6 +603,18 @@ See the [`PositionChangeArgs`](#positionchangeargstrow-tsummaryrow) type in the 
 
 ###### `onFill?: Maybe<(event: FillEvent<R>) => R>`
 
+Callback triggered when the value of the active cell is dragged to fill other cells. When this prop is set, a drag handle is shown on the active cell if it is editable. Drag the handle up or down to fill the cells it passes over, or double-click it to fill all the cells below.
+
+The grid calls `onFill` for each editable target cell. Return the updated target row; the grid will call `onRowsChange` with the updated rows. See the [`FillEvent`](#filleventtrow) type.
+
+```tsx
+function onFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
+  return { ...targetRow, [columnKey]: sourceRow[columnKey as keyof Row] };
+}
+
+<DataGrid columns={columns} rows={rows} onRowsChange={setRows} onFill={onFill} />;
+```
+
 ###### `onScroll?: React.UIEventHandler<HTMLDivElement> | undefined`
 
 Native DOM `onScroll` prop.
