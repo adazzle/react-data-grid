@@ -1,3 +1,3 @@
 @layer rdg {
-  @layer Defaults, CheckboxInput, Cell, HeaderCell, EditCell, Row, HeaderRow, SummaryRow, GroupedRow, Root, MeasuringCell, DragHandle, GroupCellContent, GroupCellCaret, SortableHeaderCell, SortableHeaderCellName, SortIcon, TextEditor, FrozenColumnShadow;
+  @layer Defaults, Cell, HeaderCell, EditCell, Row, HeaderRow, GroupedRow, Root;
 }

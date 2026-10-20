@@ -30,7 +30,7 @@ website/              # demo site (Vite + TanStack Router)
 - **TypeScript strict** with `exactOptionalPropertyTypes`, `verbatimModuleSyntax`, `erasableSyntaxOnly`. Distinguish missing properties from `undefined` values.
 - **`Maybe<T>`** (`T | undefined | null`) — used for all nullable column/render props. Do not use bare `T | undefined`.
 - **`NoInfer<>`** — wrap callback parameters to prevent reverse type inference into component generics.
-- **CSS layers** — all styles live in nested `@layer rdg.<Name>` sub-layers (e.g., `rdg.Cell`, `rdg.Row`). Declare each sub-layer in `src/style/layers.css`, which sets their order. Use `ecij` `css` tagged templates (build-time extraction, not runtime CSS-in-JS). Co-locate styles in component files; `src/style/` is for shared styles.
+- **CSS layers** — all styles live in nested `@layer rdg.<Name>` sub-layers (e.g., `rdg.Cell`, `rdg.Row`). When a sub-layer overrides another sub-layer's styles, declare both in `src/style/layers.css`, which sets their order; undeclared sub-layers come after the declared ones. Use `ecij` `css` tagged templates (build-time extraction, not runtime CSS-in-JS). Co-locate styles in component files; `src/style/` is for shared styles.
 - **Dual class names** — components apply both a semantic class (`rdg-cell`) and a generated hash. Preserve both.
 - **Light/dark mode** — handled via CSS `light-dark()` + `color-scheme`, not JS.
 - **Accessibility first** — ARIA attributes (e.g., `aria-colindex`, `aria-rowindex`, `aria-selected`, roles) are required. Tests query by role.
