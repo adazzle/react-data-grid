@@ -115,11 +115,11 @@ export default function Nav({ direction, onDirectionChange }: Props) {
           Documentation
         </a>
         <a
-          href="https://github.com/Comcast/react-data-grid/blob/main/CHANGELOG.md"
+          href="https://github.com/Comcast/react-data-grid/releases"
           target="_blank"
           rel="noreferrer"
         >
-          Changelog
+          Releases
         </a>
         <a
           href="https://github.com/Comcast/react-data-grid/discussions"
