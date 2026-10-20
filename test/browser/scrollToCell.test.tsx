@@ -109,7 +109,7 @@ test('scrollToCell with end-frozen columns', async () => {
     rowHeight: 60
   });
 
-  // end-frozen columns are always visible; a far-right unfrozen column is not
+  // end-frozen columns are always visible, a far-right unfrozen column is not
   await validateCellVisibility('48×0', true);
   await validateCellVisibility('49×0', true);
   await validateCellVisibility('40×0', false);
