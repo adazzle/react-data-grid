@@ -63,7 +63,7 @@ describe('colSpan', () => {
     await expect.element(row1.nth(6)).toHaveAttribute('aria-colindex', '7');
     await expect.element(row1.nth(6)).toHaveAttribute('aria-colspan', '2');
     await expect.element(row1.nth(6)).toHaveStyle({
-      gridTemplateColumns: '7',
+      gridColumnStart: '7',
       gridColumnEnd: '9'
     });
     await expect.element(row1.nth(7)).toHaveAttribute('aria-colindex', '9');

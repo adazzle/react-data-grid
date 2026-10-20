@@ -18,7 +18,7 @@ function getResizeHandle(name: string) {
 async function resize(columnName: string, resizeBy: number | readonly number[]) {
   await expect.element(getResizeHandle(columnName)).toBeInTheDocument();
 
-  await commands.resizeColumn('col2', resizeBy);
+  await commands.resizeColumn(columnName, resizeBy);
 }
 
 async function autoResize(columnName: string) {
