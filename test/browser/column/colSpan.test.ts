@@ -39,18 +39,18 @@ describe('colSpan', () => {
     return setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
-  it('should merges cells', async () => {
+  it('should merge cells', async () => {
     await setupColSpan();
     // header
     await expect.element(headerCells).toHaveLength(13);
 
     // top summary rows
-    const topSummarryRow1 = getCellsAtRowIndex(0);
-    await expect.element(topSummarryRow1).toHaveLength(14);
-    // 7th-8th cells are merged
-    await expect.element(topSummarryRow1.nth(7)).toHaveAttribute('aria-colindex', '8');
-    await expect.element(topSummarryRow1.nth(7)).toHaveAttribute('aria-colspan', '2');
-    await expect.element(topSummarryRow1.nth(7)).toHaveStyle({
+    const topSummaryRow1 = getCellsAtRowIndex(0);
+    await expect.element(topSummaryRow1).toHaveLength(14);
+    // 8th-9th cells are merged
+    await expect.element(topSummaryRow1.nth(7)).toHaveAttribute('aria-colindex', '8');
+    await expect.element(topSummaryRow1.nth(7)).toHaveAttribute('aria-colspan', '2');
+    await expect.element(topSummaryRow1.nth(7)).toHaveStyle({
       gridColumnStart: '8',
       gridColumnEnd: '10'
     });

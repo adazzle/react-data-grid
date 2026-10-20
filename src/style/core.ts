@@ -41,7 +41,7 @@ const root = css`
 
     accent-color: light-dark(hsl(207deg 100% 29%), hsl(207deg 100% 79%));
 
-    /* https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context */
+    /* https://developer.mozilla.org/en-US/docs/Web/CSS/Guides/Positioned_layout/Stacking_context */
     /* We set a stacking context so internal elements don't render on top of external elements. */
     /* size containment is not used as it could break "width: min-content" for example, and the grid would infinitely resize on Chromium browsers */
     contain: content;

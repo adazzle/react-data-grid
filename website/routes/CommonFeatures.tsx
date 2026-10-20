@@ -190,7 +190,7 @@ function getColumns(
     },
     {
       key: 'startTimestamp',
-      name: 'Start date',
+      name: 'Start Date',
       renderCell(props) {
         return dateFormatter.format(props.row.startTimestamp);
       }
@@ -211,7 +211,7 @@ function getColumns(
     },
     {
       key: 'transaction',
-      name: 'Transaction type'
+      name: 'Transaction Type'
     },
     {
       key: 'account',

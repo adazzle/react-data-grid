@@ -13,14 +13,14 @@ import type {
 
 /*
  * To check for outside `mousedown` events, we listen to all `mousedown` events at their birth,
- * i.e. on the window during the capture phase, and at their death, i.e. on the window during the bubble phase.
+ * i.e., on the window during the capture phase, and at their death, i.e., on the window during the bubble phase.
  *
  * We schedule a check at the birth of the event, cancel the check when the event reaches the "inside" container,
  * and trigger the "outside" callback when the event bubbles back up to the window.
  *
- * The event can be `stopPropagation()`ed halfway through, so they may not always bubble back up to the window,
- * so an alternative check must be used. The check must happen after the event can reach the "inside" container,
- * and not before it run to completion. `postTask`/`requestAnimationFrame` are the best way we know to achieve this.
+ * The event can be `stopPropagation()`ed halfway through, so it may not always bubble back up to the window,
+ * and an alternative check must be used. The check must happen after the event can reach the "inside" container,
+ * and not before it has run to completion. `postTask`/`requestAnimationFrame` are the best way we know to achieve this.
  * Usually we want click event handlers from parent components to access the latest committed values,
  * so `mousedown` is used instead of `click`.
  *
@@ -72,7 +72,7 @@ export default function EditCell<R, SR>({
 
   // We need to prevent the `useLayoutEffect` from cleaning up between re-renders,
   // as `onWindowCaptureMouseDown` might otherwise miss valid mousedown events.
-  // To that end we instead access the latest props via useEffectEvent.
+  // To that end, we instead access the latest props via useEffectEvent.
   const commitOnOutsideMouseDown = useEffectEvent(() => {
     onClose(true, false);
   });
@@ -128,7 +128,7 @@ export default function EditCell<R, SR>({
     };
   }, [commitOnOutsideClick]);
 
-  // TODO: report react compiler bug
+  // TODO: report React Compiler bug
   // oxlint-disable-next-line react/invariant
   function cancelTask() {
     captureEventRef.current = undefined;

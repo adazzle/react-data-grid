@@ -1,5 +1,5 @@
-// vitest-browser-react also automatically injects render method on the page
-// need to import it so TypeScript can pick up types
+// vitest-browser-react also automatically injects the render method on the page,
+// so we need to import it for TypeScript to pick up its types
 import 'vitest-browser-react';
 
 import {
@@ -10,10 +10,10 @@ import {
 } from 'vite-plus/test/browser';
 import { configure } from 'vitest-browser-react/pure';
 
-// avoid priting huge stack traces
-// chromium defaults to 10
-// firefox defaults to 128
-// webkit defaults to 100
+// avoid printing huge stack traces
+// Chromium defaults to 10
+// Firefox defaults to 128
+// WebKit defaults to 100
 // @ts-expect-error
 Error.stackTraceLimit = 10;
 

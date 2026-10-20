@@ -43,11 +43,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly renderGroupCell?: Maybe<(props: RenderGroupCellProps<TRow, TSummaryRow>) => ReactNode>;
   /** Render function to render the content of edit cells. When set, the column is automatically set to be editable */
   readonly renderEditCell?: Maybe<(props: RenderEditCellProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
+  /** Control whether cells can be edited with `renderEditCell` */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
-  /** Determines whether column is frozen, and on which edge.
-   *  `true` is an alias for `'start'` for backwards compatibility. */
+  /** Determines whether the column is frozen, and on which edge.
+   *  `true` is an alias for `'start'` for backward compatibility. */
   readonly frozen?: Maybe<ColumnFrozen>;
   /** Enable resizing of the column */
   readonly resizable?: Maybe<boolean>;
@@ -95,7 +95,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
 }
 
 export interface ColumnGroup<R, SR = unknown> {
-  /** The name of the column group, it will be displayed in the header cell */
+  /** The name of the column group. It will be displayed in the header cell */
   readonly name: string | ReactElement;
   readonly headerCellClass?: Maybe<string>;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];

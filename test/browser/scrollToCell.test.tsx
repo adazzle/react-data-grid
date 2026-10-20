@@ -60,7 +60,7 @@ test('scrollToCell', async () => {
   await validateCellVisibility('40×1', false);
   await validateCellVisibility('40×30', true);
 
-  // should not scroll if scroll to column is frozen
+  // should not scroll if the column to scroll to is frozen
   ref.current!.scrollToCell({ idx: 2 });
   await validateCellVisibility('40×30', true);
 
@@ -72,7 +72,7 @@ test('scrollToCell', async () => {
   ref.current!.scrollToCell({ idx: 50 });
   await validateCellVisibility('40×30', true);
 
-  // should not scroll if position is out of bound
+  // should not scroll if position is out of bounds
   ref.current!.scrollToCell({ idx: 60, rowIdx: 60 });
   await validateCellVisibility('40×30', true);
 
@@ -96,7 +96,7 @@ test('scrollToCell with end-frozen columns', async () => {
     rowHeight: 60
   });
 
-  // end-frozen columns are always visible, a far-right unfrozen column is not
+  // end-frozen columns are always visible; a far-right unfrozen column is not
   await validateCellVisibility('48×0', true);
   await validateCellVisibility('49×0', true);
   await validateCellVisibility('40×0', false);

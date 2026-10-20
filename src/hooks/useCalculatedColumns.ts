@@ -283,7 +283,7 @@ export function useCalculatedColumns<R, SR>({
     while (colVisibleEndIdx < lastColIdx) {
       const { left, width } = columnMetrics.get(columns[colVisibleEndIdx])!;
       // if the right side of the column is beyond or equal to the right side of the available viewport,
-      // then it the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
+      // then it is the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
       if (left + width >= viewportRight) {
         break;
       }

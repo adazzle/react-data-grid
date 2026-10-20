@@ -15,7 +15,7 @@ env:
   # and only images, so the job that pushes can only commit images
   SCREENSHOTS: 'test/**/screenshots/**/*.png'
 
-# dependencies only run in the read-only `screenshots` job,
+# dependencies only run in the read-only `screenshots` job;
 # the jobs with write permissions only run gh and git
 jobs:
   remove-label:

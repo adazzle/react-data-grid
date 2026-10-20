@@ -186,7 +186,7 @@ test('checkbox defined using both context and renderers', async () => {
   await expect.element(page.getByText('Global checkbox')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both contexts', async () => {
+test('sortPriority defined using context', async () => {
   await setupContext({ columns, rows: noRows });
 
   const column1 = page.getHeaderCell({ name: 'Column1' });
@@ -203,7 +203,7 @@ test('sortPriority defined using both contexts', async () => {
   await expect.element(page.getByTestId('local-sort-priority')).not.toBeInTheDocument();
 });
 
-test('sortPriority defined using both contexts and renderers', async () => {
+test('sortPriority defined using both context and renderers', async () => {
   await setupContext({
     columns,
     rows: noRows,
@@ -238,7 +238,7 @@ test('renderCell defined using context', async () => {
   await expect.element(cell2).toHaveStyle({ fontStyle: 'italic' });
 });
 
-test('renderCell defined using both contexts and renderers', async () => {
+test('renderCell defined using both context and renderers', async () => {
   await setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
@@ -264,7 +264,7 @@ test('renderRow defined using context', async () => {
   await expect.element(row).not.toHaveClass('local');
 });
 
-test('renderRow defined using both contexts and renderers', async () => {
+test('renderRow defined using both context and renderers', async () => {
   await setupContext({
     columns,
     rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
