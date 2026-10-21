@@ -1014,7 +1014,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
           />
         )}
 
-        {bottomSummaryRows != null && bottomSummaryRowsCount > 0 && (
+        {bottomSummaryRowsCount > 0 && (
           <div
             className={topClassname}
             style={{
