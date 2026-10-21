@@ -51,7 +51,7 @@ function Cell<R, SR>({
 
   function handleMouseEvent(
     event: React.MouseEvent<HTMLDivElement>,
-    eventHandler?: CellMouseEventHandler<R, SR>
+    eventHandler: CellMouseEventHandler<R, SR>
   ) {
     let eventHandled = false;
     if (eventHandler) {

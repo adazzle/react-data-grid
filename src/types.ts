@@ -228,8 +228,12 @@ export interface CellMouseArgs<TRow, TSummaryRow = unknown> {
 
 interface ActiveCellKeyDownArgs<TRow, TSummaryRow = unknown> {
   mode: 'ACTIVE';
+  /**
+   * column object of the active position,
+   * undefined if the active position is a row instead of a cell
+   */
   column: CalculatedColumn<TRow, TSummaryRow> | undefined;
-  row: TRow | undefined;
+  row: TRow;
   rowIdx: number;
   setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
 }
