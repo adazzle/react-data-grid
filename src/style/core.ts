@@ -28,6 +28,7 @@ const root = css`
     --rdg-row-selected-background-color: light-dark(hsl(207deg 76% 92%), hsl(207deg 76% 42%));
     --rdg-row-selected-hover-background-color: light-dark(hsl(207deg 76% 88%), hsl(207deg 76% 38%));
     --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
+    --rdg-frozen-column-shadow-color: light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 40%));
 
     &.rdg-dark {
       color-scheme: dark;
@@ -94,7 +95,7 @@ export const viewportDraggingClassname = `rdg-viewport-dragging ${viewportDraggi
 
 // Common properties shared by both start- and end-edge frozen-column shadows.
 // Variants below add only the direction-dependent properties (gradient + scroll-state predicate).
-export const frozenColumnShadowClassname = css`
+const frozenColumnShadowClassname = css`
   @layer rdg.FrozenColumnShadow {
     position: sticky;
     width: 10px;
@@ -111,11 +112,7 @@ export const frozenColumnShadowClassname = css`
 
 const frozenColumnShadowStartOverrides = css`
   @layer rdg.FrozenColumnShadow {
-    background-image: linear-gradient(
-      to right,
-      light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 40%)),
-      transparent
-    );
+    background-image: linear-gradient(to right, var(--rdg-frozen-column-shadow-color), transparent);
 
     /* TODO: reverse 'opacity' and remove 'not' */
     @container rdg-root not scroll-state(scrollable: inline-start) {
@@ -126,11 +123,7 @@ const frozenColumnShadowStartOverrides = css`
 
 const frozenColumnShadowEndOverrides = css`
   @layer rdg.FrozenColumnShadow {
-    background-image: linear-gradient(
-      to left,
-      light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 40%)),
-      transparent
-    );
+    background-image: linear-gradient(to left, var(--rdg-frozen-column-shadow-color), transparent);
 
     /* TODO: reverse 'opacity' and remove 'not' */
     @container rdg-root not scroll-state(scrollable: inline-end) {
@@ -140,10 +133,10 @@ const frozenColumnShadowEndOverrides = css`
 `;
 
 // Add shadow after the last start-frozen cell
-export const frozenColumnShadowStartClassname = `${frozenColumnShadowClassname} ${frozenColumnShadowStartOverrides}`;
+export const frozenColumnShadowStartClassname = `rdg-frozen-column-shadow rdg-frozen-column-shadow-start ${frozenColumnShadowClassname} ${frozenColumnShadowStartOverrides}`;
 
 // Add shadow before the first end-frozen cell (mirror of the start shadow)
-export const frozenColumnShadowEndClassname = `${frozenColumnShadowClassname} ${frozenColumnShadowEndOverrides}`;
+export const frozenColumnShadowEndClassname = `rdg-frozen-column-shadow rdg-frozen-column-shadow-end ${frozenColumnShadowClassname} ${frozenColumnShadowEndOverrides}`;
 
 const topShadowClassname = css`
   @layer rdg.FrozenColumnShadow {
