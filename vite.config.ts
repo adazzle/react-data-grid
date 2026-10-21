@@ -52,6 +52,12 @@ async function dragFill(
   await page.mouse.up();
 }
 
+// TODO: remove when vite-plus detects TypeScript 7.1 as TypeScript 7
+async function getTscPath(): Promise<string> {
+  const { default: getExePath } = await import('./node_modules/typescript/lib/getExePath.js');
+  return getExePath();
+}
+
 const actionTimeout = 2000;
 const viewport = { width: 1920, height: 1080 } as const;
 const playwrightOptions: PlaywrightProviderOptions = {
@@ -205,7 +211,12 @@ export default defineConfig({
     },
     dts: {
       build: true,
-      tsconfig: './tsconfig.src.json'
+      tsconfig: './tsconfig.src.json',
+      // TODO: remove when vite-plus detects TypeScript 7.1 as TypeScript 7
+      generator: 'tsgo',
+      tsgo: {
+        path: await getTscPath()
+      }
     },
     publint: {
       strict: true
