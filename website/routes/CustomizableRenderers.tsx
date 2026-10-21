@@ -4,8 +4,8 @@ import { css } from 'ecij';
 
 import { Row as BaseRow, Cell, DataGrid, renderTextEditor, SelectColumn } from '../../src';
 import type {
-  RenderCellProps,
   Column,
+  RenderCellProps,
   RenderCheckboxProps,
   RenderRowProps,
   RenderSortStatusProps,

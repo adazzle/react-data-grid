@@ -1011,7 +1011,7 @@ function CustomSelectCell({ row }: RenderCellContentProps<Row>) {
 
 #### `renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>)`
 
-The default header cell renderer. Renders sortable columns with sort indicators.
+The default header cell content renderer. Renders sortable columns with sort indicators.
 
 **Props:** [`RenderHeaderCellContentProps<TRow, TSummaryRow>`](#renderheadercellcontentpropstrow-tsummaryrow)
 
@@ -1082,7 +1082,7 @@ import { DataGrid, renderCheckbox } from 'react-data-grid';
 
 #### `renderToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>)`
 
-The default group cell renderer for the columns used for grouping (`groupBy` prop). This renders the expand/collapse toggle.
+The default group cell content renderer for the columns used for grouping (`groupBy` prop). This renders the expand/collapse toggle.
 
 **Props:** [`RenderGroupCellContentProps<TRow, TSummaryRow>`](#rendergroupcellcontentpropstrow-tsummaryrow)
 
@@ -1102,7 +1102,7 @@ const columns: readonly Column<Row>[] = [
 
 #### `renderValue<R, SR>(props: RenderCellContentProps<R, SR>)`
 
-The default cell renderer that renders the value of `row[column.key]`.
+The default cell content renderer that renders the value of `row[column.key]`.
 
 **Props:** [`RenderCellContentProps<TRow, TSummaryRow>`](#rendercellcontentpropstrow-tsummaryrow)
 
@@ -1520,7 +1520,7 @@ function getRowHeight(args: RowHeightArgs<Row>): number {
 
 #### `RenderCellContentProps<TRow, TSummaryRow>`
 
-Props passed to custom cell renderers.
+Props passed to custom cell content renderers (`column.renderCell`).
 
 ```tsx
 interface RenderCellContentProps<TRow, TSummaryRow = unknown> {
@@ -1550,7 +1550,7 @@ function renderCell({ row, column, onRowChange }: RenderCellContentProps<MyRow>)
 
 #### `RenderHeaderCellContentProps<TRow, TSummaryRow>`
 
-Props passed to custom header cell renderers.
+Props passed to custom header cell content renderers (`column.renderHeaderCell`).
 
 ```tsx
 interface RenderHeaderCellContentProps<TRow, TSummaryRow = unknown> {
@@ -1563,7 +1563,7 @@ interface RenderHeaderCellContentProps<TRow, TSummaryRow = unknown> {
 
 #### `RenderEditCellContentProps<TRow, TSummaryRow>`
 
-Props passed to custom edit cell renderers (editors).
+Props passed to custom editors (`column.renderEditCell`).
 
 ```tsx
 interface RenderEditCellContentProps<TRow, TSummaryRow = unknown> {
@@ -1594,7 +1594,7 @@ function renderEditor({ row, column, onRowChange, onClose }: RenderEditCellConte
 
 #### `RenderSummaryCellContentProps<TSummaryRow, TRow>`
 
-Props passed to summary cell renderers.
+Props passed to summary cell content renderers (`column.renderSummaryCell`).
 
 ```tsx
 interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
@@ -1606,7 +1606,7 @@ interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
 
 #### `RenderGroupCellContentProps<TRow, TSummaryRow>`
 
-Props passed to group cell renderers when using `TreeDataGrid`.
+Props passed to group cell content renderers (`column.renderGroupCell`) when using `TreeDataGrid`.
 
 ```tsx
 interface RenderGroupCellContentProps<TRow, TSummaryRow = unknown> {

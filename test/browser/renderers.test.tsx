@@ -10,9 +10,9 @@ import {
   SelectColumn
 } from '../../src';
 import type {
-  RenderCellProps,
   Column,
   DataGridProps,
+  RenderCellProps,
   RenderRowProps,
   RenderSortStatusProps,
   SortColumn
