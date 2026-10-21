@@ -48,8 +48,8 @@ const dialogContainerClassname = css`
   }
 `;
 
-const dateFormatter = new Intl.DateTimeFormat(navigator.language).format;
-const currencyFormatter = new Intl.NumberFormat(navigator.language, {
+const formatDate = new Intl.DateTimeFormat(navigator.language).format;
+const formatCurrency = new Intl.NumberFormat(navigator.language, {
   style: 'currency',
   currency: 'eur'
 }).format;
@@ -192,21 +192,21 @@ function getColumns(
       key: 'startTimestamp',
       name: 'Start Date',
       renderCell(props) {
-        return dateFormatter(props.row.startTimestamp);
+        return formatDate(props.row.startTimestamp);
       }
     },
     {
       key: 'endTimestamp',
       name: 'Deadline',
       renderCell(props) {
-        return dateFormatter(props.row.endTimestamp);
+        return formatDate(props.row.endTimestamp);
       }
     },
     {
       key: 'budget',
       name: 'Budget',
       renderCell(props) {
-        return currencyFormatter(props.row.budget);
+        return formatCurrency(props.row.budget);
       }
     },
     {
