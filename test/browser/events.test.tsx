@@ -190,4 +190,61 @@ describe('Events', () => {
     });
     expect(onActivePositionChange).toHaveBeenCalledTimes(6);
   });
+
+  it('should not call parent handlers if a cell event handler stops propagation', async () => {
+    const onParentClick = vi.fn();
+    const onParentKeyDown = vi.fn();
+
+    await page.render(
+      <div onClick={onParentClick} onKeyDown={onParentKeyDown}>
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          onCellClick={(args, event) => {
+            if (args.column.key === 'col1') {
+              event.stopPropagation();
+            }
+          }}
+          onCellKeyDown={(args, event) => {
+            if (args.column?.key === 'col1') {
+              event.stopPropagation();
+            }
+          }}
+        />
+      </div>
+    );
+
+    await userEvent.click(page.getCell({ name: '1' }));
+    await userEvent.keyboard('{ArrowRight}');
+    expect(onParentClick).not.toHaveBeenCalled();
+    expect(onParentKeyDown).not.toHaveBeenCalled();
+
+    await userEvent.click(page.getCell({ name: 'a1' }));
+    await userEvent.keyboard('{ArrowLeft}');
+    expect(onParentClick).toHaveBeenCalledOnce();
+    expect(onParentKeyDown).toHaveBeenCalledOnce();
+  });
+
+  it('should let parent handlers know that a cell event handler prevented the default action', async () => {
+    const onParentContextMenu = vi.fn((event: React.MouseEvent) => event.isDefaultPrevented());
+
+    await page.render(
+      <div onContextMenu={onParentContextMenu}>
+        <DataGrid
+          columns={columns}
+          rows={rows}
+          onCellContextMenu={(args, event) => {
+            if (args.column.key === 'col1') {
+              event.preventDefault();
+            }
+          }}
+        />
+      </div>
+    );
+
+    await userEvent.click(page.getCell({ name: '1' }), { button: 'right' });
+    expect(onParentContextMenu).toHaveLastReturnedWith(true);
+    await userEvent.click(page.getCell({ name: 'a1' }), { button: 'right' });
+    expect(onParentContextMenu).toHaveLastReturnedWith(false);
+  });
 });
