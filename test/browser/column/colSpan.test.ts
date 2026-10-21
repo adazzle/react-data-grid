@@ -1,6 +1,6 @@
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { Column } from '../../../src';
+import type { Column, ColumnOrColumnGroup } from '../../../src';
 import { getCellsAtRowIndex, safeTab, setup, validateCellPosition } from '../utils';
 
 const headerCells = page.getHeaderCell();
@@ -170,6 +170,26 @@ describe('colSpan', () => {
     await validateCellPosition(10, 13);
     await userEvent.keyboard('{arrowleft}{arrowleft}{arrowleft}');
     await validateCellPosition(6, 13);
+  });
+
+  it('should not pass summary rows to colSpan when navigating column group header rows', async () => {
+    const colSpan = vi.fn(() => undefined);
+    const columns: readonly ColumnOrColumnGroup<number, number>[] = [
+      {
+        name: 'group',
+        children: [
+          { key: 'col1', name: 'col 1', colSpan },
+          { key: 'col2', name: 'col 2' }
+        ]
+      }
+    ];
+    await setup({ columns, rows: [1], bottomSummaryRows: [1] });
+    await userEvent.click(page.getHeaderCell({ name: 'col 2' }));
+    await validateCellPosition(1, 1);
+    colSpan.mockClear();
+    await userEvent.keyboard('{arrowup}');
+    await validateCellPosition(0, 0);
+    expect(colSpan).not.toHaveBeenCalledWith({ type: 'SUMMARY', row: undefined });
   });
 
   it('should scroll to the merged cell when selected', async () => {
