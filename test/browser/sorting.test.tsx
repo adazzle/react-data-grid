@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../src';
-import type { Column, SortColumn } from '../../src/types';
+import { DataGrid, type Column, type SortColumn } from '../../src';
 
 const columns: readonly Column<never>[] = [
   { key: 'colA', name: 'colA' },

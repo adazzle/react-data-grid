@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid, type Column, type RenderEditCellProps } from '../../src';
+import { DataGrid, type Column, type RenderEditCellContentProps } from '../../src';
 
 // The grid can be portaled into another window, like an iframe or a popup window.
 // Its DOM nodes then belong to that other window, while its JS still runs in this window.
@@ -22,7 +22,7 @@ const columns: readonly Column<unknown>[] = Array.from({ length: 20 }, (_, i) =>
 const noRows: readonly unknown[] = [];
 
 // unlike `renderTextEditor`, this editor does not commit on blur
-function renderEditCell({ row, column, onRowChange }: RenderEditCellProps<Row>) {
+function renderEditCell({ row, column, onRowChange }: RenderEditCellContentProps<Row>) {
   const key = column.key as keyof Row;
 
   return (
