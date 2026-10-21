@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { css } from 'ecij';
 
-import type { Direction } from '../src/types';
+import type { Direction } from '../src';
 
 const headerClassname = css`
   border-inline-start: 4px solid light-dark(hsl(210deg 50% 80%), hsl(210deg 50% 40%));

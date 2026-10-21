@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../../src';
+import { DataGrid, renderHeaderCell } from '../../../src';
 import type { Column } from '../../../src';
-import { renderHeaderCell } from '../../../src/renderHeaderCell';
 import { getCellsAtRowIndex, safeTab, setup } from '../utils';
 
 const cells = page.getCell();
