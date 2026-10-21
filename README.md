@@ -176,6 +176,9 @@ The DataGrid supports the following CSS variables for customization:
 
   /* Checkboxes */
   --rdg-checkbox-focus-color: hsl(207deg 100% 69%);
+
+  /* Frozen columns */
+  --rdg-frozen-column-shadow-color: light-dark(rgb(0 0 0 / 15%), rgb(0 0 0 / 40%));
 }
 ```
 
