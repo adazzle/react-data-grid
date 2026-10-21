@@ -59,7 +59,7 @@ test('should allow dragFill if onFill is specified', async () => {
   await expect.element(getCellsAtRowIndex(0).nth(0)).toHaveFocus();
   await expect.element(getCellsAtRowIndex(1).nth(0)).toHaveTextContent('a1');
   await expect.element(getCellsAtRowIndex(2).nth(0)).toHaveTextContent('a1');
-  await expect.element(getCellsAtRowIndex(3).nth(0)).toHaveTextContent('a4'); // readonly cell
+  await expect.element(getCellsAtRowIndex(3).nth(0)).toHaveTextContent('a4'); // read-only cell
 });
 
 test('should update single row using mouse', async () => {
@@ -75,7 +75,7 @@ test('should update multiple rows using mouse', async () => {
   await commands.dragFill('a1', 'a4');
   await expect.element(getCellsAtRowIndex(1).nth(0)).toHaveTextContent('a1');
   await expect.element(getCellsAtRowIndex(2).nth(0)).toHaveTextContent('a1');
-  await expect.element(getCellsAtRowIndex(3).nth(0)).toHaveTextContent('a4'); // readonly cell
+  await expect.element(getCellsAtRowIndex(3).nth(0)).toHaveTextContent('a4'); // read-only cell
 });
 
 test('should allow drag up using mouse', async () => {

@@ -99,7 +99,7 @@ export default function Nav({ direction, onDirectionChange }: Props) {
         <Link to="/NoRows">No Rows</Link>
         <Link to="/ResizableGrid">Resizable Grid</Link>
         <Link to="/RowsReordering">Rows Reordering</Link>
-        <Link to="/ScrollToCell">Scroll To Cell</Link>
+        <Link to="/ScrollToCell">Scroll to Cell</Link>
         <Link to="/TreeView">Tree View</Link>
         <Link to="/VariableRowHeight">Variable Row Height</Link>
         <Link to="/Animation">Animation</Link>
@@ -115,11 +115,11 @@ export default function Nav({ direction, onDirectionChange }: Props) {
           Documentation
         </a>
         <a
-          href="https://github.com/Comcast/react-data-grid/blob/main/CHANGELOG.md"
+          href="https://github.com/Comcast/react-data-grid/releases"
           target="_blank"
           rel="noreferrer"
         >
-          Changelog
+          Releases
         </a>
         <a
           href="https://github.com/Comcast/react-data-grid/discussions"

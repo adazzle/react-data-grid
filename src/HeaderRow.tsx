@@ -94,7 +94,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   return (
     <div
       role="row"
-      aria-rowindex={rowIdx} // aria-rowindex is 1 based
+      aria-rowindex={rowIdx} // aria-rowindex is 1-based
       className={classnames(
         headerRowClassname,
         isPositionOnRow && rowActiveClassname,

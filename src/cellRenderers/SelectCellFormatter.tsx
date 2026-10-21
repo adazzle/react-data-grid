@@ -7,6 +7,7 @@ type SharedInputProps = Pick<
 >;
 
 interface SelectCellFormatterProps extends SharedInputProps {
+  /** Whether the checkbox is checked */
   value: boolean;
 }
 

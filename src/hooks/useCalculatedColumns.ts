@@ -252,7 +252,8 @@ export function useCalculatedColumns<R, SR>({
 
   const [colOverscanStartIdx, colOverscanEndIdx] = useMemo((): [number, number] => {
     if (!enableVirtualization) {
-      return [0, columns.length - 1];
+      // start-frozen columns are always rendered, so the overscan range starts after them
+      return [lastStartFrozenColumnIndex + 1, columns.length - 1];
     }
     // get the viewport's left side and right side positions for non-frozen columns
     const viewportLeft = scrollLeft + totalStartFrozenColumnWidth;
@@ -283,7 +284,7 @@ export function useCalculatedColumns<R, SR>({
     while (colVisibleEndIdx < lastColIdx) {
       const { left, width } = columnMetrics.get(columns[colVisibleEndIdx])!;
       // if the right side of the column is beyond or equal to the right side of the available viewport,
-      // then it the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
+      // then it is the last column that's at least partially visible, as the previous column's right side is not beyond the viewport.
       if (left + width >= viewportRight) {
         break;
       }

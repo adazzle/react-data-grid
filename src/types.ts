@@ -43,11 +43,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
   readonly renderGroupCell?: Maybe<(props: RenderGroupCellProps<TRow, TSummaryRow>) => ReactNode>;
   /** Render function to render the content of edit cells. When set, the column is automatically set to be editable */
   readonly renderEditCell?: Maybe<(props: RenderEditCellProps<TRow, TSummaryRow>) => ReactNode>;
-  /** Enables cell editing. If set and no editor property specified, then a textinput will be used as the cell editor */
+  /** Control whether cells can be edited with `renderEditCell` */
   readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
   readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
-  /** Determines whether column is frozen, and on which edge.
-   *  `true` is an alias for `'start'` for backwards compatibility. */
+  /** Determines whether the column is frozen, and on which edge.
+   *  `true` is an alias for `'start'` for backward compatibility. */
   readonly frozen?: Maybe<ColumnFrozen>;
   /** Enable resizing of the column */
   readonly resizable?: Maybe<boolean>;
@@ -80,8 +80,11 @@ export interface Column<TRow, TSummaryRow = unknown> {
 }
 
 export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+  /** The column group that contains the column, or `undefined` if the column is not in a group */
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
+  /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
   readonly idx: number;
+  /** Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups */
   readonly level: number;
   readonly width: number | string;
   readonly minWidth: number;
@@ -95,7 +98,7 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
 }
 
 export interface ColumnGroup<R, SR = unknown> {
-  /** The name of the column group, it will be displayed in the header cell */
+  /** The name of the column group. It will be displayed in the header cell */
   readonly name: string | ReactElement;
   readonly headerCellClass?: Maybe<string>;
   readonly children: readonly ColumnOrColumnGroup<R, SR>[];
@@ -117,7 +120,9 @@ export type CalculatedColumnOrColumnGroup<R, SR> =
   | CalculatedColumn<R, SR>;
 
 export interface Position {
+  /** Column index, or `-1` for the whole row in `TreeDataGrid` */
   readonly idx: number;
+  /** Row index: `0` is the first row, header rows and top summary rows have negative indexes, and bottom summary rows come after the last row */
   readonly rowIdx: number;
 }
 
@@ -185,7 +190,9 @@ export interface CellRendererProps<TRow, TSummaryRow> extends BaseCellRendererPr
 }
 
 export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  /** Prevents the default grid behavior for this event */
   preventGridDefault: () => void;
+  /** Returns whether `preventGridDefault` was called */
   isGridDefaultPrevented: () => boolean;
 };
 
@@ -286,7 +293,9 @@ export interface RenderRowProps<TRow, TSummaryRow = unknown> extends BaseRenderR
 }
 
 export interface RowsChangeData<R, SR = unknown> {
+  /** Indexes of the rows that changed */
   indexes: number[];
+  /** The column of the cells that changed */
   column: CalculatedColumn<R, SR>;
 }
 
@@ -345,21 +354,32 @@ export type RowHeightArgs<TRow> =
   | { type: 'GROUP'; row: GroupRow<TRow> };
 
 export interface RenderSortIconProps {
+  /** The sort direction of the column, or `undefined` if it is not sorted */
   sortDirection: SortDirection | undefined;
 }
 
 export interface RenderSortPriorityProps {
+  /** The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise */
   priority: number | undefined;
 }
 
 export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 
-export interface RenderCheckboxProps extends Pick<
-  React.ComponentProps<'input'>,
-  'aria-label' | 'aria-labelledby' | 'checked' | 'tabIndex' | 'disabled'
-> {
+export interface RenderCheckboxProps {
+  /** Whether the checkbox is checked */
+  checked?: boolean | undefined;
+  /** Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected */
   indeterminate?: boolean | undefined;
+  /** Whether the checkbox is disabled */
+  disabled?: boolean | undefined;
+  /** Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows */
   onChange: (checked: boolean, shift: boolean) => void;
+  /** `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox */
+  tabIndex?: number | undefined;
+  /** Accessible label for the checkbox */
+  'aria-label'?: string | undefined;
+  /** ID of the element that labels the checkbox */
+  'aria-labelledby'?: string | undefined;
 }
 
 export interface Renderers<TRow, TSummaryRow> {

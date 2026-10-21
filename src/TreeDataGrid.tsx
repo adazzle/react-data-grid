@@ -307,9 +307,9 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     if (!isGroupRow(row)) return;
     if (
       idx === -1 &&
-      // Collapse the current group row if it is focused and is in expanded state
+      // Collapse the current group row if it is focused and expanded
       ((event.key === leftKey && row.isExpanded) ||
-        // Expand the current group row if it is focused and is in collapsed state
+        // Expand the current group row if it is focused and collapsed
         (event.key === rightKey && !row.isExpanded))
     ) {
       // prevent scrolling

@@ -139,13 +139,6 @@ export default defineConfig({
     modulePreload: { polyfill: false },
     sourcemap: true,
     rolldownOptions: {
-      // TODO: remove
-      // https://github.com/vitejs/vite/issues/23350
-      experimental: {
-        chunkImportMap: {
-          baseUrl: '/react-data-grid/'
-        }
-      },
       output: {
         codeSplitting: {
           groups: [

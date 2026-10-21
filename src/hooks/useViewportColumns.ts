@@ -99,7 +99,7 @@ export function useViewportColumns<R, SR>({
   ]);
 
   // Effective inclusive upper bound for overscan in the unfrozen band.
-  // When end-frozen columns exist, unfrozen band ends just before them.
+  // When end-frozen columns exist, the unfrozen band ends just before them.
   const effectiveOverscanEndIdx =
     firstEndFrozenColumnIndex > -1
       ? min(colOverscanEndIdx, firstEndFrozenColumnIndex - 1)
@@ -128,7 +128,7 @@ export function useViewportColumns<R, SR>({
         }
       }
 
-      // Always yield end-frozen tail (virtualization must keep these in the DOM)
+      // Always yield the end-frozen tail (virtualization must keep these in the DOM)
       if (firstEndFrozenColumnIndex > -1) {
         for (let colIdx = firstEndFrozenColumnIndex; colIdx < columns.length; colIdx++) {
           yield columns[colIdx];
