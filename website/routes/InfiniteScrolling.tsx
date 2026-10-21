@@ -103,7 +103,10 @@ function InfiniteScrolling() {
 
     startTransition(async () => {
       const newRows = await loadMoreRows(50, rows.length);
-      setRows([...rows, ...newRows]);
+      // state updates after `await` must be wrapped in another transition
+      startTransition(() => {
+        setRows([...rows, ...newRows]);
+      });
     });
   }
 
