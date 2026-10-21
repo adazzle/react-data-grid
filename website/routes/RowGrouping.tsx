@@ -43,7 +43,7 @@ const sports = [
   'Swimming',
   'Gymnastics',
   'Speed Skating',
-  'Cross Country Skiing',
+  'Cross-Country Skiing',
   'Short-Track Speed Skating',
   'Diving',
   'Cycling',
@@ -65,9 +65,7 @@ const sports = [
   'Archery',
   'Wrestling',
   'Weightlifting',
-  'Waterpolo',
-  'Wrestling',
-  'Weightlifting'
+  'Water Polo'
 ];
 
 const columns: readonly Column<Row>[] = [
@@ -106,7 +104,7 @@ const columns: readonly Column<Row>[] = [
     key: 'bronze',
     name: 'Bronze',
     renderGroupCell({ childRows }) {
-      return childRows.reduce((prev, { silver }) => prev + silver, 0);
+      return childRows.reduce((prev, { bronze }) => prev + bronze, 0);
     }
   },
   {

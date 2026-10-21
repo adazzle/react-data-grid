@@ -2,7 +2,7 @@ import { useCallback, useLayoutEffect, useRef } from 'react';
 
 import type { Maybe } from '../types';
 
-// https://reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
+// https://legacy.reactjs.org/docs/hooks-faq.html#what-can-i-do-if-my-effect-dependencies-change-too-often
 
 export function useLatestFunc<Args extends unknown[]>(
   fn: (...args: Args) => void

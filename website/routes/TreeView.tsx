@@ -93,10 +93,10 @@ function deleteSubRow(rows: Row[], id: string): Row[] {
   const row = rows.find((r) => r.id === id);
   if (row?.parentId === undefined) return rows;
 
-  // Remove sub row from flattened rows.
+  // Remove sub-row from flattened rows.
   const newRows = rows.filter((r) => r.id !== id);
 
-  // Remove sub row from parent row.
+  // Remove sub-row from parent row.
   const parentRowIndex = newRows.findIndex((r) => r.id === row.parentId);
   const { children } = newRows[parentRowIndex];
   if (children) {
@@ -129,7 +129,7 @@ function TreeView() {
     return [
       {
         key: 'id',
-        name: 'id',
+        name: 'ID',
         frozen: true
       },
       {
@@ -138,7 +138,7 @@ function TreeView() {
       },
       {
         key: 'format',
-        name: 'format',
+        name: 'Format',
         renderCell({ row, tabIndex }) {
           const hasChildren = row.children !== undefined;
           const style = hasChildren ? undefined : { marginInlineStart: 30 };
@@ -172,11 +172,11 @@ function TreeView() {
       },
       {
         key: 'position',
-        name: 'position'
+        name: 'Position'
       },
       {
         key: 'price',
-        name: 'price'
+        name: 'Price'
       }
     ];
   }, [allowDelete]);
@@ -192,7 +192,7 @@ function TreeView() {
         />
       </label>
       <DataGrid
-        aria-label="TreeView Example"
+        aria-label="Tree View Example"
         columns={columns}
         rows={rows}
         className={gridClassname}

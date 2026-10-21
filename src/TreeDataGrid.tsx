@@ -21,7 +21,7 @@ import { renderToggleGroup } from './cellRenderers';
 import { SELECT_COLUMN_KEY } from './Columns';
 import { DataGrid } from './DataGrid';
 import type { DataGridProps } from './DataGrid';
-import { useDefaultRenderers } from './DataGridDefaultRenderersContext';
+import { useRenderers } from './DataGridRenderersContext';
 import GroupedRow from './GroupedRow';
 import { defaultRenderRow } from './Row';
 
@@ -69,8 +69,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   groupIdGetter: rawGroupIdGetter,
   ...props
 }: TreeDataGridProps<R, SR, K>) {
-  const defaultRenderers = useDefaultRenderers<R, SR>();
-  const rawRenderRow = renderers?.renderRow ?? defaultRenderers?.renderRow ?? defaultRenderRow;
+  const contextRenderers = useRenderers<R, SR>();
+  const rawRenderRow = renderers?.renderRow ?? contextRenderers?.renderRow ?? defaultRenderRow;
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
   const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
@@ -275,7 +275,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       const key = rowKeyGetter(row);
       if (selectedRows?.has(key) && !newSelectedRows.has(key)) {
         if (isGroupRow(row)) {
-          // select all children if the parent row is selected
+          // unselect all children if the parent row is unselected
           for (const cr of row.childRows) {
             newRawSelectedRows.delete(rawRowKeyGetter(cr));
           }
@@ -284,7 +284,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         }
       } else if (!selectedRows?.has(key) && newSelectedRows.has(key)) {
         if (isGroupRow(row)) {
-          // unselect all children if the parent row is unselected
+          // select all children if the parent row is selected
           for (const cr of row.childRows) {
             newRawSelectedRows.add(rawRowKeyGetter(cr));
           }
@@ -309,9 +309,9 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     if (!isGroupRow(row)) return;
     if (
       idx === -1 &&
-      // Collapse the current group row if it is focused and is in expanded state
+      // Collapse the current group row if it is focused and expanded
       ((event.key === leftKey && row.isExpanded) ||
-        // Expand the current group row if it is focused and is in collapsed state
+        // Expand the current group row if it is focused and collapsed
         (event.key === rightKey && !row.isExpanded))
     ) {
       // prevent scrolling
@@ -325,7 +325,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       const parentRowAndIndex = getParentRowAndIndex(row);
       if (parentRowAndIndex !== undefined) {
         event.preventGridDefault();
-        setActivePosition({ idx, rowIdx: parentRowAndIndex[1] });
+        setActivePosition({ idx, rowIdx: parentRowAndIndex[1] }, { shouldFocus: true });
       }
     }
   }

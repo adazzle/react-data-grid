@@ -1,4 +1,4 @@
-import { page, userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vite-plus/test/browser';
 
 import { DataGrid, SelectColumn } from '../../src';
 import type { Column } from '../../src';
@@ -266,7 +266,7 @@ test('navigation when header and summary rows have focusable elements', async ()
   await expect.element(activeCell).toHaveFocus();
 });
 
-test('navigation when active cell not in the viewport', async () => {
+test('navigation when the active cell is not in the viewport', async () => {
   const columns: Column<Row, Row>[] = [SelectColumn];
   const activeRowCells = getRowWithCell(activeCell).getCell();
   for (let i = 0; i < 99; i++) {
@@ -342,7 +342,7 @@ test('reset active cell when row is removed', async () => {
   await expect.element(activeCell).not.toBeInTheDocument();
 });
 
-test('should not change the left and right arrow behavior for right to left languages', async () => {
+test('should not change the left and right arrow behavior for right-to-left languages', async () => {
   await setup<Row, Row>({ columns, rows, direction: 'rtl' });
   await safeTab();
   await validateCellPosition(0, 0);

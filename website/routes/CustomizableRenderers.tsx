@@ -29,7 +29,7 @@ const selectCellClassname = css`
 `;
 
 const sortPriorityClassname = css`
-  color: grey;
+  color: gray;
   margin-left: 2px;
 `;
 

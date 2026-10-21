@@ -65,7 +65,7 @@ function Cell<R, SR>({
   function handleMouseDown(event: MouseEvent<HTMLDivElement>) {
     onMouseDown?.(event);
     if (!handleMouseEvent(event, onCellMouseDown)) {
-      // select cell if the event is not prevented
+      // activate the cell if the event is not prevented
       setActivePositionWrapper();
     }
   }

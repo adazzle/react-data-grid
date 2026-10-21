@@ -1,5 +1,5 @@
 import type { RenderCheckboxProps } from '../types';
-import { useDefaultRenderers } from '../DataGridDefaultRenderersContext';
+import { useRenderers } from '../DataGridRenderersContext';
 
 type SharedInputProps = Pick<
   RenderCheckboxProps,
@@ -7,6 +7,7 @@ type SharedInputProps = Pick<
 >;
 
 interface SelectCheckboxProps extends SharedInputProps {
+  /** Whether the checkbox is checked */
   value: boolean;
 }
 
@@ -19,7 +20,7 @@ export function SelectCheckbox({
   'aria-label': ariaLabel,
   'aria-labelledby': ariaLabelledBy
 }: SelectCheckboxProps) {
-  const renderCheckbox = useDefaultRenderers()!.renderCheckbox!;
+  const renderCheckbox = useRenderers()!.renderCheckbox!;
 
   return renderCheckbox({
     'aria-label': ariaLabel,

@@ -1,4 +1,4 @@
-import { page, userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vite-plus/test/browser';
 
 import type { Column } from '../../../src';
 import { getCellsAtRowIndex, safeTab, setup, validateCellPosition } from '../utils';
@@ -39,18 +39,18 @@ describe('colSpan', () => {
     return setup({ columns, rows, bottomSummaryRows: [1, 2], topSummaryRows: [1, 2] });
   }
 
-  it('should merges cells', async () => {
+  it('should merge cells', async () => {
     await setupColSpan();
     // header
     await expect.element(headerCells).toHaveLength(13);
 
     // top summary rows
-    const topSummarryRow1 = getCellsAtRowIndex(0);
-    await expect.element(topSummarryRow1).toHaveLength(14);
-    // 7th-8th cells are merged
-    await expect.element(topSummarryRow1.nth(7)).toHaveAttribute('aria-colindex', '8');
-    await expect.element(topSummarryRow1.nth(7)).toHaveAttribute('aria-colspan', '2');
-    await expect.element(topSummarryRow1.nth(7)).toHaveStyle({
+    const topSummaryRow1 = getCellsAtRowIndex(0);
+    await expect.element(topSummaryRow1).toHaveLength(14);
+    // 8th-9th cells are merged
+    await expect.element(topSummaryRow1.nth(7)).toHaveAttribute('aria-colindex', '8');
+    await expect.element(topSummaryRow1.nth(7)).toHaveAttribute('aria-colspan', '2');
+    await expect.element(topSummaryRow1.nth(7)).toHaveStyle({
       gridColumnStart: '8',
       gridColumnEnd: '10'
     });
@@ -63,7 +63,7 @@ describe('colSpan', () => {
     await expect.element(row1.nth(6)).toHaveAttribute('aria-colindex', '7');
     await expect.element(row1.nth(6)).toHaveAttribute('aria-colspan', '2');
     await expect.element(row1.nth(6)).toHaveStyle({
-      gridTemplateColumns: '7',
+      gridColumnStart: '7',
       gridColumnEnd: '9'
     });
     await expect.element(row1.nth(7)).toHaveAttribute('aria-colindex', '9');

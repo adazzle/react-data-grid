@@ -7,7 +7,7 @@ export {
   type DefaultColumnOptions
 } from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
-export { DataGridDefaultRenderersContext } from './DataGridDefaultRenderersContext';
+export { DataGridRenderersContext } from './DataGridRenderersContext';
 export { Row } from './Row';
 export { Cell } from './Cell';
 export * from './Columns';
