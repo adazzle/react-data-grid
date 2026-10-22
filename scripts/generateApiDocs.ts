@@ -36,8 +36,9 @@ interface Node {
   body?: { body: Node[] };
   members?: Node[];
   params?: Node[] | { params: Node[] };
-  typeParameters?: { params: { name: { name: string } }[] } | null;
+  typeParameters?: Node | null;
   typeAnnotation?: Node;
+  returnType?: Node | null;
   typeArguments?: { params: Node[] } | null;
   declarations?: Node[];
   init?: Node | null;
@@ -137,31 +138,27 @@ function renderItem(item: Declaration, section: string, hasPropsInterface: boole
   const { name, node, doc } = item;
   if (isType(node)) return renderType(item, 4);
 
-  const md: string[] = [];
   if (section === 'Components') {
-    md.push(heading(4, `\`<${name} />\``, name), ...renderSummary(doc), ...renderTags(doc));
+    const md = [heading(4, `\`<${name} />\``, name), ...renderSummary(doc), ...renderTags(doc)];
     // the props interface of a component is listed after it, e.g. `DataGridProps` after `DataGrid`
     if (!hasPropsInterface) md.push(heading(5, 'Props'), renderComponentProps(node));
-  } else {
-    let title = name;
-    if (node.type !== 'VariableDeclaration') {
-      title += getFunctionSignature(node);
-    } else if (section !== 'Context') {
-      title = getVariableSignature(name, node);
-    }
-    md.push(heading(4, `\`${title}\``, name), ...renderSummary(doc), ...renderTags(doc));
+    return md.join('\n\n');
   }
-  return md.join('\n\n');
+
+  const isFunction = node.type !== 'VariableDeclaration';
+  return [
+    heading(4, `\`${name}${isFunction ? '()' : ''}\``, name),
+    codeBlock(isFunction ? getFunctionSignature(name, node) : getVariableSignature(name, node)),
+    ...renderSummary(doc),
+    ...renderTags(doc)
+  ].join('\n\n');
 }
 
 function renderType({ name, node, doc }: Declaration, level: number) {
-  const typeParameters = node.typeParameters?.params.map((param) => param.name.name);
-  // the props interfaces of the components are titled by their name, e.g. `DataGridProps`
-  const title =
-    level === 4 && typeParameters !== undefined ? `${name}<${typeParameters.join(', ')}>` : name;
   const isInternal = !exportedDeclarations.has(name);
+  // the props interfaces of the components are titled by their name, e.g. `DataGridProps`
   const md = [
-    heading(level, level === 4 ? `\`${title}\`${isInternal ? ' (internal)' : ''}` : title, name),
+    heading(level, level === 4 ? `\`${name}\`${isInternal ? ' (internal)' : ''}` : name, name),
     ...renderSummary(doc)
   ];
 
@@ -189,14 +186,9 @@ function renderMembers(members: Node[], level: number, parent: string): string[]
         ...renderMembers(typeLiteral.members!, Math.min(level + 1, 6), `${parent}.${name}`)
       ];
     }
-    const signature = cleanCode(source(member))
-      .replace(/^readonly /, '')
-      .replace(/;$/, '')
-      .replaceAll(/\s+/g, ' ')
-      .replaceAll('< ', '<')
-      .replaceAll(' >', '>');
     return [
-      heading(level, `\`${signature}\``, `${parent}.${name}`),
+      heading(level, `\`${name}${member.optional === true ? '?' : ''}\``, `${parent}.${name}`),
+      codeBlock(source(member)),
       ...renderSummary(doc),
       ...renderTags(doc)
     ];
@@ -219,7 +211,7 @@ function renderTags({ tags }: Doc) {
     .map(({ name, text }) => `${labels[name]}${convertLinks(text)}`);
 }
 
-// e.g. "[`RenderRowProps<R, SR>`](#renderrowpropsr-sr)"
+// e.g. "[`RenderRowProps<R, SR>`](#renderrowprops)"
 function renderComponentProps(node: Node) {
   const signature =
     node.type === 'VariableDeclaration'
@@ -230,24 +222,25 @@ function renderComponentProps(node: Node) {
   return helperTypes.has(typeName) ? `\`${propsType}\`` : `[\`${propsType}\`](#!${typeName})`;
 }
 
-// e.g. `<R, SR>(props: RenderHeaderCellContentProps<R, SR>)`, without the return type
-function getFunctionSignature(node: Node) {
-  const typeParameters = node.typeParameters?.params.map((param) => param.name.name);
+// e.g. `function renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>): …`
+function getFunctionSignature(name: string, node: Node) {
+  const typeParameters = node.typeParameters == null ? '' : source(node.typeParameters);
   const params = getParams(node).map((param) => {
     // destructured parameters are named `props`
     const paramName = param.type === 'Identifier' ? param.name : 'props';
-    return `${paramName}: ${cleanCode(source(param.typeAnnotation!.typeAnnotation!))}`;
+    return `${paramName}: ${source(param.typeAnnotation!.typeAnnotation!)}`;
   });
-  return `${typeParameters === undefined ? '' : `<${typeParameters.join(', ')}>`}(${params.join(', ')})`;
+  const returnType = node.returnType == null ? '' : source(node.returnType);
+  return `function ${name}${typeParameters}(${params.join(', ')})${returnType};`;
 }
 
-// e.g. `SelectColumn: Column<any, any>` or `SELECT_COLUMN_KEY = 'rdg-select-column'`
+// e.g. `const SelectColumn: Column<any, any>;` or `const SELECT_COLUMN_KEY = 'rdg-select-column';`
 function getVariableSignature(name: string, node: Node) {
   const declarator = node.declarations![0];
   if (declarator.init !== null && declarator.init !== undefined) {
-    return `${name} = ${source(declarator.init).replaceAll('"', "'")}`;
+    return `const ${name} = ${source(declarator.init).replaceAll('"', "'")};`;
   }
-  return `${name}: ${cleanCode(source(declarator.id!.typeAnnotation!.typeAnnotation!))}`;
+  return `const ${name}${source(declarator.id!.typeAnnotation!)};`;
 }
 
 function getParams(node: Node) {
@@ -255,22 +248,14 @@ function getParams(node: Node) {
   return Array.isArray(params) ? params : params!.params;
 }
 
-// the declaration of a type, followed by the declarations of the helper types it references
+// the declaration of a type, followed by the declarations of the helper types it directly references
 function getTypeDeclarations(node: Node) {
-  const referenced = new Set<string>();
-  const visit = (text: string) => {
-    for (const [name] of text.matchAll(/\b\w+\b/g)) {
-      const helperType = helperTypes.get(name);
-      if (helperType !== undefined && !referenced.has(name) && helperType.node !== node) {
-        referenced.add(name);
-        visit(source(helperType.node));
-      }
-    }
-  };
-  visit(source(node));
-  return [node, ...[...referenced].map((name) => helperTypes.get(name)!.node)]
-    .map(source)
-    .join('\n\n');
+  const referenced = new Set(
+    Array.from(source(node).matchAll(/\b\w+\b/g), ([name]) => helperTypes.get(name)?.node)
+  );
+  referenced.delete(undefined);
+  referenced.delete(node);
+  return [node, ...referenced].map((declaration) => source(declaration!)).join('\n\n');
 }
 
 function compareNames(a: Declaration, b: Declaration) {
