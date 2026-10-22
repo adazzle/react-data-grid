@@ -3,7 +3,10 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "module": "NodeNext",
-    "types": ["node"]
+    "types": ["node"],
+    // TODO: remove when TypeDoc supports TypeScript 7
+    // TypeDoc's types import the TypeScript 6 API, which TypeScript 7 does not provide
+    "skipLibCheck": true
   },
-  "include": ["eslint.config.ts"]
+  "include": ["eslint.config.ts", "scripts/**/*"]
 }

@@ -38,6 +38,24 @@ function autoFocusAndSelect(input: HTMLInputElement | null) {
   input?.select();
 }
 
+/**
+ * A basic text editor provided for convenience.
+ *
+ * @example
+ * ```tsx
+ * import { renderTextEditor, type Column } from 'react-data-grid';
+ *
+ * const columns: readonly Column<Row>[] = [
+ *   {
+ *     key: 'title',
+ *     name: 'Title',
+ *     renderEditCell: renderTextEditor
+ *   }
+ * ];
+ * ```
+ *
+ * @group Render Functions
+ */
 export function renderTextEditor<TRow, TSummaryRow>({
   row,
   column,

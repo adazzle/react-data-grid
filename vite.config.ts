@@ -82,6 +82,12 @@ export default defineConfig({
         command: 'tsc --build',
         cache: false
       },
+      // generates the API reference of the README from the JSDoc comments
+      docs: {
+        command: ['node scripts/generateApiDocs.ts', 'vp fmt README.md'],
+        // the README is both an input and the output
+        cache: false
+      },
       'install-browsers': {
         command: isCI
           ? [
@@ -108,6 +114,8 @@ export default defineConfig({
           // type check runs first, as type issues are often
           // the root cause of errors reported by later checks
           'vp run typecheck',
+          'vp run docs',
+          'git diff --exit-code README.md',
           'vp check',
           'vp run eslint',
           'vp pack',
@@ -116,8 +124,9 @@ export default defineConfig({
           'vp run test'
         ],
         cache: {
-          // `vp pack` cleans `lib/` before writing to it
-          input: [{ auto: true }, '!lib/**']
+          // `vp pack` cleans `lib/` before writing to it,
+          // and `vp run docs` writes its intermediate output to `node_modules/.cache/typedoc/`
+          input: [{ auto: true }, '!lib/**', '!node_modules/.cache/typedoc/**']
         }
       },
       // the first step of a release, see the header of `.github/workflows/publish.yml`:

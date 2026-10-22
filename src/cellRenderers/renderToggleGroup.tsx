@@ -26,10 +26,33 @@ const caret = css`
 
 const caretClassname = `rdg-caret ${caret}`;
 
+/**
+ * The default group cell content renderer for the columns used for grouping (`groupBy` prop). This renders the expand/collapse toggle.
+ *
+ * @example
+ * ```tsx
+ * import { renderToggleGroup, type Column } from 'react-data-grid';
+ *
+ * const columns: readonly Column<Row>[] = [
+ *   {
+ *     key: 'group',
+ *     name: 'Group',
+ *     renderGroupCell: renderToggleGroup
+ *   }
+ * ];
+ * ```
+ *
+ * @group Render Functions
+ */
 export function renderToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>) {
   return <ToggleGroup {...props} />;
 }
 
+/**
+ * Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
+ *
+ * @group Components
+ */
 export function ToggleGroup<R, SR>({
   groupKey,
   isExpanded,

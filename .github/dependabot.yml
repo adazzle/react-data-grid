@@ -24,6 +24,11 @@ updates:
           - 'react-dom'
           - '@types/react'
           - '@types/react-dom'
+      typedoc:
+        patterns:
+          - 'typedoc'
+          - 'typedoc-*'
+          - '@typescript/typescript6'
       # everything else: single PR for minor/patch bumps,
       # majors still land individually
       dependencies:
