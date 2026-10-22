@@ -1,58 +1,57 @@
 import './style/layers.css';
 
-export {
-  DataGrid,
-  type DataGridHandle,
-  type DataGridProps,
-  type DefaultColumnOptions
-} from './DataGrid';
+// the order of the exports is the order of the API reference in the README
+
+export { DataGrid, type DataGridProps } from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
-export { DataGridRenderersContext } from './DataGridRenderersContext';
 export { Row } from './Row';
 export { Cell } from './Cell';
-export * from './Columns';
-export * from './cellRenderers';
-export { renderTextEditor } from './editors/renderTextEditor';
-export { renderHeaderCell } from './renderHeaderCell';
-export { renderSortIcon, renderSortPriority } from './sortStatus';
+export { SelectCheckbox, ToggleGroup } from './cellRenderers';
 export { useHeaderRowSelection, useRowSelection } from './hooks';
+export { renderHeaderCell } from './renderHeaderCell';
+export { renderTextEditor } from './editors/renderTextEditor';
+export { renderSortIcon, renderSortPriority } from './sortStatus';
+export { renderCheckbox, renderToggleGroup, renderValue } from './cellRenderers';
+export { DataGridRenderersContext } from './DataGridRenderersContext';
+export { SelectColumn, SELECT_COLUMN_KEY } from './Columns';
 export type {
-  CalculatedColumn,
-  CalculatedColumnOrColumnGroup,
-  CalculatedColumnParent,
-  CellCopyArgs,
-  CellKeyboardEvent,
-  CellKeyDownArgs,
-  CellMouseArgs,
-  CellMouseEvent,
-  CellPasteArgs,
-  ColSpanArgs,
   Column,
-  ColumnFrozen,
   ColumnGroup,
   ColumnOrColumnGroup,
-  ColumnWidth,
-  ColumnWidths,
-  Direction,
-  FillEvent,
-  PositionChangeArgs,
+  CalculatedColumn,
+  CalculatedColumnParent,
+  CalculatedColumnOrColumnGroup
+} from './types';
+export type { DefaultColumnOptions } from './DataGrid';
+export type {
+  ColumnFrozen,
   RenderCellContentProps,
+  RenderHeaderCellContentProps,
+  RenderEditCellContentProps,
+  RenderSummaryCellContentProps,
+  RenderGroupCellContentProps,
+  RenderRowProps,
   RenderCellProps,
   RenderCheckboxProps,
-  RenderEditCellContentProps,
-  Renderers,
-  RenderGroupCellContentProps,
-  RenderHeaderCellContentProps,
-  RenderRowProps,
+  RenderSortStatusProps,
   RenderSortIconProps,
   RenderSortPriorityProps,
-  RenderSortStatusProps,
-  RenderSummaryCellContentProps,
+  Renderers,
+  CellMouseArgs,
+  CellMouseEvent,
+  CellKeyDownArgs,
+  CellKeyboardEvent,
+  CellCopyArgs,
+  CellPasteArgs,
+  PositionChangeArgs,
+  ColSpanArgs,
   RowHeightArgs,
-  RowsChangeData,
-  SelectHeaderRowEvent,
-  SelectRowEvent,
-  SetActivePositionOptions,
   SortColumn,
-  SortDirection
+  SortDirection,
+  RowsChangeData,
+  SelectRowEvent,
+  SelectHeaderRowEvent,
+  FillEvent
 } from './types';
+export type { DataGridHandle } from './DataGrid';
+export type { SetActivePositionOptions, ColumnWidths, ColumnWidth, Direction } from './types';

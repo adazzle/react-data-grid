@@ -128,8 +128,6 @@ export interface DataGridHandle {
   setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
 }
 
-type DivProps = React.ComponentProps<'div'>;
-
 /**
  * @typeParam R - Row type
  * @typeParam SR - Summary row type
@@ -547,7 +545,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
   /**
    * Native DOM `onScroll` prop.
    */
-  onScroll?: DivProps['onScroll'];
+  onScroll?: React.UIEventHandler<HTMLDivElement> | undefined;
 
   /**
    * Toggles and modes
@@ -665,35 +663,35 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
   /**
    * Custom class name for the grid.
    */
-  className?: DivProps['className'];
+  className?: string | undefined;
   /**
    * Custom styles for the grid.
    */
-  style?: DivProps['style'];
+  style?: React.CSSProperties | undefined;
   /**
    * ARIA role for the grid container. Defaults to `grid`.
    */
-  role?: DivProps['role'];
+  role?: React.AriaRole | undefined;
   /**
    * The label of the grid. We recommend providing a label using `aria-label` or `aria-labelledby`.
    */
-  'aria-label'?: DivProps['aria-label'];
+  'aria-label'?: string | undefined;
   /**
    * The id of the element containing a label for the grid. We recommend providing a label using `aria-label` or `aria-labelledby`.
    */
-  'aria-labelledby'?: DivProps['aria-labelledby'];
+  'aria-labelledby'?: string | undefined;
   /**
    * Total number of rows for assistive technologies.
    */
-  'aria-rowcount'?: DivProps['aria-rowcount'];
+  'aria-rowcount'?: number | undefined;
   /**
    * A human-readable description of the grid.
    */
-  'aria-description'?: DivProps['aria-description'];
+  'aria-description'?: string | undefined;
   /**
    * If the grid has a caption or description, `aria-describedby` can be set on the grid element with a value referring to the element containing the description.
    */
-  'aria-describedby'?: DivProps['aria-describedby'];
+  'aria-describedby'?: string | undefined;
   /**
    * This prop can be used to add a test ID for testing. We recommend querying the grid by its `role` and `name`.
    *
