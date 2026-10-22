@@ -55,7 +55,8 @@ The project uses [Vite+](https://viteplus.dev/guide/), whose global `vp` CLI wra
 - `vp <command>` runs a built-in command, e.g., `vp dev`, `vp check`, `vp test`, `vp pack`, `vp build`.
 - `vp run <task>` runs a task from `vite.config.ts`, e.g., `vp run typecheck`, `vp run eslint`, `vp run docs`, `vp run ci`.
 - Run `vp install` after pulling changes.
-- `vp run docs` runs TypeDoc with `typedoc-plugin-markdown` (config in `typedoc.json`). TypeDoc does not support TypeScript 7 yet, so `scripts/generateApiDocs.ts` resolves TypeDoc's `typescript` imports to `@typescript/typescript6`; the `typescript` package stays on TypeScript 7.
+- `vp run docs` runs TypeDoc with `typedoc-plugin-markdown` (config in `typedoc.json`).
+- Two TypeScript versions are installed: TypeScript 7 as `@typescript/native`, which provides `tsc` and is used by the editor and `vp pack`, and TypeScript 6 as `typescript` (`@typescript/typescript6`), for TypeDoc, which needs the TypeScript API that TypeScript 7 does not provide yet.
 
 ## Validation
 

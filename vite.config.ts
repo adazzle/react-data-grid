@@ -54,7 +54,8 @@ async function dragFill(
 
 // TODO: remove when vite-plus detects TypeScript 7.1 as TypeScript 7
 async function getTscPath(): Promise<string> {
-  const { default: getExePath } = await import('./node_modules/typescript/lib/getExePath.js');
+  const { default: getExePath } =
+    await import('./node_modules/@typescript/native/lib/getExePath.js');
   return getExePath();
 }
 

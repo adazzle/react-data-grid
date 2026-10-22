@@ -18,6 +18,7 @@ updates:
       typescript:
         patterns:
           - 'typescript'
+          - '@typescript/native'
       react:
         patterns:
           - 'react'
@@ -28,7 +29,6 @@ updates:
         patterns:
           - 'typedoc'
           - 'typedoc-*'
-          - '@typescript/typescript6'
       # everything else: single PR for minor/patch bumps,
       # majors still land individually
       dependencies:

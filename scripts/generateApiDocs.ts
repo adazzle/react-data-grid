@@ -1,18 +1,6 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { registerHooks } from 'node:module';
 import GithubSlugger from 'github-slugger';
-import type { ContainerReflection, SignatureReflection as SignatureModel, SomeType } from 'typedoc';
-
-// TODO: remove when TypeDoc supports TypeScript 7
-// TypeDoc relies on the TypeScript API, which TypeScript 7 does not provide yet,
-// so TypeDoc's `typescript` imports resolve to TypeScript 6 instead
-registerHooks({
-  resolve(specifier, context, nextResolve) {
-    return nextResolve(specifier === 'typescript' ? '@typescript/typescript6' : specifier, context);
-  }
-});
-
-const {
+import {
   Application,
   Comment,
   Context,
@@ -28,9 +16,11 @@ const {
   TSConfigReader,
   Type,
   TypeDocReader,
-  TypeParameterReflection
-} = await import('typedoc');
-const { MarkdownTheme, MarkdownThemeContext } = await import('typedoc-plugin-markdown');
+  TypeParameterReflection,
+  type ContainerReflection,
+  type SomeType
+} from 'typedoc';
+import { MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown';
 
 const readmePath = 'README.md';
 // the components of the "Components" section, without their props interfaces
@@ -61,7 +51,7 @@ class ReadmeThemeContext extends MarkdownThemeContext {
     let isTableInterface = false;
 
     // components are used as JSX elements, so show their props instead of a function signature
-    const getComponentProps = (signature: SignatureModel | undefined) => {
+    const getComponentProps = (signature: SignatureReflection | undefined) => {
       const propsType = signature?.parameters?.[0]?.type;
       return propsType === undefined ? '' : `**Props:** ${this.partials.someType(propsType)}`;
     };
@@ -84,7 +74,7 @@ class ReadmeThemeContext extends MarkdownThemeContext {
         return groups(model, options);
       },
       // the signatures already show the return types
-      signatureReturns: (model: SignatureModel, options: { headingLevel: number }) => {
+      signatureReturns: (model: SignatureReflection, options: { headingLevel: number }) => {
         const returnsTag = model.comment?.getTag('@returns');
         if (returnsTag === undefined) return '';
         return `${'#'.repeat(options.headingLevel)} ${i18n.theme_returns()}\n\n${this.helpers.getCommentParts(returnsTag.content)}`;
@@ -272,7 +262,7 @@ await writeFile(
 );
 
 // e.g. `extends Column` or `extends Omit<DataGridProps, 'columns'>`
-function getPublicBaseTypes(reflection: InstanceType<typeof DeclarationReflection>) {
+function getPublicBaseTypes(reflection: DeclarationReflection) {
   const publicBaseTypes = new Set<string>();
   for (const type of reflection.extendedTypes ?? []) {
     if (!(type instanceof ReferenceType)) continue;
@@ -291,7 +281,7 @@ function getPublicBaseTypes(reflection: InstanceType<typeof DeclarationReflectio
 
 // a member is inherited from a public type directly, or through internal types,
 // e.g. `RenderCellProps` inherits `onCellClick` from `BaseRenderCellProps`, which picks it from `DataGridProps`
-function isInheritedFromPublicType(member: InstanceType<typeof DeclarationReflection>): boolean {
+function isInheritedFromPublicType(member: DeclarationReflection): boolean {
   const { inheritedFrom, parent } = member;
   if (inheritedFrom === undefined) return false;
 
@@ -309,7 +299,7 @@ function isInheritedFromPublicType(member: InstanceType<typeof DeclarationReflec
 }
 
 // a property can be listed in a table if its comment is a single paragraph
-function hasShortComment(reflection: InstanceType<typeof DeclarationReflection>) {
+function hasShortComment(reflection: DeclarationReflection) {
   const { comment } = reflection;
   if (comment === undefined) return true;
   const summary = Comment.combineDisplayParts(comment.summary);

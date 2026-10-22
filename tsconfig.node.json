@@ -1,12 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ESNext"],
+    // `DOM` for the `WebAssembly` types of `@shikijs/types`, a dependency of TypeDoc
+    "lib": ["ESNext", "DOM"],
     "module": "NodeNext",
-    "types": ["node"],
-    // TODO: remove when TypeDoc supports TypeScript 7
-    // TypeDoc's types import the TypeScript 6 API, which TypeScript 7 does not provide
-    "skipLibCheck": true
+    "types": ["node"]
   },
   "include": ["eslint.config.ts", "scripts/**/*"]
 }
