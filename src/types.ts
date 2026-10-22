@@ -101,6 +101,17 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly frozen: ColumnFrozen;
   readonly renderCell: (props: RenderCellContentProps<TRow, TSummaryRow>) => ReactNode;
   readonly renderHeaderCell: (props: RenderHeaderCellContentProps<TRow, TSummaryRow>) => ReactNode;
+  // Always set, `undefined` when not set on the column
+  readonly cellClass: Column<TRow, TSummaryRow>['cellClass'];
+  readonly headerCellClass: Column<TRow, TSummaryRow>['headerCellClass'];
+  readonly summaryCellClass: Column<TRow, TSummaryRow>['summaryCellClass'];
+  readonly renderSummaryCell: Column<TRow, TSummaryRow>['renderSummaryCell'];
+  readonly renderGroupCell: Column<TRow, TSummaryRow>['renderGroupCell'];
+  readonly renderEditCell: Column<TRow, TSummaryRow>['renderEditCell'];
+  readonly editable: Column<TRow, TSummaryRow>['editable'];
+  readonly colSpan: Column<TRow, TSummaryRow>['colSpan'];
+  readonly sortDescendingFirst: Column<TRow, TSummaryRow>['sortDescendingFirst'];
+  readonly editorOptions: Column<TRow, TSummaryRow>['editorOptions'];
 }
 
 export interface ColumnGroup<R, SR = unknown> {

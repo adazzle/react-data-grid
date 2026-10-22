@@ -1464,7 +1464,7 @@ Union type representing either a `Column` or a `ColumnGroup`.
 
 #### `CalculatedColumn<TRow, TSummaryRow>`
 
-Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. The `Column` properties it redeclares, like `width` and `renderCell`, are resolved to their default values when not set.
+Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. Every `Column` property is set: the ones with a default value, like `width` and `renderCell`, are resolved to their default value when not set, and the others are `undefined` when not set.
 
 ```tsx
 interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
@@ -1483,6 +1483,17 @@ interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSu
   readonly frozen: ColumnFrozen;
   readonly renderCell: (props: RenderCellContentProps<TRow, TSummaryRow>) => ReactNode;
   readonly renderHeaderCell: (props: RenderHeaderCellContentProps<TRow, TSummaryRow>) => ReactNode;
+  // Always set, `undefined` when not set on the column
+  readonly cellClass: Column<TRow, TSummaryRow>['cellClass'];
+  readonly headerCellClass: Column<TRow, TSummaryRow>['headerCellClass'];
+  readonly summaryCellClass: Column<TRow, TSummaryRow>['summaryCellClass'];
+  readonly renderSummaryCell: Column<TRow, TSummaryRow>['renderSummaryCell'];
+  readonly renderGroupCell: Column<TRow, TSummaryRow>['renderGroupCell'];
+  readonly renderEditCell: Column<TRow, TSummaryRow>['renderEditCell'];
+  readonly editable: Column<TRow, TSummaryRow>['editable'];
+  readonly colSpan: Column<TRow, TSummaryRow>['colSpan'];
+  readonly sortDescendingFirst: Column<TRow, TSummaryRow>['sortDescendingFirst'];
+  readonly editorOptions: Column<TRow, TSummaryRow>['editorOptions'];
 }
 ```
 
