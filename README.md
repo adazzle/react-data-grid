@@ -2336,128 +2336,16 @@ Props passed to the cell renderer when using `renderers.renderCell`.
 
 #### Properties
 
-##### onCellMouseDown?
-
-```ts
-onCellMouseDown?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a pointer becomes active in a cell. The default behavior is to focus the cell. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellMouseDown(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
-```
-
-##### onCellClick?
-
-```ts
-onCellClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-This event can be used to open the cell editor on a single click:
-
-```tsx
-function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    args.setActivePosition(true);
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellClick={onCellClick} />;
-```
-
-##### onCellDoubleClick?
-
-```ts
-onCellDoubleClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
-```
-
-##### onCellContextMenu?
-
-```ts
-onCellContextMenu?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is right-clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventDefault();
-    // open custom context menu
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
-```
-
-##### rowIdx
-
-```ts
-rowIdx: number;
-```
-
-##### setActivePosition
-
-```ts
-setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
-```
-
-##### column
-
-```ts
-column: CalculatedColumn<R, SR>;
-```
-
-##### row
-
-```ts
-row: R;
-```
-
-##### colSpan
-
-```ts
-colSpan: number | undefined;
-```
-
-##### isDraggedOver
-
-```ts
-isDraggedOver: boolean;
-```
-
-##### isCellActive
-
-```ts
-isCellActive: boolean;
-```
-
-##### onRowChange
-
-```ts
-onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
-```
+| Property            | Type                                                                                                                 | Inherited from |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `rowIdx`            | `number`                                                                                                             |                |
+| `setActivePosition` | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` |                |
+| `column`            | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>                                                                 | -              |
+| `row`               | `R`                                                                                                                  | -              |
+| `colSpan`           | `number` \| `undefined`                                                                                              | -              |
+| `isDraggedOver`     | `boolean`                                                                                                            | -              |
+| `isCellActive`      | `boolean`                                                                                                            | -              |
+| `onRowChange`       | (`column`: [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>, `rowIdx`: `number`, `newRow`: `R`) => `void`        | -              |
 
 ---
 
@@ -2595,160 +2483,21 @@ Props passed to custom row renderers.
 
 #### Properties
 
-##### onCellMouseDown?
-
-```ts
-onCellMouseDown?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a pointer becomes active in a cell. The default behavior is to focus the cell. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellMouseDown(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
-```
-
-##### onCellClick?
-
-```ts
-onCellClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-This event can be used to open the cell editor on a single click:
-
-```tsx
-function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    args.setActivePosition(true);
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellClick={onCellClick} />;
-```
-
-##### onCellDoubleClick?
-
-```ts
-onCellDoubleClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
-```
-
-##### onCellContextMenu?
-
-```ts
-onCellContextMenu?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is right-clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventDefault();
-    // open custom context menu
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
-```
-
-##### setActivePosition
-
-```ts
-setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
-```
-
-##### iterateOverViewportColumnsForRow
-
-```ts
-iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
-```
-
-##### rowIdx
-
-```ts
-rowIdx: number;
-```
-
-##### activeCellIdx
-
-```ts
-activeCellIdx: number | undefined;
-```
-
-##### isRowSelectionDisabled
-
-```ts
-isRowSelectionDisabled: boolean;
-```
-
-##### isRowSelected
-
-```ts
-isRowSelected: boolean;
-```
-
-##### gridRowStart
-
-```ts
-gridRowStart: number;
-```
-
-##### row
-
-```ts
-row: R;
-```
-
-##### draggedOverCellIdx
-
-```ts
-draggedOverCellIdx: number | undefined;
-```
-
-##### activeCellEditor
-
-```ts
-activeCellEditor:
-  | ReactElement<EditCellProps<R, SR>, string | JSXElementConstructor<any>>
-  | undefined;
-```
-
-##### onRowChange
-
-```ts
-onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
-```
-
-##### rowClass
-
-```ts
-rowClass: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
-```
-
-##### isTreeGrid
-
-```ts
-isTreeGrid: boolean;
-```
+| Property                           | Type                                                                                                                             | Inherited from |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `setActivePosition`                | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void`             |                |
+| `iterateOverViewportColumnsForRow` | [`IterateOverViewportColumnsForRow`](#iterateoverviewportcolumnsforrow)\<`R`, `SR`\>                                             |                |
+| `rowIdx`                           | `number`                                                                                                                         |                |
+| `activeCellIdx`                    | `number` \| `undefined`                                                                                                          |                |
+| `isRowSelectionDisabled`           | `boolean`                                                                                                                        |                |
+| `isRowSelected`                    | `boolean`                                                                                                                        |                |
+| `gridRowStart`                     | `number`                                                                                                                         |                |
+| `row`                              | `R`                                                                                                                              | -              |
+| `draggedOverCellIdx`               | `number` \| `undefined`                                                                                                          | -              |
+| `activeCellEditor`                 | \| `ReactElement`\<[`EditCellProps`](#editcellprops)\<`R`, `SR`\>, `string` \| `JSXElementConstructor`\<`any`\>\> \| `undefined` | -              |
+| `onRowChange`                      | (`column`: [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>, `rowIdx`: `number`, `newRow`: `R`) => `void`                    | -              |
+| `rowClass`                         | [`Maybe`](#maybe)\<(`row`: `R`, `rowIdx`: `number`) => [`Maybe`](#maybe)\<`string`\>\>                                           | -              |
+| `isTreeGrid`                       | `boolean`                                                                                                                        | -              |
 
 ---
 
@@ -2804,8 +2553,6 @@ Props for custom sort status renderers.
 
 - [`RenderSortIconProps`](#rendersorticonprops)
 - [`RenderSortPriorityProps`](#rendersortpriorityprops)
-
-#### Properties
 
 ---
 
@@ -3010,122 +2757,15 @@ type SortDirection = 'ASC' | 'DESC';
 
 #### Properties
 
-##### onCellMouseDown?
-
-```ts
-onCellMouseDown?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a pointer becomes active in a cell. The default behavior is to focus the cell. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellMouseDown(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
-```
-
-##### onCellClick?
-
-```ts
-onCellClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-This event can be used to open the cell editor on a single click:
-
-```tsx
-function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    args.setActivePosition(true);
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellClick={onCellClick} />;
-```
-
-##### onCellDoubleClick?
-
-```ts
-onCellDoubleClick?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is double-clicked. The default behavior is to open the editor if the cell is editable. Call `preventGridDefault` to prevent the default behavior. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventGridDefault();
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
-```
-
-##### onCellContextMenu?
-
-```ts
-onCellContextMenu?: CellMouseEventHandler<R, SR>;
-```
-
-Callback triggered when a cell is right-clicked. See the [`CellMouseArgs`](#cellmouseargs) and [`CellMouseEvent`](#cellmouseevent) types.
-
-```tsx
-function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
-  if (args.column.key === 'id') {
-    event.preventDefault();
-    // open custom context menu
-  }
-}
-
-<DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
-```
-
-##### setActivePosition
-
-```ts
-setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
-```
-
-##### iterateOverViewportColumnsForRow
-
-```ts
-iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
-```
-
-##### rowIdx
-
-```ts
-rowIdx: number;
-```
-
-##### activeCellIdx
-
-```ts
-activeCellIdx: number | undefined;
-```
-
-##### isRowSelectionDisabled
-
-```ts
-isRowSelectionDisabled: boolean;
-```
-
-##### isRowSelected
-
-```ts
-isRowSelected: boolean;
-```
-
-##### gridRowStart
-
-```ts
-gridRowStart: number;
-```
+| Property                           | Type                                                                                                                 | Overrides | Inherited from |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | -------------- |
+| `setActivePosition`                | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` | -         |                |
+| `iterateOverViewportColumnsForRow` | [`IterateOverViewportColumnsForRow`](#iterateoverviewportcolumnsforrow)\<`R`, `SR`\>                                 | -         | -              |
+| `rowIdx`                           | `number`                                                                                                             |           | -              |
+| `activeCellIdx`                    | `number` \| `undefined`                                                                                              | -         | -              |
+| `isRowSelectionDisabled`           | `boolean`                                                                                                            | -         | -              |
+| `isRowSelected`                    | `boolean`                                                                                                            | -         | -              |
+| `gridRowStart`                     | `number`                                                                                                             | -         | -              |
 
 ---
 

@@ -170,40 +170,28 @@ const publicGroups = (project.groups ?? []).filter((group) => {
 internalGroup.children.sort((a, b) => a.name.localeCompare(b.name));
 project.groups = [...publicGroups, internalGroup];
 
-for (const reflection of project.getReflectionsByKind(ReflectionKind.Interface)) {
-  if (!(reflection instanceof DeclarationReflection)) continue;
+const interfaces = project
+  .getReflectionsByKind(ReflectionKind.Interface)
+  .filter((reflection) => reflection instanceof DeclarationReflection);
 
-  // only list the members that are inherited from internal types,
-  // the members inherited from public types are listed in their own section,
-  // e.g. `extends Column` or `extends Omit<DataGridProps, 'columns'>`
-  const publicBaseTypes = new Set<string>();
-  for (const type of reflection.extendedTypes ?? []) {
-    if (!(type instanceof ReferenceType)) continue;
-    const [typeArgument] = type.typeArguments ?? [];
-    if (
-      publicNames.has(type.name) ||
-      ((type.name === 'Omit' || type.name === 'Pick') &&
-        typeArgument instanceof ReferenceType &&
-        publicNames.has(typeArgument.name))
-    ) {
-      publicBaseTypes.add(type.name);
-    }
-  }
+// only list the members that are inherited from internal types,
+// the members inherited from public types are listed in their own section
+const membersInheritedFromPublicTypes = interfaces.flatMap(
+  (reflection) => reflection.children?.filter(isInheritedFromPublicType) ?? []
+);
 
-  const membersInheritedFromPublicTypes =
-    reflection.children?.filter((child) => {
-      const baseType = child.inheritedFrom?.name.split('.')[0];
-      return baseType !== undefined && publicBaseTypes.has(baseType);
-    }) ?? [];
+for (const member of membersInheritedFromPublicTypes) {
+  project.removeReflection(member);
+}
 
-  for (const child of membersInheritedFromPublicTypes) {
-    project.removeReflection(child);
-  }
-
+for (const reflection of interfaces) {
   // `removeReflection` doesn't remove the members from the groups that are rendered
   const remainingMembers = new Set<unknown>(reflection.children);
-  for (const group of reflection.groups ?? []) {
-    group.children = group.children.filter((child) => remainingMembers.has(child));
+  if (reflection.groups !== undefined) {
+    for (const group of reflection.groups) {
+      group.children = group.children.filter((child) => remainingMembers.has(child));
+    }
+    reflection.groups = reflection.groups.filter((group) => group.children.length > 0);
   }
 
   // TypeDoc copies the comments of the members a member redeclares,
@@ -243,6 +231,43 @@ await writeFile(
     readme.slice(endIndex)
   )
 );
+
+// e.g. `extends Column` or `extends Omit<DataGridProps, 'columns'>`
+function getPublicBaseTypes(reflection: InstanceType<typeof DeclarationReflection>) {
+  const publicBaseTypes = new Set<string>();
+  for (const type of reflection.extendedTypes ?? []) {
+    if (!(type instanceof ReferenceType)) continue;
+    const [typeArgument] = type.typeArguments ?? [];
+    if (
+      publicNames.has(type.name) ||
+      ((type.name === 'Omit' || type.name === 'Pick') &&
+        typeArgument instanceof ReferenceType &&
+        publicNames.has(typeArgument.name))
+    ) {
+      publicBaseTypes.add(type.name);
+    }
+  }
+  return publicBaseTypes;
+}
+
+// a member is inherited from a public type directly, or through internal types,
+// e.g. `RenderCellProps` inherits `onCellClick` from `BaseRenderCellProps`, which picks it from `DataGridProps`
+function isInheritedFromPublicType(member: InstanceType<typeof DeclarationReflection>): boolean {
+  const { inheritedFrom, parent } = member;
+  if (inheritedFrom === undefined) return false;
+
+  if (
+    parent instanceof DeclarationReflection &&
+    getPublicBaseTypes(parent).has(inheritedFrom.name.split('.')[0])
+  ) {
+    return true;
+  }
+
+  const inheritedMember = inheritedFrom.reflection;
+  return (
+    inheritedMember instanceof DeclarationReflection && isInheritedFromPublicType(inheritedMember)
+  );
+}
 
 // a property can be listed in a table if its comment is a single paragraph
 function hasShortComment(reflection: InstanceType<typeof DeclarationReflection>) {
