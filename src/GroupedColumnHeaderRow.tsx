@@ -49,7 +49,7 @@ function GroupedColumnHeaderRow<R, SR>({
   return (
     <div
       role="row"
-      aria-rowindex={rowIdx} // aria-rowindex is 1 based
+      aria-rowindex={rowIdx} // aria-rowindex is 1-based
       className={headerRowClassname}
     >
       {cells}

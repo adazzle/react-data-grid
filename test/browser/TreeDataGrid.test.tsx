@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { page, userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vite-plus/test/browser';
 
 import type { Column } from '../../src';
 import { renderTextEditor, SelectColumn, TreeDataGrid } from '../../src';
@@ -97,9 +97,7 @@ function TestGrid({
 }) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
-  const [expandedGroupIds, setExpandedGroupIds] = useState(
-    (): ReadonlySet<unknown> => new Set<unknown>([])
-  );
+  const [expandedGroupIds, setExpandedGroupIds] = useState((): ReadonlySet<unknown> => new Set());
 
   return (
     <TreeDataGrid
@@ -123,8 +121,7 @@ function TestGrid({
 }
 
 function rowGrouper(rows: readonly Row[], columnKey: string) {
-  // @ts-expect-error
-  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
+  return Object.groupBy(rows, (r) => r[columnKey as keyof Row]) as Record<string, readonly Row[]>;
 }
 
 function setup(groupBy: string[], groupIdGetter?: (groupKey: string, parentId?: string) => string) {
@@ -168,7 +165,7 @@ test('should group by multiple columns', async () => {
 
 test('should use groupIdGetter when provided', async () => {
   const groupIdGetter = vi.fn((groupKey: string, parentId?: string) =>
-    parentId !== undefined ? `${groupKey}#${parentId}` : groupKey
+    parentId === undefined ? groupKey : `${groupKey}#${parentId}`
   );
   await setup(['country', 'year'], groupIdGetter);
   expect(groupIdGetter).toHaveBeenCalled();
@@ -398,6 +395,7 @@ test('cell navigation in a treegrid', async () => {
   await expect.element(rows.nth(1)).not.toHaveClass(rowActiveClassname);
   await userEvent.keyboard('{arrowleft}{arrowleft}');
   await expect.element(rows.nth(1)).toHaveClass(rowActiveClassname);
+  await expect.element(rows.nth(1)).toHaveFocus();
 
   await userEvent.keyboard('{end}');
   await expect.element(rows.nth(5)).toHaveClass(rowActiveClassname);
@@ -448,7 +446,7 @@ test('copy/paste when grouping is enabled', async () => {
   );
 });
 
-test('update row using cell renderer', async () => {
+test('update row using cell content renderer', async () => {
   await setup(['year']);
   await userEvent.click(page.getCell({ name: '2021' }));
   await userEvent.click(page.getCell({ name: 'USA' }));
@@ -464,4 +462,43 @@ test('custom renderGroupCell', async () => {
   const canadaCell = page.getCell({ name: 'Canada' });
   await expect.element(getRowWithCell(usaCell).getCell().nth(4)).toHaveTextContent('1');
   await expect.element(getRowWithCell(canadaCell).getCell().nth(4)).toHaveTextContent('3');
+});
+
+test('adding a top summary row when no rows or cells are active should not focus the summary row', async () => {
+  const rows: readonly Row[] = [];
+
+  function Test() {
+    const [topSummaryRows, setTopSummaryRows] = useState((): readonly SummaryRow[] => []);
+
+    return (
+      <>
+        <button
+          type="button"
+          onClick={() => setTopSummaryRows((topSummaryRows) => [...topSummaryRows, undefined])}
+        >
+          Add summary row
+        </button>
+        <TreeDataGrid
+          columns={columns}
+          rows={rows}
+          topSummaryRows={topSummaryRows}
+          groupBy={[]}
+          rowGrouper={() => ({})}
+          expandedGroupIds={new Set()}
+          onExpandedGroupIdsChange={() => {}}
+        />
+      </>
+    );
+  }
+
+  await page.render(<Test />);
+  const addSummaryRowButton = page.getByRole('button', { name: 'Add summary row' });
+  const activeRow = page.getBySelector(`.${rowActiveClassname}`);
+
+  await expect.element(activeCell).not.toBeInTheDocument();
+  await expect.element(activeRow).not.toBeInTheDocument();
+
+  await userEvent.click(addSummaryRowButton);
+  await expect.element(activeCell).not.toBeInTheDocument();
+  await expect.element(activeRow).not.toBeInTheDocument();
 });

@@ -6,7 +6,7 @@ import { classnames } from './utils';
 import type { BaseRenderRowProps, GroupRow, Omit } from './types';
 import { SELECT_COLUMN_KEY } from './Columns';
 import GroupCell from './GroupCell';
-import { cell, cellFrozen } from './style/cell';
+import { cell, cellFrozenBase } from './style/cell';
 import { rowClassname, rowActiveClassname } from './style/row';
 
 const groupRow = css`
@@ -15,8 +15,7 @@ const groupRow = css`
       background-color: var(--rdg-header-background-color);
     }
 
-    > .${cell}:not(:last-child, .${cellFrozen}),
-    > :nth-last-child(n + 2 of .${cellFrozen}) {
+    > .${cell}:not(:last-child, .${cellFrozenBase}), > :nth-last-child(n + 2 of .rdg-cell-frozen-start), > :nth-last-child(n + 2 of .rdg-cell-frozen-end) {
       border-inline-end: none;
     }
   }
@@ -24,10 +23,7 @@ const groupRow = css`
 
 const groupRowClassname = `rdg-group-row ${groupRow}`;
 
-interface GroupRowRendererProps<R, SR> extends Omit<
-  BaseRenderRowProps<R, SR>,
-  'isRowSelectionDisabled'
-> {
+interface GroupedRowProps<R, SR> extends Omit<BaseRenderRowProps<R, SR>, 'isRowSelectionDisabled'> {
   row: GroupRow<R>;
   groupBy: readonly string[];
   toggleGroup: (expandedGroupId: unknown) => void;
@@ -45,7 +41,7 @@ function GroupedRow<R, SR>({
   groupBy,
   toggleGroup,
   ...props
-}: GroupRowRendererProps<R, SR>) {
+}: GroupedRowProps<R, SR>) {
   const isPositionOnRow = activeCellIdx === -1;
 
   let idx = row.level;
@@ -83,6 +79,7 @@ function GroupedRow<R, SR>({
           .map(([column, isCellActive], index) => {
             // Select is always the first column
             if (index === 0 && column.key === SELECT_COLUMN_KEY) {
+              // oxlint-disable-next-line react/immutability
               idx += 1;
             }
 
@@ -108,6 +105,4 @@ function GroupedRow<R, SR>({
   );
 }
 
-export default memo(GroupedRow) as <R, SR>(
-  props: GroupRowRendererProps<R, SR>
-) => React.JSX.Element;
+export default memo(GroupedRow) as <R, SR>(props: GroupedRowProps<R, SR>) => React.JSX.Element;

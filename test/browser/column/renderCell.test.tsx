@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { page, userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vite-plus/test/browser';
 
-import { DataGrid } from '../../../src';
+import { DataGrid, renderHeaderCell } from '../../../src';
 import type { Column } from '../../../src';
-import defaultRenderHeaderCell from '../../../src/renderHeaderCell';
 import { getCellsAtRowIndex, safeTab, setup } from '../utils';
 
 const cells = page.getCell();
@@ -33,7 +32,7 @@ describe('renderValue', () => {
   });
 });
 
-describe('Custom cell renderer', () => {
+describe('Custom cell content renderer', () => {
   const columns: readonly Column<Row>[] = [
     {
       key: 'id',
@@ -49,7 +48,7 @@ describe('Custom cell renderer', () => {
 
   const rows: readonly Row[] = [{ id: 101 }];
 
-  it('should replace the default cell renderer', async () => {
+  it('should replace the default cell content renderer', async () => {
     await setup({ columns, rows });
     await expect.element(cells.nth(0)).toHaveTextContent('#101');
     await expect.element(cells.nth(1)).toHaveTextContent('No name');
@@ -108,7 +107,7 @@ describe('Custom cell renderer', () => {
         sortable: false,
         draggable: false,
         width: 'auto',
-        renderHeaderCell: defaultRenderHeaderCell
+        renderHeaderCell
       },
       indexes: [0]
     });
@@ -155,7 +154,7 @@ test('Focus child if it sets tabIndex', async () => {
   await safeTab(true);
   await userEvent.click(button2);
   await expect.element(button2).toHaveFocus();
-  // It is user's responsibilty to set the tabIndex on button2
+  // It is the user's responsibility to set the tabIndex on button2
   await expect.element(button1).toHaveAttribute('tabindex', '0');
   await expect.element(cell).toHaveAttribute('tabindex', '-1');
   await userEvent.click(button1);
@@ -164,10 +163,10 @@ test('Focus child if it sets tabIndex', async () => {
   await expect.element(cell).toHaveAttribute('tabindex', '-1');
 });
 
-test('Cell should not steal focus when the focus is outside the grid and cell is recreated', async () => {
+test('Cell should not steal focus when the focus is outside the grid and the cell is recreated', async () => {
   const columns: readonly Column<Row>[] = [{ key: 'id', name: 'ID' }];
 
-  function FormatterTest() {
+  function Test() {
     const [rows, setRows] = useState((): readonly Row[] => [{ id: 1 }]);
 
     function onClick() {
@@ -176,7 +175,12 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
 
     return (
       <>
-        <button type="button" onClick={onClick}>
+        <button
+          type="button"
+          // tabIndex is needed; otherwise, WebKit will set focus on the <body> after clicking the button
+          tabIndex={0}
+          onClick={onClick}
+        >
           Test
         </button>
         <DataGrid
@@ -189,7 +193,7 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
     );
   }
 
-  await page.render(<FormatterTest />);
+  await page.render(<Test />);
 
   const cell = getCellsAtRowIndex(0).nth(0);
   await userEvent.click(cell);
@@ -198,6 +202,7 @@ test('Cell should not steal focus when the focus is outside the grid and cell is
   const button = page.getByRole('button', { name: 'Test' });
   await expect.element(button).not.toHaveFocus();
   await userEvent.click(button);
+  await expect.element(button).toHaveFocus();
   await expect.element(cell).not.toHaveFocus();
   await expect.element(button).toHaveFocus();
 });

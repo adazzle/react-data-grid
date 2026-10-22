@@ -1,4 +1,4 @@
-import { page } from 'vitest/browser';
+import { page } from 'vite-plus/test/browser';
 
 import { SelectColumn, TreeDataGrid, type Column } from '../../src';
 
@@ -73,6 +73,7 @@ test('tree grid', async () => {
       rowGrouper={rowGrouper}
       expandedGroupIds={new Set(['USA', 'USA__2020'])}
       onExpandedGroupIdsChange={() => {}}
+      style={{ height: 350 }}
     />
   );
 
@@ -84,6 +85,5 @@ function rowKeyGetter(row: Row) {
 }
 
 function rowGrouper(rows: readonly Row[], columnKey: string) {
-  // @ts-expect-error
-  return Object.groupBy(rows, (r) => r[columnKey]) as Record<string, readonly R[]>;
+  return Object.groupBy(rows, (r) => r[columnKey as keyof Row]) as Record<string, readonly Row[]>;
 }

@@ -4,13 +4,14 @@ import { css } from 'ecij';
 
 import { Row as BaseRow, Cell, DataGrid, renderTextEditor, SelectColumn } from '../../src';
 import type {
-  CellRendererProps,
   Column,
+  RenderCellProps,
   RenderCheckboxProps,
   RenderRowProps,
   RenderSortStatusProps,
   SortColumn
 } from '../../src';
+import { compare } from '../utils';
 import { useDirection } from '../directionContext';
 
 export const Route = createFileRoute('/CustomizableRenderers')({
@@ -28,7 +29,7 @@ const selectCellClassname = css`
 `;
 
 const sortPriorityClassname = css`
-  color: grey;
+  color: gray;
   margin-left: 2px;
 `;
 
@@ -151,7 +152,7 @@ function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxPro
 function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
   return (
     <>
-      {sortDirection !== undefined ? (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F') : null}
+      {sortDirection && (sortDirection === 'ASC' ? '\u2B9D' : '\u2B9F')}
       <span className={sortPriorityClassname}>{priority}</span>
     </>
   );
@@ -159,7 +160,7 @@ function renderSortStatus({ sortDirection, priority }: RenderSortStatusProps) {
 
 const cellStyle: React.CSSProperties = { color: 'red' };
 
-function renderCell(key: React.Key, props: CellRendererProps<Row, unknown>) {
+function renderCell(key: React.Key, props: RenderCellProps<Row, unknown>) {
   const style =
     props.column.key === 'priority' && props.row.priority === 'Critical' ? cellStyle : undefined;
 
@@ -186,7 +187,7 @@ function getComparator(sortColumn: string): Comparator {
     case 'priority':
     case 'issueType':
       return (a, b) => {
-        return a[sortColumn].localeCompare(b[sortColumn]);
+        return compare(a[sortColumn], b[sortColumn]);
       };
     case 'complete':
       return (a, b) => {

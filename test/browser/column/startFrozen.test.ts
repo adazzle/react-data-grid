@@ -1,12 +1,12 @@
-import { page } from 'vitest/browser';
+import { page } from 'vite-plus/test/browser';
 
 import type { Column } from '../../../src';
-import { cellClassname, cellFrozenClassname } from '../../../src/style/cell';
+import { cellClassname, cellFrozenStartClassname } from '../../../src/style/cell';
 import { setup } from '../utils';
 
 const headerCells = page.getHeaderCell();
 
-test('frozen column have a specific class, and are stable-sorted before non-frozen columns', async () => {
+test('frozen columns have a specific class and are stable-sorted before non-frozen columns', async () => {
   const columns: readonly Column<never>[] = [
     {
       key: 'col1',
@@ -38,12 +38,8 @@ test('frozen column have a specific class, and are stable-sorted before non-froz
   await expect.element(cell3).toHaveTextContent('col2');
   await expect.element(cell4).toHaveTextContent('col4');
 
-  await expect
-    .element(cell1)
-    .toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
-  await expect
-    .element(cell2)
-    .toHaveClass(`${cellClassname} ${cellFrozenClassname}`, { exact: true });
+  await expect.element(cell1).toHaveClass(cellClassname, cellFrozenStartClassname, { exact: true });
+  await expect.element(cell2).toHaveClass(cellClassname, cellFrozenStartClassname, { exact: true });
   await expect.element(cell3).toHaveClass(cellClassname, { exact: true });
   await expect.element(cell4).toHaveClass(cellClassname, { exact: true });
 });

@@ -12,7 +12,7 @@ import type {
 } from './types';
 import type { DataGridProps } from './DataGrid';
 import HeaderCell from './HeaderCell';
-import { cell, cellFrozen } from './style/cell';
+import { cell, cellFrozenBase } from './style/cell';
 import { rowActiveClassname } from './style/row';
 
 type SharedDataGridProps<R, SR, K extends React.Key> = Pick<
@@ -44,7 +44,7 @@ const headerRow = css`
       position: sticky;
     }
 
-    & > .${cellFrozen} {
+    & > .${cellFrozenBase} {
       z-index: 3;
     }
   }
@@ -94,7 +94,7 @@ function HeaderRow<R, SR, K extends React.Key>({
   return (
     <div
       role="row"
-      aria-rowindex={rowIdx} // aria-rowindex is 1 based
+      aria-rowindex={rowIdx} // aria-rowindex is 1-based
       className={classnames(
         headerRowClassname,
         isPositionOnRow && rowActiveClassname,
