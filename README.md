@@ -1464,10 +1464,12 @@ Union type representing either a `Column` or a `ColumnGroup`.
 
 #### `CalculatedColumn<TRow, TSummaryRow>`
 
-Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. The `Column` properties it redeclares, like `width` and `renderCell`, are resolved to their default values when not set.
+Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. Every `Column` property is set: the ones it redeclares, like `width` and `renderCell`, are resolved to their default values when not set, and the others are `undefined` when not set.
 
 ```tsx
-interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Required<
+  Column<TRow, TSummaryRow>
+> {
   /** The column group that contains the column, or `undefined` if the column is not in a group */
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */

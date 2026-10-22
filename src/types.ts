@@ -85,7 +85,9 @@ export interface Column<TRow, TSummaryRow = unknown> {
   }>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Required<
+  Column<TRow, TSummaryRow>
+> {
   /** The column group that contains the column, or `undefined` if the column is not in a group */
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
