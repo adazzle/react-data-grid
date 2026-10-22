@@ -56,17 +56,17 @@ function autoFocusAndSelect(input: HTMLInputElement | null) {
  *
  * @group Render Functions
  */
-export function renderTextEditor<TRow, TSummaryRow>({
+export function renderTextEditor<R, SR>({
   row,
   column,
   onRowChange,
   onClose
-}: RenderEditCellContentProps<TRow, TSummaryRow>) {
+}: RenderEditCellContentProps<R, SR>) {
   return (
     <input
       className={textEditorClassname}
       ref={autoFocusAndSelect}
-      value={row[column.key as keyof TRow] as unknown as string}
+      value={row[column.key as keyof R] as unknown as string}
       onChange={(event) => onRowChange({ ...row, [column.key]: event.target.value })}
       onBlur={() => onClose(true, false)}
     />

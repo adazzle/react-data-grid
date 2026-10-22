@@ -134,14 +134,14 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
   groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
 }
 
-interface GroupBy<TRow> {
-  readonly childRows: readonly TRow[];
-  readonly childGroups: readonly TRow[] | ReadonlyGroupByMap<TRow>;
+interface GroupBy<R> {
+  readonly childRows: readonly R[];
+  readonly childGroups: readonly R[] | ReadonlyGroupByMap<R>;
   readonly startRowIndex: number;
 }
 
-type GroupByMap<TRow> = Map<string, GroupBy<TRow>>;
-type ReadonlyGroupByMap<TRow> = ReadonlyMap<string, GroupBy<TRow>>;
+type GroupByMap<R> = Map<string, GroupBy<R>>;
+type ReadonlyGroupByMap<R> = ReadonlyMap<string, GroupBy<R>>;
 
 /**
  * `TreeDataGrid` is a component built on top of `DataGrid` to add hierarchical row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/).

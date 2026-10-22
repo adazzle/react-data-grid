@@ -18,7 +18,7 @@ export type StateSetter<S> = React.Dispatch<React.SetStateAction<S>>;
  *
  * @group Types
  */
-export interface Column<TRow, TSummaryRow = unknown> {
+export interface Column<R, SR = unknown> {
   /** The name of the column. Displayed in the header cell by default. */
   readonly name: string | ReactElement;
   /** A unique key to distinguish each column. */
@@ -104,31 +104,23 @@ export interface Column<TRow, TSummaryRow = unknown> {
    * }
    * ```
    */
-  readonly cellClass?: Maybe<string | ((row: TRow) => Maybe<string>)>;
+  readonly cellClass?: Maybe<string | ((row: R) => Maybe<string>)>;
   /** Class name(s) for the header cell. */
   readonly headerCellClass?: Maybe<string>;
   /** Class name(s) for summary cells. Can be a string or a function that returns a class name based on the summary row. */
-  readonly summaryCellClass?: Maybe<string | ((row: TSummaryRow) => Maybe<string>)>;
+  readonly summaryCellClass?: Maybe<string | ((row: SR) => Maybe<string>)>;
   /** Render function to render the content of cells. */
-  readonly renderCell?: Maybe<(props: RenderCellContentProps<TRow, TSummaryRow>) => ReactNode>;
+  readonly renderCell?: Maybe<(props: RenderCellContentProps<R, SR>) => ReactNode>;
   /** Render function to render the content of the header cell. */
-  readonly renderHeaderCell?: Maybe<
-    (props: RenderHeaderCellContentProps<TRow, TSummaryRow>) => ReactNode
-  >;
+  readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellContentProps<R, SR>) => ReactNode>;
   /** Render function to render the content of summary cells. */
-  readonly renderSummaryCell?: Maybe<
-    (props: RenderSummaryCellContentProps<TSummaryRow, TRow>) => ReactNode
-  >;
+  readonly renderSummaryCell?: Maybe<(props: RenderSummaryCellContentProps<SR, R>) => ReactNode>;
   /** Render function to render the content of group cells when using `TreeDataGrid`. */
-  readonly renderGroupCell?: Maybe<
-    (props: RenderGroupCellContentProps<TRow, TSummaryRow>) => ReactNode
-  >;
+  readonly renderGroupCell?: Maybe<(props: RenderGroupCellContentProps<R, SR>) => ReactNode>;
   /** Render function to render the content of edit cells. When set, the column is automatically set to be editable. */
-  readonly renderEditCell?: Maybe<
-    (props: RenderEditCellContentProps<TRow, TSummaryRow>) => ReactNode
-  >;
+  readonly renderEditCell?: Maybe<(props: RenderEditCellContentProps<R, SR>) => ReactNode>;
   /** Control whether cells can be edited with `renderEditCell`. */
-  readonly editable?: Maybe<boolean | ((row: TRow) => boolean)>;
+  readonly editable?: Maybe<boolean | ((row: R) => boolean)>;
   /**
    * Function to determine how many columns this cell should span. Returns the number of columns to span, or `undefined` for no spanning. See the {@linkcode ColSpanArgs} type.
    *
@@ -150,7 +142,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
    * ];
    * ```
    */
-  readonly colSpan?: Maybe<(args: ColSpanArgs<TRow, TSummaryRow>) => Maybe<number>>;
+  readonly colSpan?: Maybe<(args: ColSpanArgs<R, SR>) => Maybe<number>>;
   /**
    * Determines whether the column is frozen, and on which edge. Frozen columns stay in place when the grid is scrolled horizontally. See the {@linkcode ColumnFrozen} type.
    *
@@ -229,9 +221,9 @@ interface ColumnEditorOptions {
  *
  * @group Types
  */
-export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
+export interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
   /** The column group that contains the column, or `undefined` if the column is not in a group */
-  readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
   /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
   readonly idx: number;
   /** Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups */
@@ -243,8 +235,8 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TR
   readonly sortable: boolean;
   readonly draggable: boolean;
   readonly frozen: ColumnFrozen;
-  readonly renderCell: (props: RenderCellContentProps<TRow, TSummaryRow>) => ReactNode;
-  readonly renderHeaderCell: (props: RenderHeaderCellContentProps<TRow, TSummaryRow>) => ReactNode;
+  readonly renderCell: (props: RenderCellContentProps<R, SR>) => ReactNode;
+  readonly renderHeaderCell: (props: RenderHeaderCellContentProps<R, SR>) => ReactNode;
 }
 
 /**
@@ -345,13 +337,13 @@ export interface Position {
  *
  * @group Types
  */
-export interface RenderCellContentProps<TRow, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TRow;
+export interface RenderCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
   rowIdx: number;
   isCellEditable: boolean;
   tabIndex: number;
-  onRowChange: (row: TRow) => void;
+  onRowChange: (row: R) => void;
 }
 
 /**
@@ -361,9 +353,9 @@ export interface RenderCellContentProps<TRow, TSummaryRow = unknown> {
  *
  * @group Types
  */
-export interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TSummaryRow;
+export interface RenderSummaryCellContentProps<SR, R = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: SR;
   tabIndex: number;
 }
 
@@ -374,11 +366,11 @@ export interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
  *
  * @group Types
  */
-export interface RenderGroupCellContentProps<TRow, TSummaryRow = unknown> {
+export interface RenderGroupCellContentProps<R, SR = unknown> {
   groupKey: unknown;
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: GroupRow<TRow>;
-  childRows: readonly TRow[];
+  column: CalculatedColumn<R, SR>;
+  row: GroupRow<R>;
+  childRows: readonly R[];
   isExpanded: boolean;
   tabIndex: number;
   toggleGroup: () => void;
@@ -407,11 +399,11 @@ export interface RenderGroupCellContentProps<TRow, TSummaryRow = unknown> {
  *
  * @group Types
  */
-export interface RenderEditCellContentProps<TRow, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TRow;
+export interface RenderEditCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
   rowIdx: number;
-  onRowChange: (row: TRow, commitChanges?: boolean) => void;
+  onRowChange: (row: R, commitChanges?: boolean) => void;
   onClose: (commitChanges?: boolean, shouldFocus?: boolean) => void;
 }
 
@@ -422,18 +414,18 @@ export interface RenderEditCellContentProps<TRow, TSummaryRow = unknown> {
  *
  * @group Types
  */
-export interface RenderHeaderCellContentProps<TRow, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
+export interface RenderHeaderCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
   sortDirection: SortDirection | undefined;
   priority: number | undefined;
   tabIndex: number;
 }
 
-interface BaseRenderCellProps<TRow, TSummaryRow = unknown>
+interface BaseRenderCellProps<R, SR = unknown>
   extends
     Omit<React.ComponentProps<'div'>, 'children'>,
     Pick<
-      DataGridProps<TRow, TSummaryRow>,
+      DataGridProps<R, SR>,
       'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   rowIdx: number;
@@ -447,13 +439,13 @@ interface BaseRenderCellProps<TRow, TSummaryRow = unknown>
  *
  * @group Types
  */
-export interface RenderCellProps<TRow, TSummaryRow> extends BaseRenderCellProps<TRow, TSummaryRow> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TRow;
+export interface RenderCellProps<R, SR> extends BaseRenderCellProps<R, SR> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
   colSpan: number | undefined;
   isDraggedOver: boolean;
   isCellActive: boolean;
-  onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
 }
 
 export interface EditCellProps<R, SR> extends Pick<
@@ -531,33 +523,33 @@ export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
  *
  * @group Types
  */
-export interface CellMouseArgs<TRow, TSummaryRow = unknown> {
+export interface CellMouseArgs<R, SR = unknown> {
   /** The column object of the cell. */
-  column: CalculatedColumn<TRow, TSummaryRow>;
+  column: CalculatedColumn<R, SR>;
   /** The row object of the cell. */
-  row: TRow;
+  row: R;
   /** The row index of the cell. */
   rowIdx: number;
   /** Function to manually focus the cell. Pass `true` to immediately start editing. */
   setActivePosition: (enableEditor?: boolean) => void;
 }
 
-interface ActiveCellKeyDownArgs<TRow, TSummaryRow = unknown> {
+interface ActiveCellKeyDownArgs<R, SR = unknown> {
   mode: 'ACTIVE';
   /**
    * column object of the active position,
    * undefined if the active position is a row instead of a cell
    */
-  column: CalculatedColumn<TRow, TSummaryRow> | undefined;
-  row: TRow;
+  column: CalculatedColumn<R, SR> | undefined;
+  row: R;
   rowIdx: number;
   setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
 }
 
-export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
+export interface EditCellKeyDownArgs<R, SR = unknown> {
   mode: 'EDIT';
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TRow;
+  column: CalculatedColumn<R, SR>;
+  row: R;
   rowIdx: number;
   navigate: () => void;
   onClose: (commitChanges?: boolean, shouldFocus?: boolean) => void;
@@ -582,9 +574,9 @@ export interface EditCellKeyDownArgs<TRow, TSummaryRow = unknown> {
  *
  * @group Types
  */
-export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
-  | ActiveCellKeyDownArgs<TRow, TSummaryRow>
-  | EditCellKeyDownArgs<TRow, TSummaryRow>;
+export type CellKeyDownArgs<R, SR = unknown> =
+  | ActiveCellKeyDownArgs<R, SR>
+  | EditCellKeyDownArgs<R, SR>;
 
 /**
  * Arguments passed to `onActivePositionChange`.
@@ -593,19 +585,19 @@ export type CellKeyDownArgs<TRow, TSummaryRow = unknown> =
  *
  * @group Types
  */
-export interface PositionChangeArgs<TRow, TSummaryRow = unknown> {
+export interface PositionChangeArgs<R, SR = unknown> {
   /** row index of the active position */
   rowIdx: number;
   /**
    * row object of the active position,
    * undefined if the active position is on a header or summary row
    */
-  row: TRow | undefined;
+  row: R | undefined;
   /**
    * column object of the active position,
    * undefined if the active position is a row instead of a cell
    */
-  column: CalculatedColumn<TRow, TSummaryRow> | undefined;
+  column: CalculatedColumn<R, SR> | undefined;
 }
 
 /**
@@ -615,26 +607,23 @@ export type CellMouseEventHandler<R, SR> = Maybe<
   (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
 >;
 
-export type IterateOverViewportColumns<TRow, TSummaryRow> = (
+export type IterateOverViewportColumns<R, SR> = (
   activeColumnIdx: number
-) => IteratorObject<CalculatedColumn<TRow, TSummaryRow>>;
+) => IteratorObject<CalculatedColumn<R, SR>>;
 
-export type ViewportColumnWithColSpan<TRow, TSummaryRow> = [
-  column: CalculatedColumn<TRow, TSummaryRow>,
+export type ViewportColumnWithColSpan<R, SR> = [
+  column: CalculatedColumn<R, SR>,
   isCellActive: boolean,
   colSpan: number | undefined
 ];
 
-export type IterateOverViewportColumnsForRow<TRow, TSummaryRow> = (
+export type IterateOverViewportColumnsForRow<R, SR> = (
   activeIdx: number | undefined,
-  args?: ColSpanArgs<TRow, TSummaryRow>
-) => IteratorObject<ViewportColumnWithColSpan<TRow, TSummaryRow>>;
+  args?: ColSpanArgs<R, SR>
+) => IteratorObject<ViewportColumnWithColSpan<R, SR>>;
 
-export interface BaseRenderRowProps<TRow, TSummaryRow = unknown> extends BaseRenderCellProps<
-  TRow,
-  TSummaryRow
-> {
-  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<TRow, TSummaryRow>;
+export interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps<R, SR> {
+  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
@@ -649,15 +638,12 @@ export interface BaseRenderRowProps<TRow, TSummaryRow = unknown> extends BaseRen
  *
  * @group Types
  */
-export interface RenderRowProps<TRow, TSummaryRow = unknown> extends BaseRenderRowProps<
-  TRow,
-  TSummaryRow
-> {
-  row: TRow;
+export interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, SR> {
+  row: R;
   draggedOverCellIdx: number | undefined;
-  activeCellEditor: ReactElement<EditCellProps<TRow, TSummaryRow>> | undefined;
-  onRowChange: (column: CalculatedColumn<TRow, TSummaryRow>, rowIdx: number, newRow: TRow) => void;
-  rowClass: Maybe<(row: TRow, rowIdx: number) => Maybe<string>>;
+  activeCellEditor: ReactElement<EditCellProps<R, SR>> | undefined;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
+  rowClass: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
   isTreeGrid: boolean;
 }
 
@@ -682,8 +668,8 @@ export interface RowsChangeData<R, SR = unknown> {
  *
  * @group Types
  */
-export interface SelectRowEvent<TRow> {
-  row: TRow;
+export interface SelectRowEvent<R> {
+  row: R;
   checked: boolean;
   isShiftClick: boolean;
 }
@@ -706,15 +692,15 @@ export interface SelectHeaderRowEvent {
  *
  * @group Types
  */
-export interface FillEvent<TRow> {
+export interface FillEvent<R> {
   columnKey: string;
-  sourceRow: TRow;
-  targetRow: TRow;
+  sourceRow: R;
+  targetRow: R;
 }
 
-interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
-  column: CalculatedColumn<TRow, TSummaryRow>;
-  row: TRow;
+interface CellCopyPasteArgs<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
 }
 
 /**
@@ -724,7 +710,7 @@ interface CellCopyPasteArgs<TRow, TSummaryRow = unknown> {
  *
  * @group Types
  */
-export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+export type CellCopyArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 /**
  * Arguments passed to `onCellPaste`.
  *
@@ -732,15 +718,15 @@ export type CellCopyArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, 
  *
  * @group Types
  */
-export type CellPasteArgs<TRow, TSummaryRow = unknown> = CellCopyPasteArgs<TRow, TSummaryRow>;
+export type CellPasteArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 
 /**
  * Represents a group row in `TreeDataGrid`. This helper type is not exported; the shape is shown for reference.
  *
  * @see {@linkcode RenderGroupCellContentProps}, {@linkcode RowHeightArgs}, {@linkcode TreeDataGrid | <TreeDataGrid />}
  */
-export interface GroupRow<TRow> {
-  readonly childRows: readonly TRow[];
+export interface GroupRow<R> {
+  readonly childRows: readonly R[];
   readonly id: string;
   readonly parentId: unknown;
   readonly groupKey: unknown;
@@ -804,10 +790,10 @@ export type SortDirection = 'ASC' | 'DESC';
  *
  * @group Types
  */
-export type ColSpanArgs<TRow, TSummaryRow> =
+export type ColSpanArgs<R, SR> =
   | { readonly type: 'HEADER' }
-  | { readonly type: 'ROW'; readonly row: TRow }
-  | { readonly type: 'SUMMARY'; readonly row: TSummaryRow };
+  | { readonly type: 'ROW'; readonly row: R }
+  | { readonly type: 'SUMMARY'; readonly row: SR };
 
 /**
  * Arguments passed to `TreeDataGrid`'s `rowHeight` prop when it is a function.
@@ -828,9 +814,7 @@ export type ColSpanArgs<TRow, TSummaryRow> =
  *
  * @group Types
  */
-export type RowHeightArgs<TRow> =
-  | { type: 'ROW'; row: TRow }
-  | { type: 'GROUP'; row: GroupRow<TRow> };
+export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
 
 /**
  * Props for custom sort icon renderers.
@@ -896,10 +880,10 @@ export interface RenderCheckboxProps {
  *
  * @group Types
  */
-export interface Renderers<TRow, TSummaryRow> {
-  readonly renderCell?: Maybe<(key: Key, props: RenderCellProps<TRow, TSummaryRow>) => ReactNode>;
+export interface Renderers<R, SR> {
+  readonly renderCell?: Maybe<(key: Key, props: RenderCellProps<R, SR>) => ReactNode>;
   readonly renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
-  readonly renderRow?: Maybe<(key: Key, props: RenderRowProps<TRow, TSummaryRow>) => ReactNode>;
+  readonly renderRow?: Maybe<(key: Key, props: RenderRowProps<R, SR>) => ReactNode>;
   readonly renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
   readonly noRowsFallback?: Maybe<ReactNode>;
 }
