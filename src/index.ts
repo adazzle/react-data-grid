@@ -1,8 +1,3 @@
-/**
- * @module
- * @sortStrategy alphabetical
- */
-
 import './style/layers.css';
 
 export {

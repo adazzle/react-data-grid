@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    // `DOM` for the `WebAssembly` types of `@shikijs/types`, a dependency of TypeDoc
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext"],
     "module": "NodeNext",
     "types": ["node"]
   },

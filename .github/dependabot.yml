@@ -18,17 +18,12 @@ updates:
       typescript:
         patterns:
           - 'typescript'
-          - '@typescript/native'
       react:
         patterns:
           - 'react'
           - 'react-dom'
           - '@types/react'
           - '@types/react-dom'
-      typedoc:
-        patterns:
-          - 'typedoc'
-          - 'typedoc-*'
       # everything else: single PR for minor/patch bumps,
       # majors still land individually
       dependencies:

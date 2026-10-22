@@ -186,32 +186,27 @@ export interface Column<R, SR = unknown> {
    */
   readonly sortDescendingFirst?: Maybe<boolean>;
   /** Options for cell editing. */
-  readonly editorOptions?: Maybe<ColumnEditorOptions>;
-}
-
-/**
- * Options for cell editing.
- */
-interface ColumnEditorOptions {
-  /**
-   * Render the cell content in addition to the edit cell content. Enable this option when the editor is rendered outside the grid, like a modal for example.
-   * By default, the cell content is not rendered when the edit cell is open.
-   *
-   * @defaultValue `false`
-   */
-  readonly displayCellContent?: Maybe<boolean>;
-  /**
-   * Commit changes when clicking outside the cell.
-   *
-   * @defaultValue `true`
-   */
-  readonly commitOnOutsideClick?: Maybe<boolean>;
-  /**
-   * Close the editor when the row value changes externally.
-   *
-   * @defaultValue `true`
-   */
-  readonly closeOnExternalRowChange?: Maybe<boolean>;
+  readonly editorOptions?: Maybe<{
+    /**
+     * Render the cell content in addition to the edit cell content. Enable this option when the editor is rendered outside the grid, like a modal for example.
+     * By default, the cell content is not rendered when the edit cell is open.
+     *
+     * @defaultValue `false`
+     */
+    readonly displayCellContent?: Maybe<boolean>;
+    /**
+     * Commit changes when clicking outside the cell.
+     *
+     * @defaultValue `true`
+     */
+    readonly commitOnOutsideClick?: Maybe<boolean>;
+    /**
+     * Close the editor when the row value changes externally.
+     *
+     * @defaultValue `true`
+     */
+    readonly closeOnExternalRowChange?: Maybe<boolean>;
+  }>;
 }
 
 /**

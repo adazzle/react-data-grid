@@ -54,8 +54,7 @@ async function dragFill(
 
 // TODO: remove when vite-plus detects TypeScript 7.1 as TypeScript 7
 async function getTscPath(): Promise<string> {
-  const { default: getExePath } =
-    await import('./node_modules/@typescript/native/lib/getExePath.js');
+  const { default: getExePath } = await import('./node_modules/typescript/lib/getExePath.js');
   return getExePath();
 }
 
@@ -83,9 +82,9 @@ export default defineConfig({
         command: 'tsc --build',
         cache: false
       },
-      // generates the API reference of the README from the JSDoc comments
+      // generates the API reference of the README from the declarations and JSDoc comments of `lib/index.d.ts`
       docs: {
-        command: ['node scripts/generateApiDocs.ts', 'vp fmt README.md'],
+        command: ['vp pack', 'node scripts/generateApiDocs.ts', 'vp fmt README.md'],
         // the README is both an input and the output
         cache: false
       },
@@ -125,9 +124,8 @@ export default defineConfig({
           'vp run test'
         ],
         cache: {
-          // `vp pack` cleans `lib/` before writing to it,
-          // and `vp run docs` writes its intermediate output to `node_modules/.cache/typedoc/`
-          input: [{ auto: true }, '!lib/**', '!node_modules/.cache/typedoc/**']
+          // `vp pack` cleans `lib/` before writing to it
+          input: [{ auto: true }, '!lib/**']
         }
       },
       // the first step of a release, see the header of `.github/workflows/publish.yml`:
@@ -574,20 +572,8 @@ copy(
       'jsdoc/check-tag-names': [
         'warn',
         {
-          // TypeDoc tags: https://typedoc.org/documents/Tags.html
-          definedTags: [
-            'category',
-            'categoryDescription',
-            'defaultValue',
-            'group',
-            'groupDescription',
-            'inline',
-            'inlineType',
-            'internal',
-            'module',
-            'sortStrategy',
-            'typeParam'
-          ]
+          // TSDoc tags, and `@group`, which sets the section of the README's API reference
+          definedTags: ['defaultValue', 'group', 'typeParam']
         }
       ],
       'jsdoc/empty-tags': 'warn',

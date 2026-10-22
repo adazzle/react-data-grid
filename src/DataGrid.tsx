@@ -148,13 +148,13 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
   /**
    * An array of column definitions and/or column groups. See the {@linkcode ColumnOrColumnGroup} type for all available options.
    *
-   * :warning: **Performance:** Passing a new `columns` array will trigger a re-render and recalculation for the entire grid. Always memoize this prop using `useMemo` or define it outside the component to avoid unnecessary re-renders.
+   * ⚠️ **Performance:** Passing a new `columns` array will trigger a re-render and recalculation for the entire grid. Always memoize this prop using `useMemo` or define it outside the component to avoid unnecessary re-renders.
    */
   columns: readonly ColumnOrColumnGroup<NoInfer<R>, NoInfer<SR>>[];
   /**
    * An array of rows. The row data can be of any type.
    *
-   * :bulb: **Performance:** The grid is optimized for efficient rendering:
+   * 💡 **Performance:** The grid is optimized for efficient rendering:
    *
    * - **Virtualization**: Only visible rows are rendered in the DOM
    * - **Individual row updates**: Row components are memoized, so updating a single row object will only re-render that specific row, not all rows
@@ -173,13 +173,13 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
   /**
    * Rows pinned at the top of the grid for summary purposes.
    *
-   * :warning: **Performance:** Memoize this array to prevent internal memoization invalidation.
+   * ⚠️ **Performance:** Memoize this array to prevent internal memoization invalidation.
    */
   topSummaryRows?: Maybe<readonly SR[]>;
   /**
    * Rows pinned at the bottom of the grid for summary purposes.
    *
-   * :warning: **Performance:** Memoize this array to prevent internal memoization invalidation.
+   * ⚠️ **Performance:** Memoize this array to prevent internal memoization invalidation.
    */
   bottomSummaryRows?: Maybe<readonly SR[]>;
   /**
@@ -202,9 +202,9 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
    * }
    * ```
    *
-   * :bulb: While optional, setting this prop is recommended for optimal performance, as the returned value is used to set the `key` prop on the row elements.
+   * 💡 While optional, setting this prop is recommended for optimal performance, as the returned value is used to set the `key` prop on the row elements.
    *
-   * :warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+   * ⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
    */
   rowKeyGetter?: Maybe<(row: NoInfer<R>) => K>;
   /**
@@ -244,7 +244,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
    * <DataGrid columns={columns} rows={rows} rowHeight={getRowHeight} />;
    * ```
    *
-   * :warning: **Performance:** When using a function, the heights of all rows are processed upfront. For large datasets (1000+ rows), this can cause performance issues if the identity of the function changes and invalidates internal memoization. Consider using a static function when possible, or memoize the `rowHeight` function.
+   * ⚠️ **Performance:** When using a function, the heights of all rows are processed upfront. For large datasets (1000+ rows), this can cause performance issues if the identity of the function changes and invalidates internal memoization. Consider using a static function when possible, or memoize the `rowHeight` function.
    *
    * @defaultValue `35` pixels
    */
@@ -638,7 +638,7 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
    * }
    * ```
    *
-   * :warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to avoid re-rendering all rows on every render.
+   * ⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to avoid re-rendering all rows on every render.
    */
   rowClass?: Maybe<(row: NoInfer<R>, rowIdx: number) => Maybe<string>>;
   /**

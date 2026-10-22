@@ -27,7 +27,7 @@ website/              # demo site (Vite + TanStack Router)
 ## Conventions
 
 - **Public API** — all exports flow through `src/index.ts`. Keep `README.md` in sync with user-facing changes.
-- **API docs** — JSDoc comments are the source of the README's API reference. Edit the JSDoc, then run `vp run docs` to regenerate the section between `<!-- api:start -->` and `<!-- api:end -->`; never edit that section by hand. Every export from `src/index.ts` needs a `@group` tag with one of the sections in `groupOrder` of `typedoc.json` (Components, Hooks, Render Functions, Context, Other, Types). Use `@defaultValue`, `@example`, `@see`, `@typeParam`, and `{@linkcode}` instead of writing these out in the description. Oxlint's `jsdoc` plugin checks the tags; add new TypeDoc tags to `definedTags` of `jsdoc/check-tag-names` in `vite.config.ts`. In the hand-written sections of the README, give links to API members the member as title, e.g., ``[`width`](#width "Column.width")``, so `vp run docs` keeps their anchor up to date.
+- **API docs** — JSDoc comments are the source of the README's API reference. Edit the JSDoc, then run `vp run docs` to regenerate the section between `<!-- api:start -->` and `<!-- api:end -->`; never edit that section by hand. Every export from `src/index.ts` needs a `@group` tag with one of the sections in `scripts/generateApiDocs.ts` (Components, Hooks, Render Functions, Context, Other, Types). Use `@defaultValue`, `@example`, `@see`, `@typeParam`, and `{@linkcode}` instead of writing these out in the description. Oxlint's `jsdoc` plugin checks the tags; add new tags to `definedTags` of `jsdoc/check-tag-names` in `vite.config.ts`. In the hand-written sections of the README, give links to API members the member as title, e.g., ``[`width`](#width "Column.width")``, so `vp run docs` keeps their anchor up to date.
 - **Docs** — keep `AGENTS.md` in sync with tooling, conventions, or architectural changes.
 - **Default renderers** — `DataGridRenderersContext` allows overriding default renderers (`renderCheckbox`, `renderSortStatus`, `renderRow`, `renderCell`, `noRowsFallback`) without prop-drilling.
 - **TypeScript strict** with `exactOptionalPropertyTypes`, `verbatimModuleSyntax`, `erasableSyntaxOnly`. Distinguish missing properties from `undefined` values.
@@ -55,8 +55,7 @@ The project uses [Vite+](https://viteplus.dev/guide/), whose global `vp` CLI wra
 - `vp <command>` runs a built-in command, e.g., `vp dev`, `vp check`, `vp test`, `vp pack`, `vp build`.
 - `vp run <task>` runs a task from `vite.config.ts`, e.g., `vp run typecheck`, `vp run eslint`, `vp run docs`, `vp run ci`.
 - Run `vp install` after pulling changes.
-- `vp run docs` runs TypeDoc with `typedoc-plugin-markdown` (config in `typedoc.json`).
-- Two TypeScript versions are installed: TypeScript 7 as `@typescript/native`, which provides `tsc` and is used by the editor and `vp pack`, and TypeScript 6 as `typescript` (`@typescript/typescript6`), for TypeDoc, which needs the TypeScript API that TypeScript 7 does not provide yet.
+- `vp run docs` runs `vp pack`, then `scripts/generateApiDocs.ts`, which parses the declarations and JSDoc comments of `lib/index.d.ts` with `oxc-parser`.
 
 ## Validation
 

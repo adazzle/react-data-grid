@@ -95,7 +95,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
    * }
    * ```
    *
-   * :warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+   * ⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
    */
   rowGrouper: (
     rows: readonly NoInfer<R>[],
@@ -129,7 +129,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
   /**
    * Function to generate unique IDs for group rows. If not provided, a default implementation is used that concatenates parent and group keys with `__`.
    *
-   * :warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+   * ⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
    */
   groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
 }

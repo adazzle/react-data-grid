@@ -241,35 +241,35 @@ Replace default components with custom implementations using the [`renderers`](#
 
 <!-- api:start -->
 
-## Components
+### Components
 
-### `<DataGrid />`
-
-**Props:** [`DataGridProps`](#datagridprops)\<`R`, `SR`, `K`\>
+#### `<DataGrid />`
 
 Main API component to render a data grid of rows and columns
 
-#### Example
+**Props:** [`DataGridProps<R, SR, K>`](#datagridprops)
+
+**Example:**
 
 ```tsx
 <DataGrid columns={columns} rows={rows} />
 ```
 
----
-
-### DataGridProps
-
-#### Properties
-
-##### ref?
+#### `DataGridProps`
 
 ```ts
-ref?: Maybe<Ref<DataGridHandle>>;
+interface DataGridProps<R, SR = unknown, K extends Key = Key> { … }
+```
+
+##### `ref?`
+
+```ts
+ref?: Maybe<React.Ref<DataGridHandle>>;
 ```
 
 Optional ref for imperative APIs like scrolling to or focusing a cell. See [`DataGridHandle`](#datagridhandle).
 
-##### columns
+##### `columns`
 
 ```ts
 columns: readonly ColumnOrColumnGroup<R, SR>[];
@@ -277,9 +277,9 @@ columns: readonly ColumnOrColumnGroup<R, SR>[];
 
 An array of column definitions and/or column groups. See the [`ColumnOrColumnGroup`](#columnorcolumngroup) type for all available options.
 
-:warning: **Performance:** Passing a new `columns` array will trigger a re-render and recalculation for the entire grid. Always memoize this prop using `useMemo` or define it outside the component to avoid unnecessary re-renders.
+⚠️ **Performance:** Passing a new `columns` array will trigger a re-render and recalculation for the entire grid. Always memoize this prop using `useMemo` or define it outside the component to avoid unnecessary re-renders.
 
-##### rows
+##### `rows`
 
 ```ts
 rows: readonly R[];
@@ -287,7 +287,7 @@ rows: readonly R[];
 
 An array of rows. The row data can be of any type.
 
-:bulb: **Performance:** The grid is optimized for efficient rendering:
+💡 **Performance:** The grid is optimized for efficient rendering:
 
 - **Virtualization**: Only visible rows are rendered in the DOM
 - **Individual row updates**: Row components are memoized, so updating a single row object will only re-render that specific row, not all rows
@@ -302,7 +302,7 @@ An array of rows. The row data can be of any type.
   setRows(rows.map((row) => ({ ...row })));
   ```
 
-##### topSummaryRows?
+##### `topSummaryRows?`
 
 ```ts
 topSummaryRows?: Maybe<readonly SR[]>;
@@ -310,9 +310,9 @@ topSummaryRows?: Maybe<readonly SR[]>;
 
 Rows pinned at the top of the grid for summary purposes.
 
-:warning: **Performance:** Memoize this array to prevent internal memoization invalidation.
+⚠️ **Performance:** Memoize this array to prevent internal memoization invalidation.
 
-##### bottomSummaryRows?
+##### `bottomSummaryRows?`
 
 ```ts
 bottomSummaryRows?: Maybe<readonly SR[]>;
@@ -320,9 +320,9 @@ bottomSummaryRows?: Maybe<readonly SR[]>;
 
 Rows pinned at the bottom of the grid for summary purposes.
 
-:warning: **Performance:** Memoize this array to prevent internal memoization invalidation.
+⚠️ **Performance:** Memoize this array to prevent internal memoization invalidation.
 
-##### rowKeyGetter?
+##### `rowKeyGetter?`
 
 ```ts
 rowKeyGetter?: Maybe<(row: R) => K>;
@@ -347,11 +347,11 @@ function MyGrid() {
 }
 ```
 
-:bulb: While optional, setting this prop is recommended for optimal performance, as the returned value is used to set the `key` prop on the row elements.
+💡 While optional, setting this prop is recommended for optimal performance, as the returned value is used to set the `key` prop on the row elements.
 
-:warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
 
-##### onRowsChange?
+##### `onRowsChange?`
 
 ```ts
 onRowsChange?: Maybe<(rows: R[], data: RowsChangeData<R, SR>) => void>;
@@ -373,7 +373,7 @@ function MyGrid() {
 }
 ```
 
-##### rowHeight?
+##### `rowHeight?`
 
 ```ts
 rowHeight?: Maybe<number | ((row: R) => number)>;
@@ -393,13 +393,11 @@ function getRowHeight(row) {
 <DataGrid columns={columns} rows={rows} rowHeight={getRowHeight} />;
 ```
 
-:warning: **Performance:** When using a function, the heights of all rows are processed upfront. For large datasets (1000+ rows), this can cause performance issues if the identity of the function changes and invalidates internal memoization. Consider using a static function when possible, or memoize the `rowHeight` function.
+⚠️ **Performance:** When using a function, the heights of all rows are processed upfront. For large datasets (1000+ rows), this can cause performance issues if the identity of the function changes and invalidates internal memoization. Consider using a static function when possible, or memoize the `rowHeight` function.
 
-###### Default Value
+**Default:** `35` pixels
 
-`35` pixels
-
-##### headerRowHeight?
+##### `headerRowHeight?`
 
 ```ts
 headerRowHeight?: Maybe<number>;
@@ -407,11 +405,9 @@ headerRowHeight?: Maybe<number>;
 
 Height of the header row in pixels.
 
-###### Default Value
+**Default:** `rowHeight` when it is a number, otherwise `35` pixels
 
-`rowHeight` when it is a number, otherwise `35` pixels
-
-##### summaryRowHeight?
+##### `summaryRowHeight?`
 
 ```ts
 summaryRowHeight?: Maybe<number>;
@@ -430,11 +426,9 @@ Height of each summary row in pixels.
 />
 ```
 
-###### Default Value
+**Default:** `rowHeight` when it is a number, otherwise `35` pixels
 
-`rowHeight` when it is a number, otherwise `35` pixels
-
-##### columnWidths?
+##### `columnWidths?`
 
 ```ts
 columnWidths?: Maybe<ColumnWidths>;
@@ -454,7 +448,7 @@ function addNewRow() {
 return <DataGrid columnWidths={columnWidths} onColumnWidthsChange={setColumnWidths} ... />
 ```
 
-##### onColumnWidthsChange?
+##### `onColumnWidthsChange?`
 
 ```ts
 onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
@@ -462,7 +456,7 @@ onColumnWidthsChange?: Maybe<(columnWidths: ColumnWidths) => void>;
 
 Callback triggered when column widths change. If not provided, an internal state is used. See the [`ColumnWidths`](#columnwidths-1) type.
 
-##### selectedRows?
+##### `selectedRows?`
 
 ```ts
 selectedRows?: Maybe<ReadonlySet<K>>;
@@ -470,7 +464,7 @@ selectedRows?: Maybe<ReadonlySet<K>>;
 
 A set of selected row keys. `rowKeyGetter` is required for row selection to work.
 
-##### isRowSelectionDisabled?
+##### `isRowSelectionDisabled?`
 
 ```ts
 isRowSelectionDisabled?: Maybe<(row: R) => boolean>;
@@ -478,7 +472,7 @@ isRowSelectionDisabled?: Maybe<(row: R) => boolean>;
 
 Function to determine if row selection is disabled for a specific row.
 
-##### onSelectedRowsChange?
+##### `onSelectedRowsChange?`
 
 ```ts
 onSelectedRowsChange?: Maybe<(selectedRows: Set<K>) => void>;
@@ -521,7 +515,7 @@ function MyGrid() {
 }
 ```
 
-##### sortColumns?
+##### `sortColumns?`
 
 ```ts
 sortColumns?: Maybe<readonly SortColumn[]>;
@@ -531,7 +525,7 @@ An array of sorted columns. See the [`SortColumn`](#sortcolumn) type.
 
 Sorting is controlled: the grid does not reorder `rows` for you. Apply the sorting to your `rows` state (or derived rows) based on `sortColumns`.
 
-##### onSortColumnsChange?
+##### `onSortColumnsChange?`
 
 ```ts
 onSortColumnsChange?: Maybe<(sortColumns: SortColumn[]) => void>;
@@ -576,7 +570,7 @@ function onSortColumnsChange(sortColumns: SortColumn[]) {
 }
 ```
 
-##### defaultColumnOptions?
+##### `defaultColumnOptions?`
 
 ```ts
 defaultColumnOptions?: Maybe<DefaultColumnOptions<R, SR>>;
@@ -601,7 +595,7 @@ function MyGrid() {
 }
 ```
 
-##### onCellMouseDown?
+##### `onCellMouseDown?`
 
 ```ts
 onCellMouseDown?: CellMouseEventHandler<R, SR>;
@@ -619,7 +613,7 @@ function onCellMouseDown(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellMouseDown={onCellMouseDown} />;
 ```
 
-##### onCellClick?
+##### `onCellClick?`
 
 ```ts
 onCellClick?: CellMouseEventHandler<R, SR>;
@@ -639,7 +633,7 @@ function onCellClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellClick={onCellClick} />;
 ```
 
-##### onCellDoubleClick?
+##### `onCellDoubleClick?`
 
 ```ts
 onCellDoubleClick?: CellMouseEventHandler<R, SR>;
@@ -657,7 +651,7 @@ function onCellDoubleClick(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellDoubleClick={onCellDoubleClick} />;
 ```
 
-##### onCellContextMenu?
+##### `onCellContextMenu?`
 
 ```ts
 onCellContextMenu?: CellMouseEventHandler<R, SR>;
@@ -676,7 +670,7 @@ function onCellContextMenu(args: CellMouseArgs<R, SR>, event: CellMouseEvent) {
 <DataGrid rows={rows} columns={columns} onCellContextMenu={onCellContextMenu} />;
 ```
 
-##### onCellKeyDown?
+##### `onCellKeyDown?`
 
 ```ts
 onCellKeyDown?: Maybe<(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
@@ -708,7 +702,7 @@ function onCellKeyDown(args: CellKeyDownArgs<R, SR>, event: CellKeyboardEvent) {
 
 See [more examples](https://github.com/Comcast/react-data-grid/blob/main/website/routes/CellNavigation.tsx).
 
-##### onCellCopy?
+##### `onCellCopy?`
 
 ```ts
 onCellCopy?: Maybe<(args: CellCopyArgs<R, SR>, event: CellClipboardEvent) => void>;
@@ -716,7 +710,7 @@ onCellCopy?: Maybe<(args: CellCopyArgs<R, SR>, event: CellClipboardEvent) => voi
 
 Callback triggered when a cell's content is copied. See the [`CellCopyArgs`](#cellcopyargs) type.
 
-##### onCellPaste?
+##### `onCellPaste?`
 
 ```ts
 onCellPaste?: Maybe<(args: CellPasteArgs<R, SR>, event: CellClipboardEvent) => R>;
@@ -726,7 +720,7 @@ Callback triggered when content is pasted into a cell. See the [`CellPasteArgs`]
 
 Return the updated row; the grid will call `onRowsChange` with it.
 
-##### onActivePositionChange?
+##### `onActivePositionChange?`
 
 ```ts
 onActivePositionChange?: Maybe<(args: PositionChangeArgs<R, SR>) => void>;
@@ -734,7 +728,7 @@ onActivePositionChange?: Maybe<(args: PositionChangeArgs<R, SR>) => void>;
 
 Callback triggered when the active position changes. See the [`PositionChangeArgs`](#positionchangeargs) type.
 
-##### onColumnResize?
+##### `onColumnResize?`
 
 ```ts
 onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>;
@@ -742,7 +736,7 @@ onColumnResize?: Maybe<(column: CalculatedColumn<R, SR>, width: number) => void>
 
 Callback triggered when a column is resized. The `column` parameter is the full [`CalculatedColumn`](#calculatedcolumn) object, and `width` is the new width in pixels.
 
-##### onColumnsReorder?
+##### `onColumnsReorder?`
 
 ```ts
 onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => void>;
@@ -750,7 +744,7 @@ onColumnsReorder?: Maybe<(sourceColumnKey: string, targetColumnKey: string) => v
 
 Callback triggered when columns are reordered. The parameters are the `key` values of the source and target columns.
 
-##### onFill?
+##### `onFill?`
 
 ```ts
 onFill?: Maybe<(event: FillEvent<R>) => R>;
@@ -768,15 +762,15 @@ function onFill({ columnKey, sourceRow, targetRow }: FillEvent<Row>): Row {
 <DataGrid columns={columns} rows={rows} onRowsChange={setRows} onFill={onFill} />;
 ```
 
-##### onScroll?
+##### `onScroll?`
 
 ```ts
-onScroll?: UIEventHandler<HTMLDivElement>;
+onScroll?: DivProps['onScroll'];
 ```
 
 Native DOM `onScroll` prop.
 
-##### enableVirtualization?
+##### `enableVirtualization?`
 
 ```ts
 enableVirtualization?: Maybe<boolean>;
@@ -784,11 +778,9 @@ enableVirtualization?: Maybe<boolean>;
 
 This prop can be used to disable virtualization.
 
-###### Default Value
+**Default:** `true`
 
-`true`
-
-##### renderers?
+##### `renderers?`
 
 ```ts
 renderers?: Maybe<Renderers<R, SR>>;
@@ -853,7 +845,7 @@ function MyGrid() {
 }
 ```
 
-##### rowClass?
+##### `rowClass?`
 
 ```ts
 rowClass?: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
@@ -873,9 +865,9 @@ function MyGrid() {
 }
 ```
 
-:warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to avoid re-rendering all rows on every render.
+⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to avoid re-rendering all rows on every render.
 
-##### headerRowClass?
+##### `headerRowClass?`
 
 ```ts
 headerRowClass?: Maybe<string>;
@@ -887,7 +879,7 @@ Custom class name for the header row.
 <DataGrid columns={columns} rows={rows} headerRowClass="sticky-header" />
 ```
 
-##### direction?
+##### `direction?`
 
 ```ts
 direction?: Maybe<Direction>;
@@ -902,78 +894,76 @@ Setting `direction` to `'rtl'` has the following effects:
 - Column resize cursor is shown on the left edge of the column
 - Scrollbar is moved to the left
 
-###### Default Value
+**Default:** `'ltr'`
 
-`'ltr'`
-
-##### className?
+##### `className?`
 
 ```ts
-className?: string;
+className?: DivProps['className'];
 ```
 
 Custom class name for the grid.
 
-##### style?
+##### `style?`
 
 ```ts
-style?: CSSProperties;
+style?: DivProps['style'];
 ```
 
 Custom styles for the grid.
 
-##### role?
+##### `role?`
 
 ```ts
-role?: AriaRole;
+role?: DivProps['role'];
 ```
 
 ARIA role for the grid container. Defaults to `grid`.
 
-##### aria-label?
+##### `aria-label?`
 
 ```ts
-"aria-label"?: string;
+'aria-label'?: DivProps['aria-label'];
 ```
 
 The label of the grid. We recommend providing a label using `aria-label` or `aria-labelledby`.
 
-##### aria-labelledby?
+##### `aria-labelledby?`
 
 ```ts
-"aria-labelledby"?: string;
+'aria-labelledby'?: DivProps['aria-labelledby'];
 ```
 
 The id of the element containing a label for the grid. We recommend providing a label using `aria-label` or `aria-labelledby`.
 
-##### aria-rowcount?
+##### `aria-rowcount?`
 
 ```ts
-"aria-rowcount"?: number;
+'aria-rowcount'?: DivProps['aria-rowcount'];
 ```
 
 Total number of rows for assistive technologies.
 
-##### aria-description?
+##### `aria-description?`
 
 ```ts
-"aria-description"?: string;
+'aria-description'?: DivProps['aria-description'];
 ```
 
 A human-readable description of the grid.
 
-##### aria-describedby?
+##### `aria-describedby?`
 
 ```ts
-"aria-describedby"?: string;
+'aria-describedby'?: DivProps['aria-describedby'];
 ```
 
 If the grid has a caption or description, `aria-describedby` can be set on the grid element with a value referring to the element containing the description.
 
-##### data-testid?
+##### `data-testid?`
 
 ```ts
-"data-testid"?: Maybe<string>;
+'data-testid'?: Maybe<string>;
 ```
 
 This prop can be used to add a test ID for testing. We recommend querying the grid by its `role` and `name`.
@@ -989,19 +979,15 @@ test('grid', async () => {
 });
 ```
 
-##### data-cy?
+##### `data-cy?`
 
 ```ts
-"data-cy"?: Maybe<string>;
+'data-cy'?: Maybe<string>;
 ```
 
 Optional attribute to help with Cypress (or similar) selectors.
 
----
-
-### `<TreeDataGrid />`
-
-**Props:** [`TreeDataGridProps`](#treedatagridprops)\<`R`, `SR`, `K`\>
+#### `<TreeDataGrid />`
 
 `TreeDataGrid` is a component built on top of `DataGrid` to add hierarchical row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/).
 
@@ -1034,36 +1020,26 @@ The following `DataGrid` props are not supported in `TreeDataGrid`:
 - Cell copy/paste does not work on group rows
 - Column groups are not supported; `columns` must be `Column[]`
 
----
+**Props:** [`TreeDataGridProps<R, SR, K>`](#treedatagridprops)
 
-### TreeDataGridProps
+#### `TreeDataGridProps`
 
 All [`DataGridProps`](#datagridprops) are supported except those listed above. The `columns` prop only supports `Column[]` (no column groups). When `rowHeight` is a function, it receives [`RowHeightArgs`](#rowheightargs) instead of just the row. Additional props are listed below:
 
-#### Extends
+```ts
+interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends Omit<DataGridProps<R, SR, K>, 'columns' | 'role' | 'aria-rowcount' | 'rowHeight' | 'onFill' | 'isRowSelectionDisabled'> { … }
+```
 
-- [`Omit`](#omit)\<[`DataGridProps`](#datagridprops)\<`R`, `SR`, `K`\>,
-  \| `"columns"`
-  \| `"role"`
-  \| `"aria-rowcount"`
-  \| `"rowHeight"`
-  \| `"onFill"`
-  \| `"isRowSelectionDisabled"`\>
-
-#### Properties
-
-##### columns
+##### `columns`
 
 ```ts
 columns: readonly Column<R, SR>[];
 ```
 
-##### rowHeight?
+##### `rowHeight?`
 
 ```ts
-rowHeight?: Maybe<
-  | number
-| ((args: RowHeightArgs<R>) => number)>;
+rowHeight?: Maybe<number | ((args: RowHeightArgs<R>) => number)>;
 ```
 
 **Note:** Unlike `DataGrid`, the `rowHeight` function receives [`RowHeightArgs<R>`](#rowheightargs), which includes a `type` property to distinguish between regular rows and group rows:
@@ -1079,7 +1055,7 @@ function getRowHeight(args: RowHeightArgs<Row>): number {
 <TreeDataGrid rowHeight={getRowHeight} ... />
 ```
 
-##### groupBy
+##### `groupBy`
 
 ```ts
 groupBy: readonly string[];
@@ -1115,7 +1091,7 @@ function MyGrid() {
 }
 ```
 
-##### rowGrouper
+##### `rowGrouper`
 
 ```ts
 rowGrouper: (rows: readonly R[], columnKey: string) => Record<string, readonly R[]>;
@@ -1129,9 +1105,9 @@ function rowGrouper(rows: readonly Row[], columnKey: string): Record<string, rea
 }
 ```
 
-:warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
 
-##### expandedGroupIds
+##### `expandedGroupIds`
 
 ```ts
 expandedGroupIds: ReadonlySet<unknown>;
@@ -1156,7 +1132,7 @@ function MyGrid() {
 }
 ```
 
-##### onExpandedGroupIdsChange
+##### `onExpandedGroupIdsChange`
 
 ```ts
 onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
@@ -1164,7 +1140,7 @@ onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
 
 **Required.** Callback triggered when groups are expanded or collapsed.
 
-##### groupIdGetter?
+##### `groupIdGetter?`
 
 ```ts
 groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
@@ -1172,59 +1148,55 @@ groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
 
 Function to generate unique IDs for group rows. If not provided, a default implementation is used that concatenates parent and group keys with `__`.
 
-:warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+⚠️ **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
 
----
-
-### `<Cell />`
-
-**Props:** [`RenderCellProps`](#rendercellprops)\<`R`, `SR`\>
+#### `<Cell />`
 
 The default cell component. Can be wrapped via the `renderers.renderCell` prop.
 
----
+**Props:** [`RenderCellProps<R, SR>`](#rendercellprops)
 
-### `<Row />`
-
-**Props:** [`RenderRowProps`](#renderrowprops)\<`R`, `SR`\>
+#### `<Row />`
 
 The default row component. Can be wrapped via the `renderers.renderRow` prop.
 
----
+**Props:** [`RenderRowProps<R, SR>`](#renderrowprops)
 
-### `<SelectCheckbox />`
-
-**Props:** [`SelectCheckboxProps`](#selectcheckboxprops)
+#### `<SelectCheckbox />`
 
 A component for rendering row selection checkboxes.
 
 The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
 
----
+**Props:** [`SelectCheckboxProps`](#selectcheckboxprops)
 
-### `<ToggleGroup />`
-
-**Props:** [`RenderGroupCellContentProps`](#rendergroupcellcontentprops)\<`R`, `SR`\>
+#### `<ToggleGroup />`
 
 Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
 
-## Hooks
+**Props:** [`RenderGroupCellContentProps<R, SR>`](#rendergroupcellcontentprops)
 
-### useHeaderRowSelection()
+### Hooks
+
+#### `useHeaderRowSelection()`
 
 ```ts
-function useHeaderRowSelection(): object;
+function useHeaderRowSelection(): {
+  isIndeterminate: boolean;
+  isRowSelected: boolean;
+  onRowSelectionChange: (selectRowEvent: SelectHeaderRowEvent) => void;
+};
 ```
 
 Hook for managing header row selection state. Used within custom header cell renderers to implement custom "select all" functionality.
 
-#### Returns
+**Returns:**
 
 - `isIndeterminate: boolean` - Whether some (but not all) rows are selected
 - `isRowSelected: boolean` - Whether all rows are selected
 - `onRowSelectionChange: (event: SelectHeaderRowEvent) => void` - Callback to change selection state
 
-#### Example
+**Example:**
 
 ```tsx
 import { useLayoutEffect, useRef } from 'react';
@@ -1250,23 +1222,25 @@ function CustomHeaderCell() {
 }
 ```
 
----
-
-### useRowSelection()
+#### `useRowSelection()`
 
 ```ts
-function useRowSelection(): object;
+function useRowSelection(): {
+  isRowSelectionDisabled: boolean;
+  isRowSelected: boolean;
+  onRowSelectionChange: (selectRowEvent: SelectRowEvent<any>) => void;
+};
 ```
 
 Hook for managing row selection state. Used within custom cell renderers to implement custom row selection.
 
-#### Returns
+**Returns:**
 
 - `isRowSelectionDisabled: boolean` - Whether selection is disabled for this row
 - `isRowSelected: boolean` - Whether this row is selected
 - `onRowSelectionChange: (event: SelectRowEvent<R>) => void` - Callback to change selection state
 
-#### Example
+**Example:**
 
 ```tsx
 function CustomSelectCell({ row }: RenderCellContentProps<Row>) {
@@ -1289,17 +1263,21 @@ function CustomSelectCell({ row }: RenderCellContentProps<Row>) {
 }
 ```
 
-## Render Functions
+### Render Functions
 
-### renderCheckbox()
+#### `renderCheckbox()`
 
 ```ts
-function renderCheckbox(props: RenderCheckboxProps): Element;
+function renderCheckbox({
+  onChange,
+  indeterminate,
+  ...props
+}: RenderCheckboxProps): import('react').JSX.Element;
 ```
 
 Renders a checkbox input with proper styling and accessibility.
 
-#### Example
+**Example:**
 
 ```tsx
 import { DataGrid, renderCheckbox } from 'react-data-grid';
@@ -1311,17 +1289,19 @@ import { DataGrid, renderCheckbox } from 'react-data-grid';
 />;
 ```
 
----
-
-### renderHeaderCell()
+#### `renderHeaderCell()`
 
 ```ts
-function renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>): string | Element;
+function renderHeaderCell<R, SR>({
+  column,
+  sortDirection,
+  priority
+}: RenderHeaderCellContentProps<R, SR>): string | import('react').JSX.Element;
 ```
 
 The default header cell content renderer. Renders sortable columns with sort indicators.
 
-#### Example
+**Example:**
 
 ```tsx
 import { renderHeaderCell, type Column } from 'react-data-grid';
@@ -1336,37 +1316,36 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
----
-
-### renderSortIcon()
+#### `renderSortIcon()`
 
 ```ts
-function renderSortIcon(props: RenderSortIconProps): Element | null;
+function renderSortIcon({ sortDirection }: RenderSortIconProps): import('react').JSX.Element | null;
 ```
 
 Renders the sort direction arrow icon.
 
----
-
-### renderSortPriority()
+#### `renderSortPriority()`
 
 ```ts
-function renderSortPriority(props: RenderSortPriorityProps): number | undefined;
+function renderSortPriority({ priority }: RenderSortPriorityProps): number | undefined;
 ```
 
 Renders the sort priority number for multi-column sorting.
 
----
-
-### renderTextEditor()
+#### `renderTextEditor()`
 
 ```ts
-function renderTextEditor<R, SR>(props: RenderEditCellContentProps<R, SR>): Element;
+function renderTextEditor<R, SR>({
+  row,
+  column,
+  onRowChange,
+  onClose
+}: RenderEditCellContentProps<R, SR>): import('react').JSX.Element;
 ```
 
 A basic text editor provided for convenience.
 
-#### Example
+**Example:**
 
 ```tsx
 import { renderTextEditor, type Column } from 'react-data-grid';
@@ -1380,17 +1359,17 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
----
-
-### renderToggleGroup()
+#### `renderToggleGroup()`
 
 ```ts
-function renderToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>): Element;
+function renderToggleGroup<R, SR>(
+  props: RenderGroupCellContentProps<R, SR>
+): import('react').JSX.Element;
 ```
 
 The default group cell content renderer for the columns used for grouping (`groupBy` prop). This renders the expand/collapse toggle.
 
-#### Example
+**Example:**
 
 ```tsx
 import { renderToggleGroup, type Column } from 'react-data-grid';
@@ -1404,17 +1383,15 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
----
-
-### renderValue()
+#### `renderValue()`
 
 ```ts
-function renderValue<R, SR>(props: RenderCellContentProps<R, SR>): ReactNode;
+function renderValue<R, SR>(props: RenderCellContentProps<R, SR>): React.ReactNode;
 ```
 
 The default cell content renderer that renders the value of `row[column.key]`.
 
-#### Example
+**Example:**
 
 ```tsx
 import { renderValue, type Column } from 'react-data-grid';
@@ -1428,17 +1405,17 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-## Context
+### Context
 
-### DataGridRenderersContext
+#### `DataGridRenderersContext`
 
 ```ts
-const DataGridRenderersContext: Context<Maybe<Renderers<any, any>>>;
+const DataGridRenderersContext: import("react").Context<Maybe<Renderers<any, any>>>;
 ```
 
 Context for providing default renderers to DataGrids in your app.
 
-#### Example
+**Example:**
 
 ```tsx
 import {
@@ -1469,17 +1446,17 @@ function AppProvider({ children }) {
 }
 ```
 
-## Other
+### Other
 
-### SELECT\_COLUMN\_KEY
+#### `SELECT_COLUMN_KEY`
 
 ```ts
-const SELECT_COLUMN_KEY: 'rdg-select-column' = 'rdg-select-column';
+const SELECT_COLUMN_KEY = 'rdg-select-column';
 ```
 
 The key used for the `SelectColumn`. Useful for identifying or filtering the select column.
 
-#### Example
+**Example:**
 
 ```tsx
 import { SELECT_COLUMN_KEY } from 'react-data-grid';
@@ -1487,9 +1464,7 @@ import { SELECT_COLUMN_KEY } from 'react-data-grid';
 const nonSelectColumns = columns.filter((column) => column.key !== SELECT_COLUMN_KEY);
 ```
 
----
-
-### SelectColumn
+#### `SelectColumn`
 
 ```ts
 const SelectColumn: Column<any, any>;
@@ -1498,7 +1473,7 @@ const SelectColumn: Column<any, any>;
 A pre-configured column for row selection.
 Includes checkbox renderers for the header row, regular rows, and group rows.
 
-#### Example
+**Example:**
 
 ```tsx
 import { DataGrid, SelectColumn, type Column } from 'react-data-grid';
@@ -1522,111 +1497,90 @@ function MyGrid() {
 }
 ```
 
-## Types
+### Types
 
-### CalculatedColumn
+#### `CalculatedColumn`
 
 Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. The `Column` properties it redeclares, like `width` and `renderCell`, are resolved to their default values when not set.
 
-#### See
+```ts
+interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
+  /** The column group that contains the column, or `undefined` if the column is not in a group */
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
+  /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
+  readonly idx: number;
+  /** Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups */
+  readonly level: number;
+  readonly width: number | string;
+  readonly minWidth: number;
+  readonly maxWidth: number | undefined;
+  readonly resizable: boolean;
+  readonly sortable: boolean;
+  readonly draggable: boolean;
+  readonly frozen: ColumnFrozen;
+  readonly renderCell: (props: RenderCellContentProps<R, SR>) => ReactNode;
+  readonly renderHeaderCell: (props: RenderHeaderCellContentProps<R, SR>) => ReactNode;
+}
+```
 
-[`Column`](#column), [`onColumnResize`](#oncolumnresize) prop on `<DataGrid />`
+**See also:** [`Column`](#column), [`onColumnResize`](#oncolumnresize) prop on `<DataGrid />`
 
-#### Extends
+#### `CalculatedColumnOrColumnGroup`
 
-- [`Column`](#column)\<`R`, `SR`\>
-
-#### Properties
-
-| Property           | Modifier   | Type                                                                                                   | Description                                                                                                                                                        | Overrides |
-| ------------------ | ---------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------- |
-| `parent`           | `readonly` | \| [`CalculatedColumnParent`](#calculatedcolumnparent)\<`R`, `SR`\> \| `undefined`                     | The column group that contains the column, or `undefined` if the column is not in a group                                                                          | -         |
-| `idx`              | `readonly` | `number`                                                                                               | The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` | -         |
-| `level`            | `readonly` | `number`                                                                                               | Header row level, counted from the bottom header row: always `0` for columns, and negative for column groups                                                       | -         |
-| `width`            | `readonly` | `string` \| `number`                                                                                   | -                                                                                                                                                                  |           |
-| `minWidth`         | `readonly` | `number`                                                                                               | -                                                                                                                                                                  |           |
-| `maxWidth`         | `readonly` | `number` \| `undefined`                                                                                | -                                                                                                                                                                  |           |
-| `resizable`        | `readonly` | `boolean`                                                                                              | -                                                                                                                                                                  |           |
-| `sortable`         | `readonly` | `boolean`                                                                                              | -                                                                                                                                                                  |           |
-| `draggable`        | `readonly` | `boolean`                                                                                              | -                                                                                                                                                                  |           |
-| `frozen`           | `readonly` | [`ColumnFrozen`](#columnfrozen)                                                                        | -                                                                                                                                                                  |           |
-| `renderCell`       | `readonly` | (`props`: [`RenderCellContentProps`](#rendercellcontentprops)\<`R`, `SR`\>) => `ReactNode`             | -                                                                                                                                                                  |           |
-| `renderHeaderCell` | `readonly` | (`props`: [`RenderHeaderCellContentProps`](#renderheadercellcontentprops)\<`R`, `SR`\>) => `ReactNode` | -                                                                                                                                                                  |           |
-
----
-
-### CalculatedColumnOrColumnGroup
+Union type representing either a `CalculatedColumnParent` or a `CalculatedColumn`.
 
 ```ts
 type CalculatedColumnOrColumnGroup<R, SR> = CalculatedColumnParent<R, SR> | CalculatedColumn<R, SR>;
 ```
 
-Union type representing either a `CalculatedColumnParent` or a `CalculatedColumn`.
+**See also:** [`CalculatedColumn`](#calculatedcolumn), [`CalculatedColumnParent`](#calculatedcolumnparent)
 
-#### See
-
-[`CalculatedColumn`](#calculatedcolumn), [`CalculatedColumnParent`](#calculatedcolumnparent)
-
----
-
-### CalculatedColumnParent
+#### `CalculatedColumnParent`
 
 Represents a parent column group in the calculated column structure.
 
-#### See
+```ts
+interface CalculatedColumnParent<R, SR> {
+  readonly name: string | ReactElement;
+  readonly parent: CalculatedColumnParent<R, SR> | undefined;
+  readonly idx: number;
+  readonly colSpan: number;
+  readonly level: number;
+  readonly headerCellClass?: Maybe<string>;
+}
+```
 
-[`CalculatedColumn`](#calculatedcolumn)
+**See also:** [`CalculatedColumn`](#calculatedcolumn)
 
-#### Properties
+#### `CellCopyArgs`
 
-| Property           | Modifier   | Type                                                                                     |
-| ------------------ | ---------- | ---------------------------------------------------------------------------------------- |
-| `name`             | `readonly` | \| `string` \| `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> |
-| `parent`           | `readonly` | \| [`CalculatedColumnParent`](#calculatedcolumnparent)\<`R`, `SR`\> \| `undefined`       |
-| `idx`              | `readonly` | `number`                                                                                 |
-| `colSpan`          | `readonly` | `number`                                                                                 |
-| `level`            | `readonly` | `number`                                                                                 |
-| `headerCellClass?` | `readonly` | [`Maybe`](#maybe)\<`string`\>                                                            |
-
----
-
-### CellCopyArgs
+Arguments passed to `onCellCopy`.
 
 ```ts
 type CellCopyArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 ```
 
-Arguments passed to `onCellCopy`.
+**See also:** [`onCellCopy`](#oncellcopy) prop on `<DataGrid />`
 
-#### See
+#### `CellKeyboardEvent`
 
-[`onCellCopy`](#oncellcopy) prop on `<DataGrid />`
-
----
-
-### CellKeyboardEvent
+Extends `React.KeyboardEvent<HTMLDivElement>` with grid-specific methods.
 
 ```ts
 type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 ```
 
-Extends `React.KeyboardEvent<HTMLDivElement>` with grid-specific methods.
+**See also:** [`onCellKeyDown`](#oncellkeydown) prop on `<DataGrid />`
 
-#### See
+#### `CellKeyDownArgs`
 
-[`onCellKeyDown`](#oncellkeydown) prop on `<DataGrid />`
-
----
-
-### CellKeyDownArgs
+Arguments passed to the `onCellKeyDown` handler. The shape differs based on whether the cell is in ACTIVE or EDIT mode.
 
 ```ts
 type CellKeyDownArgs<R, SR = unknown> = ActiveCellKeyDownArgs<R, SR> | EditCellKeyDownArgs<R, SR>;
 ```
 
-Arguments passed to the `onCellKeyDown` handler. The shape differs based on whether the cell is in ACTIVE or EDIT mode.
-
-#### Example
+**Example:**
 
 ```tsx
 import type { CellKeyboardEvent, CellKeyDownArgs } from 'react-data-grid';
@@ -1639,17 +1593,26 @@ function onCellKeyDown(args: CellKeyDownArgs<Row>, event: CellKeyboardEvent) {
 }
 ```
 
-#### See
+**See also:** [`onCellKeyDown`](#oncellkeydown) prop on `<DataGrid />`
 
-[`onCellKeyDown`](#oncellkeydown) prop on `<DataGrid />`
-
----
-
-### CellMouseArgs
+#### `CellMouseArgs`
 
 Arguments passed to cell mouse event handlers.
 
-#### Example
+```ts
+interface CellMouseArgs<R, SR = unknown> {
+  /** The column object of the cell. */
+  column: CalculatedColumn<R, SR>;
+  /** The row object of the cell. */
+  row: R;
+  /** The row index of the cell. */
+  rowIdx: number;
+  /** Function to manually focus the cell. Pass `true` to immediately start editing. */
+  setActivePosition: (enableEditor?: boolean) => void;
+}
+```
+
+**Example:**
 
 ```tsx
 import type { CellMouseArgs, CellMouseEvent } from 'react-data-grid';
@@ -1660,30 +1623,17 @@ function onCellClick(args: CellMouseArgs<Row>, event: CellMouseEvent) {
 }
 ```
 
-#### See
+**See also:** [`onCellMouseDown`](#oncellmousedown), [`onCellClick`](#oncellclick), [`onCellDoubleClick`](#oncelldoubleclick), and [`onCellContextMenu`](#oncellcontextmenu) props on `<DataGrid />`
 
-[`onCellMouseDown`](#oncellmousedown), [`onCellClick`](#oncellclick), [`onCellDoubleClick`](#oncelldoubleclick), and [`onCellContextMenu`](#oncellcontextmenu) props on `<DataGrid />`
+#### `CellMouseEvent`
 
-#### Properties
-
-| Property            | Type                                                 | Description                                                                    |
-| ------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `column`            | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> | The column object of the cell.                                                 |
-| `row`               | `R`                                                  | The row object of the cell.                                                    |
-| `rowIdx`            | `number`                                             | The row index of the cell.                                                     |
-| `setActivePosition` | (`enableEditor?`: `boolean`) => `void`               | Function to manually focus the cell. Pass `true` to immediately start editing. |
-
----
-
-### CellMouseEvent
+Extends `React.MouseEvent<HTMLDivElement>` with grid-specific methods.
 
 ```ts
 type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 ```
 
-Extends `React.MouseEvent<HTMLDivElement>` with grid-specific methods.
-
-#### Example
+**Example:**
 
 ```tsx
 import type { CellMouseArgs, CellMouseEvent } from 'react-data-grid';
@@ -1695,46 +1645,38 @@ function onCellMouseDown(args: CellMouseArgs<Row>, event: CellMouseEvent) {
 }
 ```
 
-#### See
+**See also:** [`onCellMouseDown`](#oncellmousedown), [`onCellClick`](#oncellclick), [`onCellDoubleClick`](#oncelldoubleclick), and [`onCellContextMenu`](#oncellcontextmenu) props on `<DataGrid />`
 
-[`onCellMouseDown`](#oncellmousedown), [`onCellClick`](#oncellclick), [`onCellDoubleClick`](#oncelldoubleclick), and [`onCellContextMenu`](#oncellcontextmenu) props on `<DataGrid />`
+#### `CellPasteArgs`
 
----
-
-### CellPasteArgs
+Arguments passed to `onCellPaste`.
 
 ```ts
 type CellPasteArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 ```
 
-Arguments passed to `onCellPaste`.
+**See also:** [`onCellPaste`](#oncellpaste) prop on `<DataGrid />`
 
-#### See
+#### `ColSpanArgs`
 
-[`onCellPaste`](#oncellpaste) prop on `<DataGrid />`
-
----
-
-### ColSpanArgs
+Arguments passed to the `colSpan` function.
 
 ```ts
 type ColSpanArgs<R, SR> =
   | {
-      type: 'HEADER';
+      readonly type: 'HEADER';
     }
   | {
-      type: 'ROW';
-      row: R;
+      readonly type: 'ROW';
+      readonly row: R;
     }
   | {
-      type: 'SUMMARY';
-      row: SR;
+      readonly type: 'SUMMARY';
+      readonly row: SR;
     };
 ```
 
-Arguments passed to the `colSpan` function.
-
-#### Example
+**Example:**
 
 ```tsx
 import type { Column } from 'react-data-grid';
@@ -1753,37 +1695,27 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-#### See
+**See also:** [`column.colSpan`](#colspan)
 
-[`column.colSpan`](#colspan)
-
----
-
-### Column
+#### `Column`
 
 Defines the configuration for a column in the grid.
 
-#### See
+```ts
+interface Column<R, SR = unknown> { … }
+```
 
-[`columns`](#columns) prop on `<DataGrid />`
+**See also:** [`columns`](#columns) prop on `<DataGrid />`
 
-#### Extended by
-
-- [`CalculatedColumn`](#calculatedcolumn)
-
-#### Properties
-
-##### name
+##### `name`
 
 ```ts
-readonly name:
-  | string
-| ReactElement<unknown, string | JSXElementConstructor<any>>;
+readonly name: string | ReactElement;
 ```
 
 The name of the column. Displayed in the header cell by default.
 
-##### key
+##### `key`
 
 ```ts
 readonly key: string;
@@ -1791,10 +1723,10 @@ readonly key: string;
 
 A unique key to distinguish each column.
 
-##### width?
+##### `width?`
 
 ```ts
-readonly width?: Maybe<string | number>;
+readonly width?: Maybe<number | string>;
 ```
 
 Width can be any valid CSS grid column value. If not specified, it will be determined automatically based on grid width and specified widths of other columns.
@@ -1833,11 +1765,9 @@ width: 'minmax(100px, max-content)',
 
 `max-content` can be used to expand the column to show all the content. Note that the grid is only able to calculate column width for visible rows.
 
-###### Default Value
+**Default:** `auto`
 
-`auto`
-
-##### minWidth?
+##### `minWidth?`
 
 ```ts
 readonly minWidth?: Maybe<number>;
@@ -1845,11 +1775,9 @@ readonly minWidth?: Maybe<number>;
 
 Minimum column width in pixels.
 
-###### Default Value
+**Default:** `50` pixels
 
-`50` pixels
-
-##### maxWidth?
+##### `maxWidth?`
 
 ```ts
 readonly maxWidth?: Maybe<number>;
@@ -1857,7 +1785,7 @@ readonly maxWidth?: Maybe<number>;
 
 Maximum column width in pixels.
 
-##### cellClass?
+##### `cellClass?`
 
 ```ts
 readonly cellClass?: Maybe<string | ((row: R) => Maybe<string>)>;
@@ -1895,7 +1823,7 @@ const columns: Column<Row>[] = [
 }
 ```
 
-##### headerCellClass?
+##### `headerCellClass?`
 
 ```ts
 readonly headerCellClass?: Maybe<string>;
@@ -1903,7 +1831,7 @@ readonly headerCellClass?: Maybe<string>;
 
 Class name(s) for the header cell.
 
-##### summaryCellClass?
+##### `summaryCellClass?`
 
 ```ts
 readonly summaryCellClass?: Maybe<string | ((row: SR) => Maybe<string>)>;
@@ -1911,7 +1839,7 @@ readonly summaryCellClass?: Maybe<string | ((row: SR) => Maybe<string>)>;
 
 Class name(s) for summary cells. Can be a string or a function that returns a class name based on the summary row.
 
-##### renderCell?
+##### `renderCell?`
 
 ```ts
 readonly renderCell?: Maybe<(props: RenderCellContentProps<R, SR>) => ReactNode>;
@@ -1919,7 +1847,7 @@ readonly renderCell?: Maybe<(props: RenderCellContentProps<R, SR>) => ReactNode>
 
 Render function to render the content of cells.
 
-##### renderHeaderCell?
+##### `renderHeaderCell?`
 
 ```ts
 readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellContentProps<R, SR>) => ReactNode>;
@@ -1927,7 +1855,7 @@ readonly renderHeaderCell?: Maybe<(props: RenderHeaderCellContentProps<R, SR>) =
 
 Render function to render the content of the header cell.
 
-##### renderSummaryCell?
+##### `renderSummaryCell?`
 
 ```ts
 readonly renderSummaryCell?: Maybe<(props: RenderSummaryCellContentProps<SR, R>) => ReactNode>;
@@ -1935,7 +1863,7 @@ readonly renderSummaryCell?: Maybe<(props: RenderSummaryCellContentProps<SR, R>)
 
 Render function to render the content of summary cells.
 
-##### renderGroupCell?
+##### `renderGroupCell?`
 
 ```ts
 readonly renderGroupCell?: Maybe<(props: RenderGroupCellContentProps<R, SR>) => ReactNode>;
@@ -1943,7 +1871,7 @@ readonly renderGroupCell?: Maybe<(props: RenderGroupCellContentProps<R, SR>) => 
 
 Render function to render the content of group cells when using `TreeDataGrid`.
 
-##### renderEditCell?
+##### `renderEditCell?`
 
 ```ts
 readonly renderEditCell?: Maybe<(props: RenderEditCellContentProps<R, SR>) => ReactNode>;
@@ -1951,7 +1879,7 @@ readonly renderEditCell?: Maybe<(props: RenderEditCellContentProps<R, SR>) => Re
 
 Render function to render the content of edit cells. When set, the column is automatically set to be editable.
 
-##### editable?
+##### `editable?`
 
 ```ts
 readonly editable?: Maybe<boolean | ((row: R) => boolean)>;
@@ -1959,7 +1887,7 @@ readonly editable?: Maybe<boolean | ((row: R) => boolean)>;
 
 Control whether cells can be edited with `renderEditCell`.
 
-##### colSpan?
+##### `colSpan?`
 
 ```ts
 readonly colSpan?: Maybe<(args: ColSpanArgs<R, SR>) => Maybe<number>>;
@@ -1967,7 +1895,7 @@ readonly colSpan?: Maybe<(args: ColSpanArgs<R, SR>) => Maybe<number>>;
 
 Function to determine how many columns this cell should span. Returns the number of columns to span, or `undefined` for no spanning. See the [`ColSpanArgs`](#colspanargs) type.
 
-###### Example
+**Example:**
 
 ```tsx
 import type { Column } from 'react-data-grid';
@@ -1986,7 +1914,7 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-##### frozen?
+##### `frozen?`
 
 ```ts
 readonly frozen?: Maybe<ColumnFrozen>;
@@ -2006,11 +1934,9 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-###### Default Value
+**Default:** `false`
 
-`false`
-
-##### resizable?
+##### `resizable?`
 
 ```ts
 readonly resizable?: Maybe<boolean>;
@@ -2018,11 +1944,9 @@ readonly resizable?: Maybe<boolean>;
 
 Enable resizing of the column.
 
-###### Default Value
+**Default:** `false`
 
-`false`
-
-##### sortable?
+##### `sortable?`
 
 ```ts
 readonly sortable?: Maybe<boolean>;
@@ -2030,11 +1954,9 @@ readonly sortable?: Maybe<boolean>;
 
 Enable sorting of the column.
 
-###### Default Value
+**Default:** `false`
 
-`false`
-
-##### draggable?
+##### `draggable?`
 
 ```ts
 readonly draggable?: Maybe<boolean>;
@@ -2042,11 +1964,9 @@ readonly draggable?: Maybe<boolean>;
 
 Enable dragging of the column.
 
-###### Default Value
+**Default:** `false`
 
-`false`
-
-##### sortDescendingFirst?
+##### `sortDescendingFirst?`
 
 ```ts
 readonly sortDescendingFirst?: Maybe<boolean>;
@@ -2054,39 +1974,60 @@ readonly sortDescendingFirst?: Maybe<boolean>;
 
 Sets the column sort order to be descending instead of ascending the first time the column is sorted.
 
-###### Default Value
+**Default:** `false`
 
-`false`
-
-##### editorOptions?
+##### `editorOptions?`
 
 ```ts
-readonly editorOptions?: Maybe<ColumnEditorOptions>;
+readonly editorOptions?: Maybe<{
+    /**
+     * Render the cell content in addition to the edit cell content. Enable this option when the editor is rendered outside the grid, like a modal for example.
+     * By default, the cell content is not rendered when the edit cell is open.
+     *
+     * @defaultValue `false`
+     */
+    readonly displayCellContent?: Maybe<boolean>;
+    /**
+     * Commit changes when clicking outside the cell.
+     *
+     * @defaultValue `true`
+     */
+    readonly commitOnOutsideClick?: Maybe<boolean>;
+    /**
+     * Close the editor when the row value changes externally.
+     *
+     * @defaultValue `true`
+     */
+    readonly closeOnExternalRowChange?: Maybe<boolean>;
+  }>;
 ```
 
 Options for cell editing.
 
----
+#### `ColumnFrozen`
 
-### ColumnFrozen
+Whether a column is frozen, and on which edge.
 
 ```ts
 type ColumnFrozen = boolean | 'start' | 'end';
 ```
 
-Whether a column is frozen, and on which edge.
+**See also:** [`column.frozen`](#frozen)
 
-#### See
-
-[`column.frozen`](#frozen)
-
----
-
-### ColumnGroup
+#### `ColumnGroup`
 
 Defines a group of columns that share a common header.
 
-#### Example
+```ts
+interface ColumnGroup<R, SR = unknown> {
+  /** The name of the column group. It will be displayed in the header cell */
+  readonly name: string | ReactElement;
+  readonly headerCellClass?: Maybe<string>;
+  readonly children: readonly ColumnOrColumnGroup<R, SR>[];
+}
+```
+
+**Example:**
 
 ```tsx
 import type { ColumnOrColumnGroup } from 'react-data-grid';
@@ -2102,70 +2043,56 @@ const columns: readonly ColumnOrColumnGroup<Row>[] = [
 ];
 ```
 
-#### See
+**See also:** [`ColumnOrColumnGroup`](#columnorcolumngroup)
 
-[`ColumnOrColumnGroup`](#columnorcolumngroup)
+#### `ColumnOrColumnGroup`
 
-#### Properties
-
-| Property           | Modifier   | Type                                                                                     | Description                                                           |
-| ------------------ | ---------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `name`             | `readonly` | \| `string` \| `ReactElement`\<`unknown`, `string` \| `JSXElementConstructor`\<`any`\>\> | The name of the column group. It will be displayed in the header cell |
-| `headerCellClass?` | `readonly` | [`Maybe`](#maybe)\<`string`\>                                                            | -                                                                     |
-| `children`         | `readonly` | readonly [`ColumnOrColumnGroup`](#columnorcolumngroup)\<`R`, `SR`\>[]                    | -                                                                     |
-
----
-
-### ColumnOrColumnGroup
+Union type representing either a `Column` or a `ColumnGroup`.
 
 ```ts
 type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
 ```
 
-Union type representing either a `Column` or a `ColumnGroup`.
+**See also:** [`columns`](#columns) prop on `<DataGrid />`
 
-#### See
-
-[`columns`](#columns) prop on `<DataGrid />`
-
----
-
-### ColumnWidth
+#### `ColumnWidth`
 
 Represents a single column's width.
 
-#### See
+```ts
+interface ColumnWidth {
+  /** `'resized'` if the user resized the column, or `'measured'` if the grid measured it */
+  readonly type: 'resized' | 'measured';
+  /** The width in pixels */
+  readonly width: number;
+}
+```
 
-[`ColumnWidths`](#columnwidths-1)
+**See also:** [`ColumnWidths`](#columnwidths-1)
 
-#### Properties
+#### `ColumnWidths`
 
-| Property | Modifier   | Type                        | Description                                                                         |
-| -------- | ---------- | --------------------------- | ----------------------------------------------------------------------------------- |
-| `type`   | `readonly` | `"resized"` \| `"measured"` | `'resized'` if the user resized the column, or `'measured'` if the grid measured it |
-| `width`  | `readonly` | `number`                    | The width in pixels                                                                 |
-
----
-
-### ColumnWidths
+A map of column widths.
 
 ```ts
 type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
 ```
 
-A map of column widths.
+**See also:** [`columnWidths`](#columnwidths) and [`onColumnWidthsChange`](#oncolumnwidthschange) props on `<DataGrid />`
 
-#### See
-
-[`columnWidths`](#columnwidths) and [`onColumnWidthsChange`](#oncolumnwidthschange) props on `<DataGrid />`
-
----
-
-### DataGridHandle
+#### `DataGridHandle`
 
 Handle type assigned to a grid's `ref` for programmatic grid control.
 
-#### Example
+```ts
+interface DataGridHandle {
+  element: HTMLDivElement | null;
+  scrollToCell: (position: PartialPosition) => void;
+  setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
+}
+```
+
+**Example:**
 
 ```tsx
 import { useRef } from 'react';
@@ -2182,21 +2109,11 @@ function MyGrid() {
 }
 ```
 
-#### See
+**See also:** [`ref`](#ref) prop on `<DataGrid />`
 
-[`ref`](#ref) prop on `<DataGrid />`
+#### `DefaultColumnOptions`
 
-#### Properties
-
-| Property            | Type                                                                                                                 |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `element`           | `HTMLDivElement` \| `null`                                                                                           |
-| `scrollToCell`      | (`position`: [`PartialPosition`](#partialposition)) => `void`                                                        |
-| `setActivePosition` | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` |
-
----
-
-### DefaultColumnOptions
+Default options applied to all columns.
 
 ```ts
 type DefaultColumnOptions<R, SR> = Pick<
@@ -2212,69 +2129,71 @@ type DefaultColumnOptions<R, SR> = Pick<
 >;
 ```
 
-Default options applied to all columns.
+**See also:** [`defaultColumnOptions`](#defaultcolumnoptions) prop on `<DataGrid />`
 
-#### See
+#### `Direction`
 
-[`defaultColumnOptions`](#defaultcolumnoptions) prop on `<DataGrid />`
-
----
-
-### Direction
+Text direction of the grid.
 
 ```ts
 type Direction = 'ltr' | 'rtl';
 ```
 
-Text direction of the grid.
+**See also:** [`direction`](#direction) prop on `<DataGrid />`
 
-#### See
-
-[`direction`](#direction) prop on `<DataGrid />`
-
----
-
-### FillEvent
+#### `FillEvent`
 
 Event object for drag-fill operations.
 
-#### See
+```ts
+interface FillEvent<R> {
+  columnKey: string;
+  sourceRow: R;
+  targetRow: R;
+}
+```
 
-[`onFill`](#onfill) prop on `<DataGrid />`
+**See also:** [`onFill`](#onfill) prop on `<DataGrid />`
 
-#### Properties
-
-| Property    | Type     |
-| ----------- | -------- |
-| `columnKey` | `string` |
-| `sourceRow` | `R`      |
-| `targetRow` | `R`      |
-
----
-
-### PositionChangeArgs
+#### `PositionChangeArgs`
 
 Arguments passed to `onActivePositionChange`.
 
-#### See
+```ts
+interface PositionChangeArgs<R, SR = unknown> {
+  /** row index of the active position */
+  rowIdx: number;
+  /**
+   * row object of the active position,
+   * undefined if the active position is on a header or summary row
+   */
+  row: R | undefined;
+  /**
+   * column object of the active position,
+   * undefined if the active position is a row instead of a cell
+   */
+  column: CalculatedColumn<R, SR> | undefined;
+}
+```
 
-[`onActivePositionChange`](#onactivepositionchange) prop on `<DataGrid />`
+**See also:** [`onActivePositionChange`](#onactivepositionchange) prop on `<DataGrid />`
 
-#### Properties
-
-| Property | Type                                                                | Description                                                                                       |
-| -------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `rowIdx` | `number`                                                            | row index of the active position                                                                  |
-| `row`    | `R` \| `undefined`                                                  | row object of the active position, undefined if the active position is on a header or summary row |
-| `column` | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> \| `undefined` | column object of the active position, undefined if the active position is a row instead of a cell |
-
----
-
-### RenderCellContentProps
+#### `RenderCellContentProps`
 
 Props passed to custom cell content renderers (`column.renderCell`).
 
-#### Example
+```ts
+interface RenderCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
+  rowIdx: number;
+  isCellEditable: boolean;
+  tabIndex: number;
+  onRowChange: (row: R) => void;
+}
+```
+
+**Example:**
 
 ```tsx
 import type { RenderCellContentProps } from 'react-data-grid';
@@ -2289,77 +2208,65 @@ function renderCell({ row, column, onRowChange }: RenderCellContentProps<MyRow>)
 }
 ```
 
-#### See
+**See also:** [`column.renderCell`](#rendercell), [`renderValue`](#rendervalue) function
 
-[`column.renderCell`](#rendercell), [`renderValue`](#rendervalue) function
-
-#### Properties
-
-| Property         | Type                                                 |
-| ---------------- | ---------------------------------------------------- |
-| `column`         | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> |
-| `row`            | `R`                                                  |
-| `rowIdx`         | `number`                                             |
-| `isCellEditable` | `boolean`                                            |
-| `tabIndex`       | `number`                                             |
-| `onRowChange`    | (`row`: `R`) => `void`                               |
-
----
-
-### RenderCellProps
+#### `RenderCellProps`
 
 Props passed to the cell renderer when using `renderers.renderCell`.
 
-#### See
+```ts
+interface RenderCellProps<R, SR> extends BaseRenderCellProps<R, SR> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
+  colSpan: number | undefined;
+  isDraggedOver: boolean;
+  isCellActive: boolean;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
+}
+```
 
-[`renderers.renderCell`](#renderers), [`<Cell />`](#cell-)
+**See also:** [`renderers.renderCell`](#renderers), [`<Cell />`](#cell-)
 
-#### Extends
-
-- [`BaseRenderCellProps`](#baserendercellprops)\<`R`, `SR`\>
-
-#### Properties
-
-| Property            | Type                                                                                                                 | Inherited from |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `rowIdx`            | `number`                                                                                                             |                |
-| `setActivePosition` | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` |                |
-| `column`            | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>                                                                 | -              |
-| `row`               | `R`                                                                                                                  | -              |
-| `colSpan`           | `number` \| `undefined`                                                                                              | -              |
-| `isDraggedOver`     | `boolean`                                                                                                            | -              |
-| `isCellActive`      | `boolean`                                                                                                            | -              |
-| `onRowChange`       | (`column`: [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>, `rowIdx`: `number`, `newRow`: `R`) => `void`        | -              |
-
----
-
-### RenderCheckboxProps
+#### `RenderCheckboxProps`
 
 Props for custom checkbox renderers.
 
-#### See
+```ts
+interface RenderCheckboxProps {
+  /** Whether the checkbox is checked */
+  checked?: boolean | undefined;
+  /** Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected */
+  indeterminate?: boolean | undefined;
+  /** Whether the checkbox is disabled */
+  disabled?: boolean | undefined;
+  /** Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows */
+  onChange: (checked: boolean, shift: boolean) => void;
+  /** `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox */
+  tabIndex?: number | undefined;
+  /** Accessible label for the checkbox */
+  'aria-label'?: string | undefined;
+  /** ID of the element that labels the checkbox */
+  'aria-labelledby'?: string | undefined;
+}
+```
 
-[`renderCheckbox`](#rendercheckbox) function, [`renderers.renderCheckbox`](#renderers), [`<SelectCheckbox />`](#selectcheckbox-)
+**See also:** [`renderCheckbox`](#rendercheckbox) function, [`renderers.renderCheckbox`](#renderers), [`<SelectCheckbox />`](#selectcheckbox-)
 
-#### Properties
-
-| Property           | Type                                                 | Description                                                                                                         |
-| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| `checked?`         | `boolean`                                            | Whether the checkbox is checked                                                                                     |
-| `indeterminate?`   | `boolean`                                            | Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected    |
-| `disabled?`        | `boolean`                                            | Whether the checkbox is disabled                                                                                    |
-| `onChange`         | (`checked`: `boolean`, `shift`: `boolean`) => `void` | Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows         |
-| `tabIndex?`        | `number`                                             | `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox |
-| `aria-label?`      | `string`                                             | Accessible label for the checkbox                                                                                   |
-| `aria-labelledby?` | `string`                                             | ID of the element that labels the checkbox                                                                          |
-
----
-
-### RenderEditCellContentProps
+#### `RenderEditCellContentProps`
 
 Props passed to custom editors (`column.renderEditCell`).
 
-#### Example
+```ts
+interface RenderEditCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
+  rowIdx: number;
+  onRowChange: (row: R, commitChanges?: boolean) => void;
+  onClose: (commitChanges?: boolean, shouldFocus?: boolean) => void;
+}
+```
+
+**Example:**
 
 ```tsx
 import type { RenderEditCellContentProps } from 'react-data-grid';
@@ -2376,189 +2283,127 @@ function renderEditor({ row, column, onRowChange, onClose }: RenderEditCellConte
 }
 ```
 
-#### See
+**See also:** [`column.renderEditCell`](#rendereditcell), [`renderTextEditor`](#rendertexteditor) function
 
-[`column.renderEditCell`](#rendereditcell), [`renderTextEditor`](#rendertexteditor) function
-
-#### Properties
-
-| Property      | Type                                                               |
-| ------------- | ------------------------------------------------------------------ |
-| `column`      | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>               |
-| `row`         | `R`                                                                |
-| `rowIdx`      | `number`                                                           |
-| `onRowChange` | (`row`: `R`, `commitChanges?`: `boolean`) => `void`                |
-| `onClose`     | (`commitChanges?`: `boolean`, `shouldFocus?`: `boolean`) => `void` |
-
----
-
-### Renderers
+#### `Renderers`
 
 Custom renderer configuration for the grid.
 
-#### See
+```ts
+interface Renderers<R, SR> {
+  readonly renderCell?: Maybe<(key: Key, props: RenderCellProps<R, SR>) => ReactNode>;
+  readonly renderCheckbox?: Maybe<(props: RenderCheckboxProps) => ReactNode>;
+  readonly renderRow?: Maybe<(key: Key, props: RenderRowProps<R, SR>) => ReactNode>;
+  readonly renderSortStatus?: Maybe<(props: RenderSortStatusProps) => ReactNode>;
+  readonly noRowsFallback?: Maybe<ReactNode>;
+}
+```
 
-[`renderers`](#renderers) prop on `<DataGrid />`, [`DataGridRenderersContext`](#datagridrendererscontext)
+**See also:** [`renderers`](#renderers) prop on `<DataGrid />`, [`DataGridRenderersContext`](#datagridrendererscontext)
 
-#### Properties
-
-| Property            | Modifier   | Type                                                                                                            |
-| ------------------- | ---------- | --------------------------------------------------------------------------------------------------------------- |
-| `renderCell?`       | `readonly` | [`Maybe`](#maybe)\<(`key`: `Key`, `props`: [`RenderCellProps`](#rendercellprops)\<`R`, `SR`\>) => `ReactNode`\> |
-| `renderCheckbox?`   | `readonly` | [`Maybe`](#maybe)\<(`props`: [`RenderCheckboxProps`](#rendercheckboxprops)) => `ReactNode`\>                    |
-| `renderRow?`        | `readonly` | [`Maybe`](#maybe)\<(`key`: `Key`, `props`: [`RenderRowProps`](#renderrowprops)\<`R`, `SR`\>) => `ReactNode`\>   |
-| `renderSortStatus?` | `readonly` | [`Maybe`](#maybe)\<(`props`: [`RenderSortStatusProps`](#rendersortstatusprops)) => `ReactNode`\>                |
-| `noRowsFallback?`   | `readonly` | `ReactNode`                                                                                                     |
-
----
-
-### RenderGroupCellContentProps
+#### `RenderGroupCellContentProps`
 
 Props passed to group cell content renderers (`column.renderGroupCell`) when using `TreeDataGrid`.
 
-#### See
+```ts
+interface RenderGroupCellContentProps<R, SR = unknown> {
+  groupKey: unknown;
+  column: CalculatedColumn<R, SR>;
+  row: GroupRow<R>;
+  childRows: readonly R[];
+  isExpanded: boolean;
+  tabIndex: number;
+  toggleGroup: () => void;
+}
+```
 
-[`column.renderGroupCell`](#rendergroupcell), [`renderToggleGroup`](#rendertogglegroup) function, [`<ToggleGroup />`](#togglegroup-)
+**See also:** [`column.renderGroupCell`](#rendergroupcell), [`renderToggleGroup`](#rendertogglegroup) function, [`<ToggleGroup />`](#togglegroup-)
 
-#### Properties
-
-| Property      | Type                                                 |
-| ------------- | ---------------------------------------------------- |
-| `groupKey`    | `unknown`                                            |
-| `column`      | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> |
-| `row`         | [`GroupRow`](#grouprow)\<`R`\>                       |
-| `childRows`   | readonly `R`[]                                       |
-| `isExpanded`  | `boolean`                                            |
-| `tabIndex`    | `number`                                             |
-| `toggleGroup` | () => `void`                                         |
-
----
-
-### RenderHeaderCellContentProps
+#### `RenderHeaderCellContentProps`
 
 Props passed to custom header cell content renderers (`column.renderHeaderCell`).
 
-#### See
+```ts
+interface RenderHeaderCellContentProps<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  sortDirection: SortDirection | undefined;
+  priority: number | undefined;
+  tabIndex: number;
+}
+```
 
-[`column.renderHeaderCell`](#renderheadercell-1), [`renderHeaderCell`](#renderheadercell) function
+**See also:** [`column.renderHeaderCell`](#renderheadercell-1), [`renderHeaderCell`](#renderheadercell) function
 
-#### Properties
-
-| Property        | Type                                                 |
-| --------------- | ---------------------------------------------------- |
-| `column`        | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> |
-| `sortDirection` | [`SortDirection`](#sortdirection) \| `undefined`     |
-| `priority`      | `number` \| `undefined`                              |
-| `tabIndex`      | `number`                                             |
-
----
-
-### RenderRowProps
+#### `RenderRowProps`
 
 Props passed to custom row renderers.
 
-#### See
+```ts
+interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, SR> {
+  row: R;
+  draggedOverCellIdx: number | undefined;
+  activeCellEditor: ReactElement<EditCellProps<R, SR>> | undefined;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
+  rowClass: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
+  isTreeGrid: boolean;
+}
+```
 
-[`renderers.renderRow`](#renderers), [`<Row />`](#row-)
+**See also:** [`renderers.renderRow`](#renderers), [`<Row />`](#row-)
 
-#### Extends
-
-- [`BaseRenderRowProps`](#baserenderrowprops)\<`R`, `SR`\>
-
-#### Properties
-
-| Property                           | Type                                                                                                                             | Inherited from |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `setActivePosition`                | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void`             |                |
-| `iterateOverViewportColumnsForRow` | [`IterateOverViewportColumnsForRow`](#iterateoverviewportcolumnsforrow)\<`R`, `SR`\>                                             |                |
-| `rowIdx`                           | `number`                                                                                                                         |                |
-| `activeCellIdx`                    | `number` \| `undefined`                                                                                                          |                |
-| `isRowSelectionDisabled`           | `boolean`                                                                                                                        |                |
-| `isRowSelected`                    | `boolean`                                                                                                                        |                |
-| `gridRowStart`                     | `number`                                                                                                                         |                |
-| `row`                              | `R`                                                                                                                              | -              |
-| `draggedOverCellIdx`               | `number` \| `undefined`                                                                                                          | -              |
-| `activeCellEditor`                 | \| `ReactElement`\<[`EditCellProps`](#editcellprops)\<`R`, `SR`\>, `string` \| `JSXElementConstructor`\<`any`\>\> \| `undefined` | -              |
-| `onRowChange`                      | (`column`: [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>, `rowIdx`: `number`, `newRow`: `R`) => `void`                    | -              |
-| `rowClass`                         | [`Maybe`](#maybe)\<(`row`: `R`, `rowIdx`: `number`) => [`Maybe`](#maybe)\<`string`\>\>                                           | -              |
-| `isTreeGrid`                       | `boolean`                                                                                                                        | -              |
-
----
-
-### RenderSortIconProps
+#### `RenderSortIconProps`
 
 Props for custom sort icon renderers.
 
-#### See
+```ts
+interface RenderSortIconProps {
+  /** The sort direction of the column, or `undefined` if it is not sorted */
+  sortDirection: SortDirection | undefined;
+}
+```
 
-[`renderSortIcon`](#rendersorticon) function
+**See also:** [`renderSortIcon`](#rendersorticon) function
 
-#### Extended by
-
-- [`RenderSortStatusProps`](#rendersortstatusprops)
-
-#### Properties
-
-| Property        | Type                                             | Description                                                          |
-| --------------- | ------------------------------------------------ | -------------------------------------------------------------------- |
-| `sortDirection` | [`SortDirection`](#sortdirection) \| `undefined` | The sort direction of the column, or `undefined` if it is not sorted |
-
----
-
-### RenderSortPriorityProps
+#### `RenderSortPriorityProps`
 
 Props for custom sort priority renderers.
 
-#### See
+```ts
+interface RenderSortPriorityProps {
+  /** The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise */
+  priority: number | undefined;
+}
+```
 
-[`renderSortPriority`](#rendersortpriority) function
+**See also:** [`renderSortPriority`](#rendersortpriority) function
 
-#### Extended by
-
-- [`RenderSortStatusProps`](#rendersortstatusprops)
-
-#### Properties
-
-| Property   | Type                    | Description                                                                                                       |
-| ---------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `priority` | `number` \| `undefined` | The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise |
-
----
-
-### RenderSortStatusProps
+#### `RenderSortStatusProps`
 
 Props for custom sort status renderers.
 
-#### See
+```ts
+interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
+```
 
-[`renderers.renderSortStatus`](#renderers)
+**See also:** [`renderers.renderSortStatus`](#renderers)
 
-#### Extends
-
-- [`RenderSortIconProps`](#rendersorticonprops)
-- [`RenderSortPriorityProps`](#rendersortpriorityprops)
-
----
-
-### RenderSummaryCellContentProps
+#### `RenderSummaryCellContentProps`
 
 Props passed to summary cell content renderers (`column.renderSummaryCell`).
 
-#### See
+```ts
+interface RenderSummaryCellContentProps<SR, R = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: SR;
+  tabIndex: number;
+}
+```
 
-[`column.renderSummaryCell`](#rendersummarycell)
+**See also:** [`column.renderSummaryCell`](#rendersummarycell)
 
-#### Properties
+#### `RowHeightArgs`
 
-| Property   | Type                                                 |
-| ---------- | ---------------------------------------------------- |
-| `column`   | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> |
-| `row`      | `SR`                                                 |
-| `tabIndex` | `number`                                             |
-
----
-
-### RowHeightArgs
+Arguments passed to `TreeDataGrid`'s `rowHeight` prop when it is a function.
 
 ```ts
 type RowHeightArgs<R> =
@@ -2572,9 +2417,7 @@ type RowHeightArgs<R> =
     };
 ```
 
-Arguments passed to `TreeDataGrid`'s `rowHeight` prop when it is a function.
-
-#### Example
+**Example:**
 
 ```tsx
 function getRowHeight(args: RowHeightArgs<Row>): number {
@@ -2587,230 +2430,166 @@ function getRowHeight(args: RowHeightArgs<Row>): number {
 <TreeDataGrid rowHeight={getRowHeight} ... />
 ```
 
-#### See
+**See also:** [`rowHeight`](#rowheight-1) prop on `<TreeDataGrid />`
 
-[`rowHeight`](#rowheight-1) prop on `<TreeDataGrid />`
-
----
-
-### RowsChangeData
+#### `RowsChangeData`
 
 Data provided to the `onRowsChange` callback.
 
-#### See
+```ts
+interface RowsChangeData<R, SR = unknown> {
+  /** Indexes of the rows that changed */
+  indexes: number[];
+  /** The column of the cells that changed */
+  column: CalculatedColumn<R, SR>;
+}
+```
 
-[`onRowsChange`](#onrowschange) prop on `<DataGrid />`
+**See also:** [`onRowsChange`](#onrowschange) prop on `<DataGrid />`
 
-#### Properties
-
-| Property  | Type                                                 | Description                          |
-| --------- | ---------------------------------------------------- | ------------------------------------ |
-| `indexes` | `number`[]                                           | Indexes of the rows that changed     |
-| `column`  | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> | The column of the cells that changed |
-
----
-
-### SelectHeaderRowEvent
+#### `SelectHeaderRowEvent`
 
 Event object for header row selection changes.
 
-#### See
+```ts
+interface SelectHeaderRowEvent {
+  checked: boolean;
+}
+```
 
-[`useHeaderRowSelection`](#useheaderrowselection) hook
+**See also:** [`useHeaderRowSelection`](#useheaderrowselection) hook
 
-#### Properties
-
-| Property  | Type      |
-| --------- | --------- |
-| `checked` | `boolean` |
-
----
-
-### SelectRowEvent
+#### `SelectRowEvent`
 
 Event object for row selection changes.
 
-#### See
+```ts
+interface SelectRowEvent<R> {
+  row: R;
+  checked: boolean;
+  isShiftClick: boolean;
+}
+```
 
-[`useRowSelection`](#userowselection) hook
+**See also:** [`useRowSelection`](#userowselection) hook
 
-#### Properties
-
-| Property       | Type      |
-| -------------- | --------- |
-| `row`          | `R`       |
-| `checked`      | `boolean` |
-| `isShiftClick` | `boolean` |
-
----
-
-### SetActivePositionOptions
+#### `SetActivePositionOptions`
 
 Options for programmatically updating the grid's active position.
 
-#### See
+```ts
+interface SetActivePositionOptions {
+  enableEditor?: Maybe<boolean>;
+  shouldFocus?: Maybe<boolean>;
+}
+```
 
-[`DataGridHandle`](#datagridhandle), [`CellKeyDownArgs`](#cellkeydownargs)
+**See also:** [`DataGridHandle`](#datagridhandle), [`CellKeyDownArgs`](#cellkeydownargs)
 
-#### Properties
-
-| Property        | Type                           |
-| --------------- | ------------------------------ |
-| `enableEditor?` | [`Maybe`](#maybe)\<`boolean`\> |
-| `shouldFocus?`  | [`Maybe`](#maybe)\<`boolean`\> |
-
----
-
-### SortColumn
+#### `SortColumn`
 
 Describes a sorted column.
 
-#### See
+```ts
+interface SortColumn {
+  readonly columnKey: string;
+  readonly direction: SortDirection;
+}
+```
 
-[`sortColumns`](#sortcolumns) and [`onSortColumnsChange`](#onsortcolumnschange) props on `<DataGrid />`
+**See also:** [`sortColumns`](#sortcolumns) and [`onSortColumnsChange`](#onsortcolumnschange) props on `<DataGrid />`
 
-#### Properties
-
-| Property    | Modifier   | Type                              |
-| ----------- | ---------- | --------------------------------- |
-| `columnKey` | `readonly` | `string`                          |
-| `direction` | `readonly` | [`SortDirection`](#sortdirection) |
-
----
-
-### SortDirection
+#### `SortDirection`
 
 ```ts
 type SortDirection = 'ASC' | 'DESC';
 ```
 
-#### See
+**See also:** [`SortColumn`](#sortcolumn)
 
-[`SortColumn`](#sortcolumn)
+### Internal Types
 
-## Internal Types
+#### `ActiveCellKeyDownArgs`
 
-### ActiveCellKeyDownArgs
+```ts
+interface ActiveCellKeyDownArgs<R, SR = unknown> {
+  mode: 'ACTIVE';
+  /**
+   * column object of the active position,
+   * undefined if the active position is a row instead of a cell
+   */
+  column: CalculatedColumn<R, SR> | undefined;
+  row: R;
+  rowIdx: number;
+  setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
+}
+```
 
-#### Properties
+#### `BaseRenderCellProps`
 
-| Property            | Type                                                                                                                 | Description                                                                                       |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `mode`              | `"ACTIVE"`                                                                                                           | -                                                                                                 |
-| `column`            | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> \| `undefined`                                                  | column object of the active position, undefined if the active position is a row instead of a cell |
-| `row`               | `R`                                                                                                                  | -                                                                                                 |
-| `rowIdx`            | `number`                                                                                                             | -                                                                                                 |
-| `setActivePosition` | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` | -                                                                                                 |
+```ts
+interface BaseRenderCellProps<R, SR = unknown>
+  extends
+    Omit<React.ComponentProps<'div'>, 'children'>,
+    Pick<
+      DataGridProps<R, SR>,
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
+  rowIdx: number;
+  setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
+}
+```
 
----
+#### `BaseRenderRowProps`
 
-### BaseRenderCellProps
+```ts
+interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps<R, SR> {
+  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
+  rowIdx: number;
+  activeCellIdx: number | undefined;
+  isRowSelectionDisabled: boolean;
+  isRowSelected: boolean;
+  gridRowStart: number;
+}
+```
 
-#### Extends
+#### `CellClipboardEvent`
 
-- [`Omit`](#omit)\<`React.ComponentProps`\<`"div"`\>, `"children"`\>
-- `Pick`\<[`DataGridProps`](#datagridprops)\<`R`, `SR`\>,
-  \| `"onCellMouseDown"`
-  \| `"onCellClick"`
-  \| `"onCellDoubleClick"`
-  \| `"onCellContextMenu"`\>
-
-#### Extended by
-
-- [`RenderCellProps`](#rendercellprops)
-- [`BaseRenderRowProps`](#baserenderrowprops)
-
-#### Properties
-
-| Property            | Type                                                                                                                 |
-| ------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `rowIdx`            | `number`                                                                                                             |
-| `setActivePosition` | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` |
-
----
-
-### BaseRenderRowProps
-
-#### Extends
-
-- [`BaseRenderCellProps`](#baserendercellprops)\<`R`, `SR`\>
-
-#### Extended by
-
-- [`RenderRowProps`](#renderrowprops)
-
-#### Properties
-
-| Property                           | Type                                                                                                                 | Overrides | Inherited from |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------- | -------------- |
-| `setActivePosition`                | (`position`: [`Position`](#position), `options?`: [`SetActivePositionOptions`](#setactivepositionoptions)) => `void` | -         |                |
-| `iterateOverViewportColumnsForRow` | [`IterateOverViewportColumnsForRow`](#iterateoverviewportcolumnsforrow)\<`R`, `SR`\>                                 | -         | -              |
-| `rowIdx`                           | `number`                                                                                                             |           | -              |
-| `activeCellIdx`                    | `number` \| `undefined`                                                                                              | -         | -              |
-| `isRowSelectionDisabled`           | `boolean`                                                                                                            | -         | -              |
-| `isRowSelected`                    | `boolean`                                                                                                            | -         | -              |
-| `gridRowStart`                     | `number`                                                                                                             | -         | -              |
-
----
-
-### CellClipboardEvent
+Type alias for `React.ClipboardEvent<HTMLDivElement>`. Used for copy and paste events. This helper type is not exported; the shape is shown for reference.
 
 ```ts
 type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
 ```
 
-Type alias for `React.ClipboardEvent<HTMLDivElement>`. Used for copy and paste events. This helper type is not exported; the shape is shown for reference.
+**See also:** [`onCellCopy`](#oncellcopy) and [`onCellPaste`](#oncellpaste) props on `<DataGrid />`
 
-#### See
-
-[`onCellCopy`](#oncellcopy) and [`onCellPaste`](#oncellpaste) props on `<DataGrid />`
-
----
-
-### CellCopyPasteArgs
-
-#### Properties
-
-| Property | Type                                                 |
-| -------- | ---------------------------------------------------- |
-| `column` | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\> |
-| `row`    | `R`                                                  |
-
----
-
-### CellEvent
+#### `CellCopyPasteArgs`
 
 ```ts
-type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & object;
+interface CellCopyPasteArgs<R, SR = unknown> {
+  column: CalculatedColumn<R, SR>;
+  row: R;
+}
 ```
+
+#### `CellEvent`
 
 Adds grid-specific methods to a React event. This helper type is not exported; the shape is shown for reference.
 
-#### Type Declaration
-
-##### preventGridDefault
-
 ```ts
-() => void
+type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
+  /** Prevents the default grid behavior for this event */
+  preventGridDefault: () => void;
+  /** Returns whether `preventGridDefault` was called */
+  isGridDefaultPrevented: () => boolean;
+};
 ```
 
-Prevents the default grid behavior for this event
+**See also:** [`CellMouseEvent`](#cellmouseevent), [`CellKeyboardEvent`](#cellkeyboardevent)
 
-##### isGridDefaultPrevented
+#### `CellMouseEventHandler`
 
-```ts
-() => boolean;
-```
-
-Returns whether `preventGridDefault` was called
-
-#### See
-
-[`CellMouseEvent`](#cellmouseevent), [`CellKeyboardEvent`](#cellkeyboardevent)
-
----
-
-### CellMouseEventHandler
+Handler type used by `onCellMouseDown`, `onCellClick`, `onCellDoubleClick`, and `onCellContextMenu`. This helper type is not exported; the shape is shown for reference.
 
 ```ts
 type CellMouseEventHandler<R, SR> = Maybe<
@@ -2818,81 +2597,60 @@ type CellMouseEventHandler<R, SR> = Maybe<
 >;
 ```
 
-Handler type used by `onCellMouseDown`, `onCellClick`, `onCellDoubleClick`, and `onCellContextMenu`. This helper type is not exported; the shape is shown for reference.
+#### `DivProps`
 
----
+```ts
+type DivProps = React.ComponentProps<'div'>;
+```
 
-### ColumnEditorOptions
+#### `EditCellKeyDownArgs`
 
-Options for cell editing.
+```ts
+interface EditCellKeyDownArgs<R, SR = unknown> {
+  mode: 'EDIT';
+  column: CalculatedColumn<R, SR>;
+  row: R;
+  rowIdx: number;
+  navigate: () => void;
+  onClose: (commitChanges?: boolean, shouldFocus?: boolean) => void;
+}
+```
 
-#### Properties
+#### `EditCellProps`
 
-| Property                    | Modifier   | Type                           | Default value | Description                                                                                                                                                                                                                       |
-| --------------------------- | ---------- | ------------------------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `displayCellContent?`       | `readonly` | [`Maybe`](#maybe)\<`boolean`\> | `false`       | Render the cell content in addition to the edit cell content. Enable this option when the editor is rendered outside the grid, like a modal for example. By default, the cell content is not rendered when the edit cell is open. |
-| `commitOnOutsideClick?`     | `readonly` | [`Maybe`](#maybe)\<`boolean`\> | `true`        | Commit changes when clicking outside the cell.                                                                                                                                                                                    |
-| `closeOnExternalRowChange?` | `readonly` | [`Maybe`](#maybe)\<`boolean`\> | `true`        | Close the editor when the row value changes externally.                                                                                                                                                                           |
+```ts
+interface EditCellProps<R, SR> extends Pick<
+  RenderCellProps<R, SR>,
+  'column' | 'colSpan' | 'row' | 'rowIdx'
+> {
+  onRowChange: (row: R, commitChanges: boolean, shouldFocus: boolean) => void;
+  closeEditor: (shouldFocus: boolean) => void;
+  navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
+  onKeyDown: Maybe<(args: EditCellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+}
+```
 
----
-
-### EditCellKeyDownArgs
-
-#### Properties
-
-| Property   | Type                                                               |
-| ---------- | ------------------------------------------------------------------ |
-| `mode`     | `"EDIT"`                                                           |
-| `column`   | [`CalculatedColumn`](#calculatedcolumn)\<`R`, `SR`\>               |
-| `row`      | `R`                                                                |
-| `rowIdx`   | `number`                                                           |
-| `navigate` | () => `void`                                                       |
-| `onClose`  | (`commitChanges?`: `boolean`, `shouldFocus?`: `boolean`) => `void` |
-
----
-
-### EditCellProps
-
-#### Extends
-
-- `Pick`\<[`RenderCellProps`](#rendercellprops)\<`R`, `SR`\>, `"column"` \| `"colSpan"` \| `"row"` \| `"rowIdx"`\>
-
-#### Properties
-
-| Property      | Type                                                                                                                                                    |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `onRowChange` | (`row`: `R`, `commitChanges`: `boolean`, `shouldFocus`: `boolean`) => `void`                                                                            |
-| `closeEditor` | (`shouldFocus`: `boolean`) => `void`                                                                                                                    |
-| `navigate`    | (`event`: `KeyboardEvent`\<`HTMLDivElement`\>) => `void`                                                                                                |
-| `onKeyDown`   | [`Maybe`](#maybe)\<(`args`: [`EditCellKeyDownArgs`](#editcellkeydownargs)\<`R`, `SR`\>, `event`: [`CellKeyboardEvent`](#cellkeyboardevent)) => `void`\> |
-
----
-
-### GroupRow
+#### `GroupRow`
 
 Represents a group row in `TreeDataGrid`. This helper type is not exported; the shape is shown for reference.
 
-#### See
+```ts
+interface GroupRow<R> {
+  readonly childRows: readonly R[];
+  readonly id: string;
+  readonly parentId: unknown;
+  readonly groupKey: unknown;
+  readonly isExpanded: boolean;
+  readonly level: number;
+  readonly posInSet: number;
+  readonly setSize: number;
+  readonly startRowIndex: number;
+}
+```
 
-[`RenderGroupCellContentProps`](#rendergroupcellcontentprops), [`RowHeightArgs`](#rowheightargs), [`<TreeDataGrid />`](#treedatagrid-)
+**See also:** [`RenderGroupCellContentProps`](#rendergroupcellcontentprops), [`RowHeightArgs`](#rowheightargs), [`<TreeDataGrid />`](#treedatagrid-)
 
-#### Properties
-
-| Property        | Modifier   | Type           |
-| --------------- | ---------- | -------------- |
-| `childRows`     | `readonly` | readonly `R`[] |
-| `id`            | `readonly` | `string`       |
-| `parentId`      | `readonly` | `unknown`      |
-| `groupKey`      | `readonly` | `unknown`      |
-| `isExpanded`    | `readonly` | `boolean`      |
-| `level`         | `readonly` | `number`       |
-| `posInSet`      | `readonly` | `number`       |
-| `setSize`       | `readonly` | `number`       |
-| `startRowIndex` | `readonly` | `number`       |
-
----
-
-### IterateOverViewportColumnsForRow
+#### `IterateOverViewportColumnsForRow`
 
 ```ts
 type IterateOverViewportColumnsForRow<R, SR> = (
@@ -2901,81 +2659,58 @@ type IterateOverViewportColumnsForRow<R, SR> = (
 ) => IteratorObject<ViewportColumnWithColSpan<R, SR>>;
 ```
 
----
+#### `Maybe`
 
-### Maybe
+Utility type for optional values. This helper type is not exported; the shape is shown for reference.
 
 ```ts
 type Maybe<T> = T | undefined | null;
 ```
 
-Utility type for optional values. This helper type is not exported; the shape is shown for reference.
-
----
-
-### Omit
+#### `Omit`
 
 ```ts
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
 ```
 
----
-
-### PartialPosition
+#### `PartialPosition`
 
 Position for scrolling to a cell. Both fields are optional: omit `idx` to scroll to a row, or omit `rowIdx` to scroll to a column. This helper type is not exported; the shape is shown for reference.
 
-#### See
+```ts
+interface PartialPosition {
+  readonly idx?: Maybe<number>;
+  readonly rowIdx?: Maybe<number>;
+}
+```
 
-[`DataGridHandle`](#datagridhandle)
+**See also:** [`DataGridHandle`](#datagridhandle)
 
-#### Properties
-
-| Property  | Modifier   | Type                          |
-| --------- | ---------- | ----------------------------- |
-| `idx?`    | `readonly` | [`Maybe`](#maybe)\<`number`\> |
-| `rowIdx?` | `readonly` | [`Maybe`](#maybe)\<`number`\> |
-
----
-
-### Position
+#### `Position`
 
 Represents a cell position in the grid. This helper type is not exported; the shape is shown for reference.
 
-#### See
+```ts
+interface Position {
+  /** Column index, or `-1` for the whole row in `TreeDataGrid` */
+  readonly idx: number;
+  /** Row index: `0` is the first row, header rows and top summary rows have negative indexes, and bottom summary rows come after the last row */
+  readonly rowIdx: number;
+}
+```
 
-[`DataGridHandle`](#datagridhandle), [`CellKeyDownArgs`](#cellkeydownargs)
+**See also:** [`DataGridHandle`](#datagridhandle), [`CellKeyDownArgs`](#cellkeydownargs)
 
-#### Properties
+#### `SelectCheckboxProps`
 
-| Property | Modifier   | Type     | Description                                                                                                                              |
-| -------- | ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| `idx`    | `readonly` | `number` | Column index, or `-1` for the whole row in `TreeDataGrid`                                                                                |
-| `rowIdx` | `readonly` | `number` | Row index: `0` is the first row, header rows and top summary rows have negative indexes, and bottom summary rows come after the last row |
+```ts
+interface SelectCheckboxProps extends SharedInputProps {
+  /** Whether the checkbox is checked */
+  value: boolean;
+}
+```
 
----
-
-### SelectCheckboxProps
-
-#### Extends
-
-- [`SharedInputProps`](#sharedinputprops)
-
-#### Properties
-
-| Property           | Type                                                 | Description                                                                                                         | Inherited from |
-| ------------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | -------------- |
-| `value`            | `boolean`                                            | Whether the checkbox is checked                                                                                     | -              |
-| `indeterminate?`   | `boolean`                                            | Whether the checkbox is in an indeterminate state, like the select all checkbox when only some rows are selected    |                |
-| `disabled?`        | `boolean`                                            | Whether the checkbox is disabled                                                                                    |                |
-| `onChange`         | (`checked`: `boolean`, `shift`: `boolean`) => `void` | Called when the checkbox is toggled. `shift` is `true` if the Shift key was held, to select a range of rows         |                |
-| `tabIndex?`        | `number`                                             | `0` when the checkbox's cell is active and `-1` otherwise, so the grid can move focus from the cell to the checkbox |                |
-| `aria-label?`      | `string`                                             | Accessible label for the checkbox                                                                                   |                |
-| `aria-labelledby?` | `string`                                             | ID of the element that labels the checkbox                                                                          |                |
-
----
-
-### SharedInputProps
+#### `SharedInputProps`
 
 ```ts
 type SharedInputProps = Pick<
@@ -2984,9 +2719,7 @@ type SharedInputProps = Pick<
 >;
 ```
 
----
-
-### ViewportColumnWithColSpan
+#### `ViewportColumnWithColSpan`
 
 ```ts
 type ViewportColumnWithColSpan<R, SR> = [

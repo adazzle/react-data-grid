@@ -1,250 +1,95 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import GithubSlugger from 'github-slugger';
-import {
-  Application,
-  Comment,
-  Context,
-  Converter,
-  DeclarationReflection,
-  i18n,
-  ParameterReflection,
-  ReferenceType,
-  ReflectionGroup,
-  ReflectionKind,
-  ReflectionType,
-  SignatureReflection,
-  TSConfigReader,
-  Type,
-  TypeDocReader,
-  TypeParameterReflection,
-  type ContainerReflection,
-  type SomeType
-} from 'typedoc';
-import { MarkdownTheme, MarkdownThemeContext } from 'typedoc-plugin-markdown';
+import { parseSync } from 'oxc-parser';
 
+// Generates the API reference of the README from the declarations and JSDoc comments of `lib/index.d.ts`,
+// which `vp pack` bundles from the sources.
+
+const declarationsPath = 'lib/index.d.ts';
 const readmePath = 'README.md';
-// the components of the "Components" section, without their props interfaces
-const components = new Set<unknown>();
 const startMarker = '<!-- api:start -->';
 const endMarker = '<!-- api:end -->';
+// the `@group` tags of the exports
+const sections = ['Components', 'Hooks', 'Render Functions', 'Context', 'Other', 'Types'];
 
-const app = await Application.bootstrapWithPlugins({}, [new TypeDocReader(), new TSConfigReader()]);
-
-// TODO: remove when TypeDoc supports TypeScript 7
-// TypeDoc identifies TypeScript's lib types, like `NoInfer`, by their package name,
-// which it derives from the path of TypeScript 6: `node_modules/@typescript/old`
-const { createSymbolReference } = Context.prototype;
-Context.prototype.createSymbolReference = function (...args) {
-  const reference = createSymbolReference.apply(this, args);
-  if (reference.package === '@typescript/old') {
-    reference.package = 'typescript';
-  }
-  return reference;
-};
-
-class ReadmeThemeContext extends MarkdownThemeContext {
-  constructor(...args: ConstructorParameters<typeof MarkdownThemeContext>) {
-    super(...args);
-
-    const { declarationTitle, groups, memberTitle, signatureTitle } = this.partials;
-    const { useTableFormat: isDefaultTableFormat } = this.helpers;
-    let isTableInterface = false;
-
-    // components are used as JSX elements, so show their props instead of a function signature
-    const getComponentProps = (signature: SignatureReflection | undefined) => {
-      const propsType = signature?.parameters?.[0]?.type;
-      return propsType === undefined ? '' : `**Props:** ${this.partials.someType(propsType)}`;
-    };
-
-    this.partials = {
-      ...this.partials,
-      memberTitle: (model) =>
-        components.has(model) ? `\`<${model.name} />\`` : memberTitle(model),
-      signatureTitle: (model, options) =>
-        components.has(model.parent) ? getComponentProps(model) : signatureTitle(model, options),
-      // e.g. `Row`, a memoized component
-      declarationTitle: (model) =>
-        components.has(model) && model.type instanceof ReflectionType
-          ? getComponentProps(model.type.declaration.signatures?.[0])
-          : declarationTitle(model),
-      // list the properties of an interface in a table, unless a property has more than a short description
-      groups(model: ContainerReflection, options: Parameters<typeof groups>[1]) {
-        isTableInterface =
-          model.kindOf(ReflectionKind.Interface) && model.children?.every(hasShortComment) === true;
-        return groups(model, options);
-      },
-      // the signatures already show the return types
-      signatureReturns: (model: SignatureReflection, options: { headingLevel: number }) => {
-        const returnsTag = model.comment?.getTag('@returns');
-        if (returnsTag === undefined) return '';
-        return `${'#'.repeat(options.headingLevel)} ${i18n.theme_returns()}\n\n${this.helpers.getCommentParts(returnsTag.content)}`;
-      },
-      // the "Extends" sections already link to the base types
-      inheritance: () => ''
-    };
-
-    this.helpers = {
-      ...this.helpers,
-      useTableFormat: (key, reflectionKind) =>
-        key === 'properties' && reflectionKind === ReflectionKind.Interface
-          ? isTableInterface
-          : isDefaultTableFormat(key, reflectionKind)
-    };
-  }
+interface Doc {
+  summary: string;
+  tags: { name: string; text: string }[];
 }
 
-class ReadmeTheme extends MarkdownTheme {
-  override getRenderContext(
-    page: Parameters<InstanceType<typeof MarkdownTheme>['getRenderContext']>[0]
-  ) {
-    return new ReadmeThemeContext(this, page, this.application.options);
-  }
+interface Declaration {
+  name: string;
+  // e.g. an interface, a type alias, a function, or a variable
+  node: Node;
+  doc: Doc;
 }
 
-app.renderer.defineTheme('readme', ReadmeTheme);
-app.options.setValue('theme', 'readme');
+// the subset of the oxc AST that is used
+interface Node {
+  type: string;
+  start: number;
+  end: number;
+  id?: { name: string; typeAnnotation?: Node };
+  optional?: boolean;
+  key?: { type: string; name?: string; value?: string };
+  body?: { body: Node[] };
+  params?: Node[];
+  typeAnnotation?: Node;
+  declarations?: Node[];
+}
 
-// collect the public exports before typedoc-plugin-missing-exports adds the internal types,
-// its listener has a priority of 1e9
-const publicNames = new Set<string>();
-app.converter.on(
-  Converter.EVENT_RESOLVE_BEGIN,
-  ({ project }) => {
-    for (const child of project.children ?? []) {
-      publicNames.add(child.name);
+const code = await readFile(declarationsPath, 'utf8');
+const { program, comments } = parseSync(declarationsPath, code);
+
+const declarations = new Map<string, Declaration>();
+// exported name -> declared name, e.g. `Cell` -> `MemoCell`
+const exportedNames = new Map<string, string>();
+
+for (const statement of program.body as unknown as Node[]) {
+  if (statement.type === 'ExportNamedDeclaration') {
+    const { declaration, specifiers } = statement as unknown as {
+      declaration: Node | null;
+      specifiers: { local: { name: string }; exported: { name: string } }[];
+    };
+    if (declaration === null) {
+      for (const { local, exported } of specifiers) exportedNames.set(exported.name, local.name);
+    } else {
+      const name = getDeclarationName(declaration);
+      exportedNames.set(name, name);
+      declarations.set(name, { name, node: declaration, doc: parseDoc(getComment(statement)) });
     }
-  },
-  Number.POSITIVE_INFINITY
+  } else if (statement.type !== 'ImportDeclaration') {
+    const name = getDeclarationName(statement);
+    declarations.set(name, { name, node: statement, doc: parseDoc(getComment(statement)) });
+  }
+}
+
+// group the exports by their `@group` tag, the remaining types are referenced by the exports
+const groups = new Map<string, Declaration[]>(sections.map((section) => [section, []]));
+for (const [name, declaredName] of exportedNames) {
+  const declaration = declarations.get(declaredName)!;
+  const group = declaration.doc.tags.find((tag) => tag.name === 'group')?.text;
+  const items = group === undefined ? undefined : groups.get(group);
+  if (items === undefined) {
+    throw new Error(`${name} must have a @group tag with one of: ${sections.join(', ')}`);
+  }
+  items.push({ ...declaration, name });
+}
+
+const exportedDeclarations = new Set(exportedNames.values());
+const internalTypes = [...declarations.values()].filter(
+  ({ name, node }) => !exportedDeclarations.has(name) && isType(node)
 );
 
-// `NoInfer` only affects type inference, show the type it wraps instead
-app.converter.on(Converter.EVENT_RESOLVE_END, ({ project }) => {
-  for (const reflection of Object.values(project.reflections)) {
-    if (
-      (reflection instanceof DeclarationReflection ||
-        reflection instanceof ParameterReflection ||
-        reflection instanceof SignatureReflection ||
-        reflection instanceof TypeParameterReflection) &&
-      reflection.type !== undefined
-    ) {
-      reflection.type = unwrapNoInfer(reflection.type);
-    }
-
-    if (reflection instanceof TypeParameterReflection && reflection.default !== undefined) {
-      reflection.default = unwrapNoInfer(reflection.default);
-    }
-
-    // the default values of inferred object types, like the return types of the hooks,
-    // are implementation details
-    if (
-      reflection instanceof DeclarationReflection &&
-      reflection.parent?.kindOf(ReflectionKind.TypeLiteral) === true
-    ) {
-      delete reflection.defaultValue;
-    }
-
-    // TypeDoc names destructured parameters `__namedParameters`
-    if (reflection instanceof ParameterReflection && reflection.name === '__namedParameters') {
-      reflection.name = 'props';
-    }
-  }
-});
-
-const project = await app.convert();
-
-if (project === undefined) {
-  throw new Error('TypeDoc failed to convert the project');
-}
-
-app.validate(project);
-
-if (app.logger.hasErrors() || app.logger.hasWarnings()) {
-  throw new Error('TypeDoc reported errors or warnings');
-}
-
-// public exports must be in one of the sections of `groupOrder`, set with a `@group` tag,
-// the remaining groups only contain the types that are referenced by the public API but not exported
-const sections = new Set(app.options.getValue('groupOrder').filter((title) => title !== '*'));
-const internalGroup = new ReflectionGroup('Internal Types', project);
-const publicGroups = (project.groups ?? []).filter((group) => {
-  if (sections.has(group.title)) return true;
-
-  for (const child of group.children) {
-    if (publicNames.has(child.name)) {
-      throw new Error(
-        `${child.name} must have a @group tag with one of: ${[...sections].join(', ')}`
-      );
-    }
-  }
-
-  internalGroup.children.push(...group.children);
-  return false;
-});
-internalGroup.children.sort((a, b) => a.name.localeCompare(b.name));
-project.groups = [...publicGroups, internalGroup];
-
-// list the components with a props interface first, each followed by its props interface,
-// e.g. `DataGrid` and `DataGridProps`, then the other components
-const componentsGroup = publicGroups.find((group) => group.title === 'Components');
-if (componentsGroup !== undefined) {
-  const names = new Set(componentsGroup.children.map((child) => child.name));
-  const getSortKey = ({ name }: { name: string }) => {
-    const component = name.endsWith('Props') ? name.slice(0, -'Props'.length) : name;
-    return names.has(`${component}Props`) ? `0 ${component} ${name}` : `1 ${name}`;
-  };
-  componentsGroup.children.sort((a, b) => getSortKey(a).localeCompare(getSortKey(b)));
-
-  for (const child of componentsGroup.children) {
-    if (!child.kindOf(ReflectionKind.Interface)) components.add(child);
+const markdown: string[] = [];
+for (const [section, items] of [...groups, ['Internal Types', internalTypes] as const]) {
+  markdown.push(`### ${section}`);
+  for (const item of items.toSorted(section === 'Components' ? compareComponents : compareNames)) {
+    markdown.push(renderItem(item, section === 'Components' && !isType(item.node)));
   }
 }
 
-const interfaces = project
-  .getReflectionsByKind(ReflectionKind.Interface)
-  .filter((reflection) => reflection instanceof DeclarationReflection);
-
-// only list the members that are inherited from internal types,
-// the members inherited from public types are listed in their own section
-const membersInheritedFromPublicTypes = interfaces.flatMap(
-  (reflection) => reflection.children?.filter(isInheritedFromPublicType) ?? []
-);
-
-for (const member of membersInheritedFromPublicTypes) {
-  project.removeReflection(member);
-}
-
-for (const reflection of interfaces) {
-  // `removeReflection` doesn't remove the members from the groups that are rendered
-  const remainingMembers = new Set<unknown>(reflection.children);
-  if (reflection.groups !== undefined) {
-    for (const group of reflection.groups) {
-      group.children = group.children.filter((child) => remainingMembers.has(child));
-    }
-    reflection.groups = reflection.groups.filter((group) => group.children.length > 0);
-  }
-
-  // TypeDoc copies the comments of the members a member redeclares,
-  // like `CalculatedColumn` redeclaring the properties of `Column` with their resolved types,
-  // but their descriptions and defaults don't apply to the redeclared members
-  for (const child of reflection.children ?? []) {
-    const overwrittenComment = child.overwrites?.reflection?.comment;
-    if (
-      child.comment !== undefined &&
-      overwrittenComment !== undefined &&
-      Comment.combineDisplayParts(child.comment.summary) ===
-        Comment.combineDisplayParts(overwrittenComment.summary)
-    ) {
-      delete child.comment;
-    }
-  }
-}
-
-const outputDirectory = app.options.getValue('out');
-await app.generateOutputs(project);
-
-const api = await readFile(`${outputDirectory}/README.md`, 'utf8');
 const readme = await readFile(readmePath, 'utf8');
-
 const startIndex = readme.indexOf(startMarker);
 const endIndex = readme.indexOf(endMarker);
 
@@ -254,158 +99,226 @@ if (startIndex === -1 || endIndex < startIndex) {
 
 await writeFile(
   readmePath,
-  replaceAnchors(
-    readme.slice(0, startIndex + startMarker.length),
-    api.trim(),
-    readme.slice(endIndex)
+  resolveLinks(
+    `${readme.slice(0, startIndex + startMarker.length)}\n\n${markdown.join('\n\n')}\n\n${readme.slice(endIndex)}`
   )
 );
 
-// e.g. `extends Column` or `extends Omit<DataGridProps, 'columns'>`
-function getPublicBaseTypes(reflection: DeclarationReflection) {
-  const publicBaseTypes = new Set<string>();
-  for (const type of reflection.extendedTypes ?? []) {
-    if (!(type instanceof ReferenceType)) continue;
-    const [typeArgument] = type.typeArguments ?? [];
-    if (
-      publicNames.has(type.name) ||
-      ((type.name === 'Omit' || type.name === 'Pick') &&
-        typeArgument instanceof ReferenceType &&
-        publicNames.has(typeArgument.name))
-    ) {
-      publicBaseTypes.add(type.name);
+function renderItem({ name, node, doc }: Declaration, isComponent: boolean) {
+  const md: string[] = [];
+
+  if (isComponent) {
+    md.push(
+      `#### \`<${name} />\``,
+      ...renderSummary(doc),
+      `**Props:** ${renderComponentProps(node)}`
+    );
+  } else if (isType(node)) {
+    md.push(`#### \`${name}\``, ...renderSummary(doc));
+    if (hasRichMembers(node)) {
+      // a heading per member, as their docs have examples, lists, or several paragraphs
+      md.push(codeBlock(`${source(node).slice(0, source(node).indexOf('{')).trim()} { … }`));
+    } else {
+      md.push(codeBlock(source(node)));
     }
-  }
-  return publicBaseTypes;
-}
-
-// a member is inherited from a public type directly, or through internal types,
-// e.g. `RenderCellProps` inherits `onCellClick` from `BaseRenderCellProps`, which picks it from `DataGridProps`
-function isInheritedFromPublicType(member: DeclarationReflection): boolean {
-  const { inheritedFrom, parent } = member;
-  if (inheritedFrom === undefined) return false;
-
-  if (
-    parent instanceof DeclarationReflection &&
-    getPublicBaseTypes(parent).has(inheritedFrom.name.split('.')[0])
-  ) {
-    return true;
+  } else {
+    const isFunction = node.type === 'TSDeclareFunction' || node.type === 'FunctionDeclaration';
+    md.push(
+      `#### \`${name}${isFunction ? '()' : ''}\``,
+      codeBlock(source(node)),
+      ...renderSummary(doc)
+    );
   }
 
-  const inheritedMember = inheritedFrom.reflection;
-  return (
-    inheritedMember instanceof DeclarationReflection && isInheritedFromPublicType(inheritedMember)
-  );
-}
+  md.push(...renderTags(doc));
 
-// a property can be listed in a table if its comment is a single paragraph
-function hasShortComment(reflection: DeclarationReflection) {
-  const { comment } = reflection;
-  if (comment === undefined) return true;
-  const summary = Comment.combineDisplayParts(comment.summary);
-  return (
-    comment.blockTags.every((tag) => tag.tag === '@defaultValue') &&
-    !summary.includes('\n\n') &&
-    !summary.includes('```') &&
-    !/^\s*(?:[-*+]|\d+\.) /m.test(summary)
-  );
-}
-
-// typedoc-plugin-markdown adds an HTML anchor before each heading and links to it,
-// replace them with the anchors GitHub generates for the headings,
-// which are numbered across the whole README, starting with the headings before the API reference.
-// Links outside of the API reference can link to a member with its name as the link title,
-// e.g. `[width](#width "Column.width")`, to update the anchor when the numbering changes.
-function replaceAnchors(precedingMarkdown: string, api: string, followingMarkdown: string) {
-  const slugger = new GithubSlugger();
-  function slug(heading: string) {
-    return slugger.slug(getHeadingText(heading));
-  }
-
-  forEachLine(precedingMarkdown, (line, isInCodeBlock) => {
-    const heading = isInCodeBlock ? null : /^#{1,6} (.+)$/.exec(line);
-    if (heading !== null) slug(heading[1]);
-  });
-
-  // anchors of the plugin, and of the API reference members, e.g. `Column.width`
-  const anchors = new Map<string, string>();
-  const memberAnchors = new Map<string, string>();
-  const lines: string[] = [];
-  let pendingAnchor: string | undefined;
-  let item: string | undefined;
-  forEachLine(api, (line, isInCodeBlock) => {
-    if (!isInCodeBlock) {
-      const anchor = /^<a id="([^"]+)"><\/a>$/.exec(line);
-      if (anchor !== null) {
-        pendingAnchor = anchor[1];
-        return;
-      }
-
-      const heading = /^(#{1,6}) (.+)$/.exec(line);
-      if (heading !== null) {
-        const headingSlug = slug(heading[2]);
-        // e.g. `DataGrid` for `<DataGrid />`, `renderCheckbox` for `renderCheckbox()`
-        const name = getHeadingText(heading[2])
-          .replace(/^<(.+) \/>$/, '$1')
-          .replace(/(?:\(\)|\?)$/, '');
-        if (heading[1].length === 3) {
-          item = name;
-          memberAnchors.set(name, headingSlug);
-        } else if (pendingAnchor !== undefined && item !== undefined) {
-          memberAnchors.set(`${item}.${name}`, headingSlug);
-        }
-        if (pendingAnchor !== undefined) {
-          anchors.set(pendingAnchor, headingSlug);
-          pendingAnchor = undefined;
-        }
-      } else if (pendingAnchor !== undefined) {
-        // the empty line between the anchor and its heading
-        if (line === '') return;
-        throw new Error(`The anchor #${pendingAnchor} is not followed by a heading: ${line}`);
-      }
-    }
-
-    lines.push(line);
-  });
-
-  // the anchors of table rows have no heading to link to
-  const tableAnchors = new Set<string>();
-  const markdown = lines.join('\n').replaceAll(/<a id="([^"]+)"><\/a> /g, (_, id: string) => {
-    tableAnchors.add(id);
-    return '';
-  });
-
-  const apiMarkdown = markdown.replaceAll(/\]\(#([^)]+)\)/g, (_, id: string) => {
-    const anchor = anchors.get(id);
-    if (anchor === undefined) {
-      throw new Error(
-        tableAnchors.has(id)
-          ? `The link to #${id} links to a table row, which has no heading to link to`
-          : `The link to #${id} does not match any heading`
+  if (isType(node) && hasRichMembers(node)) {
+    for (const member of node.body!.body) {
+      const memberDoc = parseDoc(getComment(member));
+      md.push(
+        `##### \`${getMemberName(member)}${member.optional === true ? '?' : ''}\``,
+        codeBlock(source(member)),
+        ...renderSummary(memberDoc),
+        ...renderTags(memberDoc)
       );
     }
-    return `](#${anchor})`;
-  });
+  }
 
-  const linkedPrecedingMarkdown = precedingMarkdown.replaceAll(
-    /\]\(#[^ )]+ "([^"]+)"\)/g,
-    (_, member: string) => {
-      const anchor = memberAnchors.get(member);
-      if (anchor === undefined) {
-        throw new Error(`The link to "${member}" does not match any API reference heading`);
+  return md.join('\n\n');
+}
+
+function renderSummary({ summary }: Doc) {
+  return summary === '' ? [] : [convertLinks(summary)];
+}
+
+function renderTags({ tags }: Doc) {
+  const labels: Record<string, string> = {
+    defaultValue: '**Default:** ',
+    example: '**Example:**\n\n',
+    see: '**See also:** ',
+    returns: '**Returns:**\n\n'
+  };
+  return tags
+    .filter(({ name }) => name in labels)
+    .map(({ name, text }) => `${labels[name]}${convertLinks(text)}`);
+}
+
+// e.g. "**Props:** [`DataGridProps<R, SR, K>`](#datagridprops)"
+function renderComponentProps(node: Node) {
+  const signature =
+    node.type === 'VariableDeclaration'
+      ? node.declarations![0].id!.typeAnnotation!.typeAnnotation!
+      : node;
+  const propsType = cleanCode(source(signature.params![0].typeAnnotation!.typeAnnotation!));
+  return `[\`${propsType}\`](#!${/^\w+/.exec(propsType)![0]})`;
+}
+
+function compareNames(a: Declaration, b: Declaration) {
+  return a.name.localeCompare(b.name);
+}
+
+// the components with a props interface first, each followed by its props interface,
+// e.g. `DataGrid` and `DataGridProps`, then the other components
+function compareComponents(a: Declaration, b: Declaration) {
+  return getComponentSortKey(a).localeCompare(getComponentSortKey(b));
+}
+
+function getComponentSortKey({ name }: Declaration) {
+  const component = name.endsWith('Props') ? name.slice(0, -'Props'.length) : name;
+  return exportedNames.has(`${component}Props`) ? `0 ${component} ${name}` : `1 ${name}`;
+}
+
+function isType(node: Node) {
+  return node.type === 'TSInterfaceDeclaration' || node.type === 'TSTypeAliasDeclaration';
+}
+
+// members with more than a single paragraph can't be shown as comments of a code block
+function hasRichMembers(node: Node) {
+  return (
+    node.type === 'TSInterfaceDeclaration' &&
+    node.body!.body.some((member) => {
+      const { summary, tags } = parseDoc(getComment(member));
+      return (
+        tags.some((tag) => tag.name !== 'defaultValue') ||
+        summary.includes('\n\n') ||
+        summary.includes('```') ||
+        /^\s*(?:[-*+]|\d+\.) /m.test(summary)
+      );
+    })
+  );
+}
+
+function getDeclarationName(node: Node) {
+  return node.id?.name ?? node.declarations![0].id!.name;
+}
+
+function getMemberName({ key }: Node) {
+  return key!.type === 'Identifier' ? key!.name! : key!.value!;
+}
+
+// the JSDoc comment directly before the node
+function getComment({ start }: Node) {
+  const comment = comments.findLast(
+    (comment) =>
+      comment.type === 'Block' &&
+      comment.value.startsWith('*') &&
+      comment.end <= start &&
+      code.slice(comment.end, start).trim() === ''
+  );
+  return comment?.value ?? '';
+}
+
+function parseDoc(comment: string): Doc {
+  const summary: string[] = [];
+  const tags: { name: string; lines: string[] }[] = [];
+
+  forEachLine(
+    comment
+      .split('\n')
+      .map((line) => line.replace(/^\s*\*\s?/, ''))
+      .join('\n'),
+    (line, isInCodeBlock) => {
+      const tag = isInCodeBlock ? null : /^@(\w+)\s?(.*)$/.exec(line);
+      if (tag === null) {
+        (tags.at(-1)?.lines ?? summary).push(line);
+      } else {
+        tags.push({ name: tag[1], lines: [tag[2]] });
       }
-      return `](#${anchor} "${member}")`;
     }
   );
 
-  return `${linkedPrecedingMarkdown}\n\n${apiMarkdown}\n\n${followingMarkdown}`;
+  return {
+    summary: summary.join('\n').trim(),
+    tags: tags.map(({ name, lines }) => ({ name, text: lines.join('\n').trim() }))
+  };
 }
 
-function getHeadingText(heading: string) {
-  return heading
-    .replaceAll(/\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replaceAll(/\\(.)/g, '$1')
-    .replaceAll('`', '');
+function source({ start, end }: Node) {
+  return code.slice(start, end);
+}
+
+function codeBlock(text: string) {
+  return `\`\`\`ts\n${cleanCode(text)}\n\`\`\``;
+}
+
+// show the declarations without the `declare` keyword, link tags, and `NoInfer`,
+// which only affects type inference
+function cleanCode(text: string) {
+  return text
+    .replace(/^(?:export )?declare /, '')
+    .replaceAll(
+      /\{@link(?:code)? ([^}|]+?)(?: \| ([^}]+))?\}/g,
+      (_, target: string, label: string | undefined) => label ?? target
+    )
+    .replaceAll(/NoInfer<([^<>]+)>/g, '$1');
+}
+
+// `{@linkcode Column.width | width}` -> "[`width`](#!Column.width)", resolved by `resolveLinks`
+function convertLinks(text: string) {
+  return text.replaceAll(
+    /\{@link(?:code)? ([^}|]+?)(?: \| ([^}]+))?\}/g,
+    (_, target: string, label: string | undefined) => `[\`${label ?? target}\`](#!${target.trim()})`
+  );
+}
+
+// replace the links to items and members, e.g. `#!Column` and `#!Column.width`,
+// with the anchors GitHub generates for their headings, which are numbered across the whole README.
+// Links in the hand-written sections of the README can link to an item or member with its name as
+// the link title, e.g. `[width](#width "Column.width")`, to update the anchor when the numbering changes.
+function resolveLinks(markdown: string) {
+  const slugger = new GithubSlugger();
+  const anchors = new Map<string, string>();
+  let item: string | undefined;
+
+  forEachLine(markdown, (line, isInCodeBlock) => {
+    const heading = isInCodeBlock ? null : /^(#{1,6}) (.+)$/.exec(line);
+    if (heading === null) return;
+
+    const text = heading[2].replaceAll('`', '');
+    const anchor = slugger.slug(text);
+    // e.g. `DataGrid` for `<DataGrid />`, `renderCheckbox` for `renderCheckbox()`
+    const name = text.replace(/^<(.+) \/>$/, '$1').replace(/(?:\(\)|\?)$/, '');
+    if (heading[1].length === 4) {
+      item = name;
+      anchors.set(name, anchor);
+    } else if (heading[1].length === 5 && item !== undefined) {
+      anchors.set(`${item}.${name}`, anchor);
+    }
+  });
+
+  const getAnchor = (target: string) => {
+    // members listed in the code block of their type link to the type
+    const anchor = anchors.get(target) ?? anchors.get(target.split('.')[0]);
+    if (anchor === undefined) throw new Error(`The link to ${target} does not match any heading`);
+    return anchor;
+  };
+
+  return markdown
+    .replaceAll(/\]\(#!([\w.]+)\)/g, (_, target: string) => `](#${getAnchor(target)})`)
+    .replaceAll(
+      /\]\(#[^ )]+ "([\w.]+)"\)/g,
+      (_, target: string) => `](#${getAnchor(target)} "${target}")`
+    );
 }
 
 function forEachLine(markdown: string, callback: (line: string, isInCodeBlock: boolean) => void) {
@@ -428,31 +341,4 @@ function forEachLine(markdown: string, callback: (line: string, isInCodeBlock: b
       }
     }
   }
-}
-
-function unwrapNoInfer(type: SomeType): SomeType {
-  if (
-    type instanceof ReferenceType &&
-    type.name === 'NoInfer' &&
-    type.typeArguments?.length === 1
-  ) {
-    return unwrapNoInfer(type.typeArguments[0]);
-  }
-
-  // `Type` is the base class of all the `SomeType` types
-  for (const [key, value] of Object.entries(type)) {
-    if (value instanceof Type) {
-      Reflect.set(type, key, unwrapNoInfer(value as SomeType));
-    } else if (Array.isArray(value)) {
-      Reflect.set(
-        type,
-        key,
-        value.map((item: unknown) =>
-          item instanceof Type ? unwrapNoInfer(item as SomeType) : item
-        )
-      );
-    }
-  }
-
-  return type;
 }
