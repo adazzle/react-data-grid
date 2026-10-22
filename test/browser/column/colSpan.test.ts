@@ -189,7 +189,7 @@ describe('colSpan', () => {
     colSpan.mockClear();
     await userEvent.keyboard('{arrowup}');
     await validateCellPosition(0, 0);
-    expect(colSpan).not.toHaveBeenCalledWith({ type: 'SUMMARY', row: undefined });
+    expect(colSpan).toHaveBeenCalledExactlyOnceWith({ type: 'HEADER' });
   });
 
   it('should scroll to the merged cell when selected', async () => {
