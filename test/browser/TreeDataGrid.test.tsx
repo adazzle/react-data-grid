@@ -199,6 +199,16 @@ test('should use getRowGroupKey when provided', async () => {
   await expect.element(page.getCell({ name: 'C' })).toBeInTheDocument();
 });
 
+test('should order groups by the first row that belongs to them', async () => {
+  // integer-like group keys in descending order, which must not be sorted numerically
+  await setup(['year'], { getRowGroupKey: (row) => String(3000 - row.year) });
+  for (const [index, groupKey] of ['980', '979', '978'].entries()) {
+    await expect
+      .element(getRowWithCell(page.getCell({ name: groupKey })))
+      .toHaveAttribute('aria-posinset', String(index + 1));
+  }
+});
+
 test('should ignore duplicate groupBy columns', async () => {
   await setup(['year', 'year', 'year']);
   await expect.element(treeGrid).toHaveAttribute('aria-rowcount', '10');

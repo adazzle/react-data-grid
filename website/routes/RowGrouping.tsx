@@ -138,7 +138,8 @@ function createRows(): readonly Row[] {
     });
   }
 
-  rows.sort((r1, r2) => compare(r2.country, r1.country));
+  // groups are ordered by the first row that belongs to them
+  rows.sort((r1, r2) => compare(r2.country, r1.country) || r1.year - r2.year);
 
   return rows;
 }

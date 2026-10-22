@@ -879,7 +879,7 @@ function MyGrid() {
 
 ###### `getRowGroupKey?: Maybe<(row: R, columnKey: string) => string>`
 
-A function that returns the key of the group a row belongs to, for the specified column key. Rows sharing the same group key are grouped together, and groups are ordered by the first row that belongs to them. If not provided, a default implementation is used that stringifies the row's value for that column, i.e. `String(row[columnKey])`.
+A function that returns the key of the group a row belongs to, for the specified column key. Rows sharing the same group key are grouped together, and groups are ordered by the first row that belongs to them. If not provided, a default implementation is used that stringifies the row's value for that column, i.e., `String(row[columnKey])`.
 
 Provide your own to group on something other than the raw cell value:
 
@@ -891,6 +891,8 @@ function getRowGroupKey(row: Row, columnKey: string): string {
   return String(row[columnKey]);
 }
 ```
+
+:warning: **Performance:** Define this function outside your component or memoize it with `useCallback`, otherwise all the rows are grouped again on every render.
 
 ###### `groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>`
 

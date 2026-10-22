@@ -141,7 +141,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
 
     // Number the groups as if they were all expanded, and return the total number of rows.
-    // Neither depend on the expanded state, so collapsed groups never have to be traversed
+    // Neither depends on the expanded state, so collapsed groups never have to be traversed
     // when the rows are flattened.
     function setStartRowIndexes(groups: GroupsMap<R>, startRowIndex: number): number {
       let groupRowsCount = 0;
