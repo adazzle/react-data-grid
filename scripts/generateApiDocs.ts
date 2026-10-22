@@ -39,6 +39,8 @@ interface Node {
   typeParameters?: Node | null;
   typeAnnotation?: Node;
   returnType?: Node | null;
+  extends?: Node[];
+  expression?: Node;
   typeArguments?: { params: Node[] } | null;
   declarations?: Node[];
   init?: Node | null;
@@ -248,14 +250,63 @@ function getParams(node: Node) {
   return Array.isArray(params) ? params : params!.params;
 }
 
-// the declaration of a type, followed by the declarations of the helper types it directly references
+// the declaration of a type: an interface includes the members of the helper interfaces it extends,
+// e.g. `RenderRowProps` and `BaseRenderRowProps`, and a type alias is followed by the helper types it references,
+// e.g. `CellKeyDownArgs` and `ActiveCellKeyDownArgs`
 function getTypeDeclarations(node: Node) {
+  if (node.type === 'TSInterfaceDeclaration') return getInterfaceDeclaration(node);
+
   const referenced = new Set(
     Array.from(source(node).matchAll(/\b\w+\b/g), ([name]) => helperTypes.get(name)?.node)
   );
   referenced.delete(undefined);
   referenced.delete(node);
-  return [node, ...referenced].map((declaration) => source(declaration!)).join('\n\n');
+  return [node, ...referenced]
+    .map((declaration) =>
+      declaration!.type === 'TSInterfaceDeclaration'
+        ? getInterfaceDeclaration(declaration!)
+        : source(declaration!)
+    )
+    .join('\n\n');
+}
+
+function getInterfaceDeclaration(node: Node) {
+  if (node.extends?.every((base) => !helperTypes.has(source(base.expression!))) !== false) {
+    return source(node);
+  }
+
+  const { heritage, members } = getInterfaceParts(node);
+  const typeParameters = node.typeParameters == null ? '' : source(node.typeParameters);
+  const extendsClause = heritage.length === 0 ? '' : ` extends ${heritage.join(', ')}`;
+  const body = Array.from(members.values(), (member) => `  ${member}`).join('\n');
+  return `interface ${node.id!.name}${typeParameters}${extendsClause} {\n${body}\n}`;
+}
+
+// the base types and members of an interface, with the members of the helper interfaces it extends
+function getInterfaceParts(node: Node) {
+  const heritage: string[] = [];
+  const members = new Map<string, string>();
+
+  for (const base of node.extends ?? []) {
+    const helperType = helperTypes.get(source(base.expression!));
+    if (helperType?.node.type === 'TSInterfaceDeclaration') {
+      const parts = getInterfaceParts(helperType.node);
+      heritage.push(...parts.heritage);
+      for (const [name, member] of parts.members) members.set(name, member);
+    } else {
+      heritage.push(source(base));
+    }
+  }
+
+  for (const member of node.body!.body) {
+    const name = getMemberName(member);
+    const comment = getComment(member);
+    // a redeclared member replaces the inherited one
+    members.delete(name);
+    members.set(name, `${comment === '' ? '' : `/*${comment}*/\n  `}${source(member)}`);
+  }
+
+  return { heritage, members };
 }
 
 function compareNames(a: Declaration, b: Declaration) {

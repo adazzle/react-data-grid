@@ -2027,32 +2027,26 @@ interface RenderGroupCellContentProps<R, SR = unknown> {
 Props passed to custom row renderers.
 
 ```tsx
-interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, SR> {
-  row: R;
-  draggedOverCellIdx: number | undefined;
-  activeCellEditor: ReactElement<EditCellProps<R, SR>> | undefined;
-  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
-  rowClass: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
-  isTreeGrid: boolean;
-}
-
-interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps<R, SR> {
+interface RenderRowProps<R, SR = unknown>
+  extends
+    Omit<React.ComponentProps<'div'>, 'children'>,
+    Pick<
+      DataGridProps<R, SR>,
+      'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
+    > {
+  setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
   iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
   isRowSelected: boolean;
   gridRowStart: number;
-}
-
-interface EditCellProps<R, SR> extends Pick<
-  RenderCellProps<R, SR>,
-  'column' | 'colSpan' | 'row' | 'rowIdx'
-> {
-  onRowChange: (row: R, commitChanges: boolean, shouldFocus: boolean) => void;
-  closeEditor: (shouldFocus: boolean) => void;
-  navigate: (event: React.KeyboardEvent<HTMLDivElement>) => void;
-  onKeyDown: Maybe<(args: EditCellKeyDownArgs<R, SR>, event: CellKeyboardEvent) => void>;
+  row: R;
+  draggedOverCellIdx: number | undefined;
+  activeCellEditor: ReactElement<EditCellProps<R, SR>> | undefined;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
+  rowClass: Maybe<(row: R, rowIdx: number) => Maybe<string>>;
+  isTreeGrid: boolean;
 }
 ```
 
@@ -2063,16 +2057,7 @@ interface EditCellProps<R, SR> extends Pick<
 Props passed to the cell renderer when using `renderers.renderCell`.
 
 ```tsx
-interface RenderCellProps<R, SR> extends BaseRenderCellProps<R, SR> {
-  column: CalculatedColumn<R, SR>;
-  row: R;
-  colSpan: number | undefined;
-  isDraggedOver: boolean;
-  isCellActive: boolean;
-  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
-}
-
-interface BaseRenderCellProps<R, SR = unknown>
+interface RenderCellProps<R, SR>
   extends
     Omit<React.ComponentProps<'div'>, 'children'>,
     Pick<
@@ -2081,6 +2066,12 @@ interface BaseRenderCellProps<R, SR = unknown>
     > {
   rowIdx: number;
   setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
+  column: CalculatedColumn<R, SR>;
+  row: R;
+  colSpan: number | undefined;
+  isDraggedOver: boolean;
+  isCellActive: boolean;
+  onRowChange: (column: CalculatedColumn<R, SR>, rowIdx: number, newRow: R) => void;
 }
 ```
 
