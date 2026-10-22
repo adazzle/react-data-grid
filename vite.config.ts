@@ -114,11 +114,11 @@ export default defineConfig({
           // type check runs first, as type issues are often
           // the root cause of errors reported by later checks
           'vp run typecheck',
-          'vp run docs',
-          'git diff --exit-code README.md',
           'vp check',
           'vp run eslint',
-          'vp pack',
+          // runs `vp pack`, then generates the API reference from its output
+          'vp run docs',
+          'git diff --exit-code README.md',
           'vp build',
           'git diff --exit-code website/routeTree.gen.ts',
           'vp run test'

@@ -1152,11 +1152,9 @@ The default cell component. Can be wrapped via the `renderers.renderCell` prop.
 
 A component for rendering row selection checkboxes.
 
-The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
-
 ##### Props
 
-`SelectCheckboxProps`
+The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
 
 #### `<ToggleGroup />`
 

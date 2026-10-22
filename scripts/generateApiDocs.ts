@@ -10,12 +10,19 @@ const entryPath = 'src/index.ts';
 const readmePath = 'README.md';
 const startMarker = '<!-- api:start -->';
 const endMarker = '<!-- api:end -->';
+// e.g. `{@linkcode Column.width | width}`
+const linkTag = /\{@link(?:code|plain)?\s+([^}|]+?)\s*(?:\|\s*([^}]+?)\s*)?\}/g;
 // the `@group` tags of the exports
 const sections = ['Components', 'Hooks', 'Render Functions', 'Context', 'Other', 'Types'];
 
 interface Doc {
   summary: string;
   tags: { name: string; text: string }[];
+}
+
+interface GeneratedHeading {
+  line: string;
+  key: string | undefined;
 }
 
 interface Declaration {
@@ -100,8 +107,10 @@ groups
   .get('Types')!
   .push(...internalTypes.filter(({ name }) => !helperTypes.has(name)).toSorted(compareNames));
 
-// the key of each generated heading, to resolve the links to it
-const headingKeys: (string | undefined)[] = [];
+// the generated headings, with the key to resolve the links to them
+const generatedHeadings: GeneratedHeading[] = [];
+// the types shown as a code block, whose members link to the type
+const codeBlockTypes = new Set<string>();
 const markdown: string[] = [];
 
 for (const [section, items] of groups) {
@@ -141,10 +150,29 @@ function renderItem(item: Declaration, section: string, hasPropsInterface: boole
   if (isType(node)) return renderType(item, 4);
 
   if (section === 'Components') {
-    const md = [heading(4, `\`<${name} />\``, name), ...renderSummary(doc), ...renderTags(doc)];
+    const title = heading(4, `\`<${name} />\``, name);
     // the props interface of a component is listed after it, e.g. `DataGridProps` after `DataGrid`
-    if (!hasPropsInterface) md.push(heading(5, 'Props'), renderComponentProps(node));
-    return md.join('\n\n');
+    if (hasPropsInterface) return [title, ...renderSummary(doc), ...renderTags(doc)].join('\n\n');
+
+    const propsType = getComponentPropsType(node);
+    const typeName = /^\w+/.exec(propsType)![0];
+    if (!helperTypes.has(typeName)) {
+      return [
+        title,
+        ...renderSummary(doc),
+        ...renderTags(doc),
+        heading(5, 'Props'),
+        `[\`${propsType}\`](#!${typeName})`
+      ].join('\n\n');
+    }
+
+    // the props of a component with an undocumented props type are described
+    // by the paragraphs after the first, e.g. `SelectCheckbox`
+    const [description, ...props] = renderSummary(doc).join('').split('\n\n');
+    if (props.length === 0) {
+      throw new Error(`${name} must describe its props after the first paragraph`);
+    }
+    return [title, description, ...renderTags(doc), heading(5, 'Props'), ...props].join('\n\n');
   }
 
   const isFunction = node.type !== 'VariableDeclaration';
@@ -168,6 +196,7 @@ function renderType({ name, node, doc }: Declaration, level: number) {
     // a heading per member, as their docs have examples, lists, or several paragraphs
     md.push(...renderTags(doc), ...renderMembers(node.body!.body, level + 1, name));
   } else {
+    codeBlockTypes.add(name);
     md.push(codeBlock(getTypeDeclarations(node)), ...renderTags(doc));
   }
 
@@ -209,19 +238,22 @@ function renderTags({ tags }: Doc) {
     returns: '**Returns:**\n\n'
   };
   return tags
-    .filter(({ name }) => name in labels)
+    .filter(({ name }) => {
+      // `@group` sets the section, and the type parameters are described in the "Generics" section
+      if (name === 'group' || name === 'typeParam') return false;
+      if (name in labels) return true;
+      throw new Error(`The @${name} tag is not supported in the API reference`);
+    })
     .map(({ name, text }) => `${labels[name]}${convertLinks(text)}`);
 }
 
-// e.g. "[`RenderRowProps<R, SR>`](#renderrowprops)"
-function renderComponentProps(node: Node) {
+// e.g. `RenderRowProps<R, SR>`
+function getComponentPropsType(node: Node) {
   const signature =
     node.type === 'VariableDeclaration'
       ? node.declarations![0].id!.typeAnnotation!.typeAnnotation!
       : node;
-  const propsType = cleanCode(source(getParams(signature)[0].typeAnnotation!.typeAnnotation!));
-  const typeName = /^\w+/.exec(propsType)![0];
-  return helperTypes.has(typeName) ? `\`${propsType}\`` : `[\`${propsType}\`](#!${typeName})`;
+  return cleanCode(source(getParams(signature)[0].typeAnnotation!.typeAnnotation!));
 }
 
 // e.g. `function renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>): …`
@@ -422,8 +454,9 @@ function source({ start, end }: Node) {
 }
 
 function heading(level: number, text: string, key?: string) {
-  headingKeys.push(key);
-  return `${'#'.repeat(level)} ${text}`;
+  const line = `${'#'.repeat(level)} ${text}`;
+  generatedHeadings.push({ line, key });
+  return line;
 }
 
 function codeBlock(text: string) {
@@ -436,18 +469,15 @@ function cleanCode(text: string) {
   return text
     .replaceAll(/^(?:export )?declare /gm, '')
     .replaceAll('import("react").', 'React.')
-    .replaceAll(
-      /\{@link(?:code)? ([^}|]+?)(?: \| ([^}]+))?\}/g,
-      (_, target: string, label: string | undefined) => label ?? target
-    )
+    .replaceAll(linkTag, (_, target: string, label: string | undefined) => label ?? target)
     .replaceAll(/NoInfer<([^<>]+)>/g, '$1');
 }
 
 // `{@linkcode Column.width | width}` -> "[`width`](#!Column.width)", resolved by `resolveLinks`
 function convertLinks(text: string) {
   return text.replaceAll(
-    /\{@link(?:code)? ([^}|]+?)(?: \| ([^}]+))?\}/g,
-    (_, target: string, label: string | undefined) => `[\`${label ?? target}\`](#!${target.trim()})`
+    linkTag,
+    (_, target: string, label: string | undefined) => `[\`${label ?? target}\`](#!${target})`
   );
 }
 
@@ -458,29 +488,37 @@ function convertLinks(text: string) {
 function resolveLinks(precedingMarkdown: string, api: string, followingMarkdown: string) {
   const slugger = new GithubSlugger();
   const anchors = new Map<string, string>();
-  const slugHeadings = (markdown: string, keys?: (string | undefined)[]) => {
+  const slugHeadings = (markdown: string, headings?: GeneratedHeading[]) => {
     forEachLine(markdown, (line, isInCodeBlock) => {
       const match = isInCodeBlock ? null : /^#{1,6} (.+)$/.exec(line);
       if (match === null) return;
       const anchor = slugger.slug(match[1].replaceAll('`', ''));
-      const key = keys?.shift();
-      if (key !== undefined) anchors.set(key, anchor);
+      if (headings === undefined) return;
+      // the generated headings are matched in order
+      const generated = headings.shift();
+      if (generated?.line !== line) {
+        throw new Error(`The heading "${line}" must not be in a JSDoc comment`);
+      }
+      if (generated.key !== undefined) anchors.set(generated.key, anchor);
     });
   };
 
   slugHeadings(precedingMarkdown);
-  slugHeadings(api, [...headingKeys]);
+  slugHeadings(api, [...generatedHeadings]);
   slugHeadings(followingMarkdown);
 
   const getAnchor = (target: string) => {
+    const [type, ...members] = target.split('.');
     // the members of types shown as a code block link to their type
-    const anchor = anchors.get(target) ?? anchors.get(target.split('.')[0]);
+    const anchor =
+      anchors.get(target) ??
+      (members.length === 1 && codeBlockTypes.has(type) ? anchors.get(type) : undefined);
     if (anchor === undefined) throw new Error(`The link to ${target} does not match any heading`);
     return anchor;
   };
 
   return `${precedingMarkdown}\n\n${api}\n\n${followingMarkdown}`
-    .replaceAll(/\]\(#!([\w.]+)\)/g, (_, target: string) => `](#${getAnchor(target)})`)
+    .replaceAll(/\]\(#!([^)]+)\)/g, (_, target: string) => `](#${getAnchor(target)})`)
     .replaceAll(
       /\]\(#[^ )]+ (["'])([\w.]+)\1\)/g,
       (_, quote: string, target: string) => `](#${getAnchor(target)} ${quote}${target}${quote})`
