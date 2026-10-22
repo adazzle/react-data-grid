@@ -243,21 +243,9 @@ Replace default components with custom implementations using the [`renderers`](#
 
 ## Components
 
-### Cell
+### `<DataGrid />`
 
-```ts
-const Cell: <R, SR>(props: RenderCellProps<R, SR>) => Element;
-```
-
-The default cell component. Can be wrapped via the `renderers.renderCell` prop.
-
----
-
-### DataGrid()
-
-```ts
-function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridProps<R, SR, K>): Element;
-```
+**Props:** [`DataGridProps`](#datagridprops)\<`R`, `SR`, `K`\>
 
 Main API component to render a data grid of rows and columns
 
@@ -1011,45 +999,9 @@ Optional attribute to help with Cypress (or similar) selectors.
 
 ---
 
-### Row
+### `<TreeDataGrid />`
 
-```ts
-const Row: <R, SR>(props: RenderRowProps<R, SR>) => Element;
-```
-
-The default row component. Can be wrapped via the `renderers.renderRow` prop.
-
----
-
-### SelectCheckbox()
-
-```ts
-function SelectCheckbox(props: SelectCheckboxProps): ReactNode;
-```
-
-A component for rendering row selection checkboxes.
-
-The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
-
----
-
-### ToggleGroup()
-
-```ts
-function ToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>): Element;
-```
-
-Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
-
----
-
-### TreeDataGrid()
-
-```ts
-function TreeDataGrid<R, SR = unknown, K extends Key = Key>(
-  props: TreeDataGridProps<R, SR, K>
-): Element;
-```
+**Props:** [`TreeDataGridProps`](#treedatagridprops)\<`R`, `SR`, `K`\>
 
 `TreeDataGrid` is a component built on top of `DataGrid` to add hierarchical row grouping. This implements the [Treegrid pattern](https://www.w3.org/WAI/ARIA/apg/patterns/treegrid/).
 
@@ -1221,6 +1173,40 @@ groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
 Function to generate unique IDs for group rows. If not provided, a default implementation is used that concatenates parent and group keys with `__`.
 
 :warning: **Performance:** Define this function outside your component or memoize it with `useCallback` to prevent unnecessary re-renders.
+
+---
+
+### `<Cell />`
+
+**Props:** [`RenderCellProps`](#rendercellprops)\<`R`, `SR`\>
+
+The default cell component. Can be wrapped via the `renderers.renderCell` prop.
+
+---
+
+### `<Row />`
+
+**Props:** [`RenderRowProps`](#renderrowprops)\<`R`, `SR`\>
+
+The default row component. Can be wrapped via the `renderers.renderRow` prop.
+
+---
+
+### `<SelectCheckbox />`
+
+**Props:** [`SelectCheckboxProps`](#selectcheckboxprops)
+
+A component for rendering row selection checkboxes.
+
+The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: boolean` in place of `checked`.
+
+---
+
+### `<ToggleGroup />`
+
+**Props:** [`RenderGroupCellContentProps`](#rendergroupcellcontentprops)\<`R`, `SR`\>
+
+Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
 
 ## Hooks
 
@@ -2326,7 +2312,7 @@ Props passed to the cell renderer when using `renderers.renderCell`.
 
 #### See
 
-[`renderers.renderCell`](#renderers), [`<Cell />`](#cell)
+[`renderers.renderCell`](#renderers), [`<Cell />`](#cell-)
 
 #### Extends
 
@@ -2353,7 +2339,7 @@ Props for custom checkbox renderers.
 
 #### See
 
-[`renderCheckbox`](#rendercheckbox) function, [`renderers.renderCheckbox`](#renderers), [`<SelectCheckbox />`](#selectcheckbox)
+[`renderCheckbox`](#rendercheckbox) function, [`renderers.renderCheckbox`](#renderers), [`<SelectCheckbox />`](#selectcheckbox-)
 
 #### Properties
 
@@ -2432,7 +2418,7 @@ Props passed to group cell content renderers (`column.renderGroupCell`) when usi
 
 #### See
 
-[`column.renderGroupCell`](#rendergroupcell), [`renderToggleGroup`](#rendertogglegroup) function, [`<ToggleGroup />`](#togglegroup)
+[`column.renderGroupCell`](#rendergroupcell), [`renderToggleGroup`](#rendertogglegroup) function, [`<ToggleGroup />`](#togglegroup-)
 
 #### Properties
 
@@ -2473,7 +2459,7 @@ Props passed to custom row renderers.
 
 #### See
 
-[`renderers.renderRow`](#renderers), [`<Row />`](#row)
+[`renderers.renderRow`](#renderers), [`<Row />`](#row-)
 
 #### Extends
 
@@ -2888,7 +2874,7 @@ Represents a group row in `TreeDataGrid`. This helper type is not exported; the 
 
 #### See
 
-[`RenderGroupCellContentProps`](#rendergroupcellcontentprops), [`RowHeightArgs`](#rowheightargs), [`<TreeDataGrid />`](#treedatagrid)
+[`RenderGroupCellContentProps`](#rendergroupcellcontentprops), [`RowHeightArgs`](#rowheightargs), [`<TreeDataGrid />`](#treedatagrid-)
 
 #### Properties
 

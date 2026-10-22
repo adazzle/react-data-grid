@@ -23,6 +23,7 @@ const {
   ReferenceType,
   ReflectionGroup,
   ReflectionKind,
+  ReflectionType,
   SignatureReflection,
   TSConfigReader,
   Type,
@@ -32,6 +33,8 @@ const {
 const { MarkdownTheme, MarkdownThemeContext } = await import('typedoc-plugin-markdown');
 
 const readmePath = 'README.md';
+// the components of the "Components" section, without their props interfaces
+const components = new Set<unknown>();
 const startMarker = '<!-- api:start -->';
 const endMarker = '<!-- api:end -->';
 
@@ -53,12 +56,27 @@ class ReadmeThemeContext extends MarkdownThemeContext {
   constructor(...args: ConstructorParameters<typeof MarkdownThemeContext>) {
     super(...args);
 
-    const { groups } = this.partials;
+    const { declarationTitle, groups, memberTitle, signatureTitle } = this.partials;
     const { useTableFormat: isDefaultTableFormat } = this.helpers;
     let isTableInterface = false;
 
+    // components are used as JSX elements, so show their props instead of a function signature
+    const getComponentProps = (signature: SignatureModel | undefined) => {
+      const propsType = signature?.parameters?.[0]?.type;
+      return propsType === undefined ? '' : `**Props:** ${this.partials.someType(propsType)}`;
+    };
+
     this.partials = {
       ...this.partials,
+      memberTitle: (model) =>
+        components.has(model) ? `\`<${model.name} />\`` : memberTitle(model),
+      signatureTitle: (model, options) =>
+        components.has(model.parent) ? getComponentProps(model) : signatureTitle(model, options),
+      // e.g. `Row`, a memoized component
+      declarationTitle: (model) =>
+        components.has(model) && model.type instanceof ReflectionType
+          ? getComponentProps(model.type.declaration.signatures?.[0])
+          : declarationTitle(model),
       // list the properties of an interface in a table, unless a property has more than a short description
       groups(model: ContainerReflection, options: Parameters<typeof groups>[1]) {
         isTableInterface =
@@ -174,6 +192,22 @@ const publicGroups = (project.groups ?? []).filter((group) => {
 });
 internalGroup.children.sort((a, b) => a.name.localeCompare(b.name));
 project.groups = [...publicGroups, internalGroup];
+
+// list the components with a props interface first, each followed by its props interface,
+// e.g. `DataGrid` and `DataGridProps`, then the other components
+const componentsGroup = publicGroups.find((group) => group.title === 'Components');
+if (componentsGroup !== undefined) {
+  const names = new Set(componentsGroup.children.map((child) => child.name));
+  const getSortKey = ({ name }: { name: string }) => {
+    const component = name.endsWith('Props') ? name.slice(0, -'Props'.length) : name;
+    return names.has(`${component}Props`) ? `0 ${component} ${name}` : `1 ${name}`;
+  };
+  componentsGroup.children.sort((a, b) => getSortKey(a).localeCompare(getSortKey(b)));
+
+  for (const child of componentsGroup.children) {
+    if (!child.kindOf(ReflectionKind.Interface)) components.add(child);
+  }
+}
 
 const interfaces = project
   .getReflectionsByKind(ReflectionKind.Interface)
@@ -320,7 +354,10 @@ function replaceAnchors(precedingMarkdown: string, api: string, followingMarkdow
       const heading = /^(#{1,6}) (.+)$/.exec(line);
       if (heading !== null) {
         const headingSlug = slug(heading[2]);
-        const name = getHeadingText(heading[2]).replace(/(?:\(\)|\?)$/, '');
+        // e.g. `DataGrid` for `<DataGrid />`, `renderCheckbox` for `renderCheckbox()`
+        const name = getHeadingText(heading[2])
+          .replace(/^<(.+) \/>$/, '$1')
+          .replace(/(?:\(\)|\?)$/, '');
         if (heading[1].length === 3) {
           item = name;
           memberAnchors.set(name, headingSlug);
