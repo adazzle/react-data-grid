@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { page, userEvent } from 'vite-plus/test/browser';
 
 import { DataGrid, renderHeaderCell } from '../../../src';
-import type { Column } from '../../../src';
+import type { CalculatedColumn, Column, RenderCellContentProps } from '../../../src';
 import { getCellsAtRowIndex, safeTab, setup } from '../utils';
 
 const cells = page.getCell();
@@ -111,6 +111,30 @@ describe('Custom cell content renderer', () => {
       },
       indexes: [0]
     });
+  });
+
+  it('should receive columns that all have the same properties in the same order', async () => {
+    const calculatedColumns = new Map<string, CalculatedColumn<Row>>();
+
+    function renderCell({ column }: RenderCellContentProps<Row>) {
+      calculatedColumns.set(column.key, column);
+      return null;
+    }
+
+    await setup({
+      columns: [
+        { key: 'id', name: 'ID', renderCell },
+        { name: 'Name', key: 'name', width: 100, cellClass: 'name', renderCell },
+        { key: 'other', name: 'Other', frozen: true, editable: false, colSpan: () => 1, renderCell }
+      ],
+      rows: [{ id: 1 }]
+    });
+
+    await expect.poll(() => calculatedColumns.size).toBe(3);
+    const [idKeys, ...otherKeys] = calculatedColumns.values().map(Object.keys).toArray();
+    for (const keys of otherKeys) {
+      expect(keys).toStrictEqual(idKeys);
+    }
   });
 });
 

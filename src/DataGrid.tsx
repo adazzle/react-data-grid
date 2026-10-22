@@ -776,7 +776,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     const updatedRows = [...rows];
     const indexes: number[] = [];
     for (let i = startRowIdx; i < endRowIdx; i++) {
-      if (isCellEditable({ rowIdx: i, idx })) {
+      if (isCellEditable({ idx, rowIdx: i })) {
         const updatedRow = onFill!({ columnKey: column.key, sourceRow, targetRow: rows[i] });
         if (updatedRow !== rows[i]) {
           updatedRows[i] = updatedRow;
@@ -802,16 +802,19 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     if (!isPositionInActiveBounds) return;
     commitEditorChanges();
 
+    // Copy the coordinates instead of spreading `position`,
+    // so the shape of the active position doesn't depend on the object passed in
+    const { idx, rowIdx } = position;
     const samePosition = isSamePosition(activePosition, position);
 
     if (options?.enableEditor && isCellEditable(position)) {
-      const row = rows[position.rowIdx];
-      setActivePosition({ ...position, mode: 'EDIT', row, originalRow: row });
+      const row = rows[rowIdx];
+      setActivePosition({ idx, rowIdx, mode: 'EDIT', row, originalRow: row });
     } else if (samePosition) {
       // Avoid re-renders if the active position is the same
       scrollIntoView(getCellToScroll(gridRef.current!));
     } else {
-      const newPosition: ActivePosition = { ...position, mode: 'ACTIVE' };
+      const newPosition: ActivePosition = { idx, rowIdx, mode: 'ACTIVE' };
       setActivePosition(newPosition);
       if (options?.shouldFocus) {
         setPositionToFocus(newPosition);
@@ -820,15 +823,15 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
 
     if (onActivePositionChange && !samePosition) {
       onActivePositionChange({
-        rowIdx: position.rowIdx,
-        row: rows[position.rowIdx],
-        column: columns[position.idx]
+        rowIdx,
+        row: rows[rowIdx],
+        column: columns[idx]
       });
     }
   }
 
   function selectHeaderCell({ idx, rowIdx }: Position): void {
-    setPosition({ rowIdx: minRowIdx + rowIdx - 1, idx });
+    setPosition({ idx, rowIdx: minRowIdx + rowIdx - 1 });
   }
 
   function getNextPosition(key: string, ctrlKey: boolean, shiftKey: boolean): Position {
@@ -866,7 +869,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         if (activePositionIsRow) return { idx, rowIdx: maxRowIdx };
         return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
-        if (rowIdx === minRowIdx) return activePosition;
+        // Header and top summary rows are above the rows, so there's nothing to page up to.
+        if (rowIdx < 0) return activePosition;
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
         return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
       }

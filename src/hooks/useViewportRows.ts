@@ -73,15 +73,18 @@ export function useViewportRows<R>({
       return position;
     });
 
-    const validateRowIdx = (rowIdx: number) => {
-      return max(0, min(rows.length - 1, rowIdx));
+    // Header and summary rows use the position of the closest row,
+    // or an empty position at the top when there are no rows
+    const getRowPosition = (rowIdx: number) => {
+      if (rows.length === 0) return { top: 0, height: 0 };
+      return rowPositions[max(0, min(rows.length - 1, rowIdx))];
     };
 
     return {
       totalRowHeight,
       gridTemplateRows,
-      getRowTop: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].top,
-      getRowHeight: (rowIdx: number) => rowPositions[validateRowIdx(rowIdx)].height,
+      getRowTop: (rowIdx: number) => getRowPosition(rowIdx).top,
+      getRowHeight: (rowIdx: number) => getRowPosition(rowIdx).height,
       findRowIdx(offset: number) {
         let start = 0;
         let end = rowPositions.length - 1;
