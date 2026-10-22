@@ -1212,7 +1212,7 @@ const nonSelectColumns = columns.filter((column) => column.key !== SELECT_COLUMN
 
 Defines the configuration for a column in the grid.
 
-**See also:** `columns` prop on `<DataGrid />`
+**See also:** [`columns`](#columns-readonly-columnorcolumngroupr-sr) prop on `<DataGrid />`
 
 ##### `name: string | ReactElement`
 
@@ -1460,7 +1460,7 @@ const columns: readonly ColumnOrColumnGroup<Row>[] = [
 
 Union type representing either a `Column` or a `ColumnGroup`.
 
-**See also:** `columns` prop on `<DataGrid />`
+**See also:** [`columns`](#columns-readonly-columnorcolumngroupr-sr) prop on `<DataGrid />`
 
 #### `CalculatedColumn<TRow, TSummaryRow>`
 
@@ -1486,7 +1486,7 @@ interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSu
 }
 ```
 
-**See also:** [`Column`](#columntrow-tsummaryrow), `onColumnResize` prop on `<DataGrid />`
+**See also:** [`Column`](#columntrow-tsummaryrow), [`onColumnResize`](#oncolumnresize-maybecolumn-calculatedcolumnr-sr-width-number--void) prop on `<DataGrid />`
 
 #### `CalculatedColumnParent<TRow, TSummaryRow>`
 
@@ -1533,7 +1533,7 @@ type DefaultColumnOptions<TRow, TSummaryRow> = Pick<
 >;
 ```
 
-**See also:** `defaultColumnOptions` prop on `<DataGrid />`
+**See also:** [`defaultColumnOptions`](#defaultcolumnoptions-maybedefaultcolumnoptionsr-sr) prop on `<DataGrid />`
 
 #### `ColumnFrozen`
 
@@ -1543,7 +1543,7 @@ Whether a column is frozen, and on which edge.
 type ColumnFrozen = boolean | 'start' | 'end';
 ```
 
-**See also:** `column.frozen`
+**See also:** [`column.frozen`](#frozen-maybeboolean--start--end)
 
 #### `RenderCellContentProps<TRow, TSummaryRow>`
 
@@ -1575,7 +1575,7 @@ function renderCell({ row, column, onRowChange }: RenderCellContentProps<MyRow>)
 }
 ```
 
-**See also:** `column.renderCell`, `renderValue` function
+**See also:** [`column.renderCell`](#rendercell-maybeprops-rendercellcontentpropstrow-tsummaryrow--reactnode), [`renderValue`](#rendervaluer-srprops-rendercellcontentpropsr-sr) function
 
 #### `RenderHeaderCellContentProps<TRow, TSummaryRow>`
 
@@ -1590,7 +1590,7 @@ interface RenderHeaderCellContentProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `column.renderHeaderCell`, `renderHeaderCell` function
+**See also:** [`column.renderHeaderCell`](#renderheadercell-maybeprops-renderheadercellcontentpropstrow-tsummaryrow--reactnode), [`renderHeaderCell`](#renderheadercellr-srprops-renderheadercellcontentpropsr-sr) function
 
 #### `RenderEditCellContentProps<TRow, TSummaryRow>`
 
@@ -1623,7 +1623,7 @@ function renderEditor({ row, column, onRowChange, onClose }: RenderEditCellConte
 }
 ```
 
-**See also:** `column.renderEditCell`, `renderTextEditor` function
+**See also:** [`column.renderEditCell`](#rendereditcell-maybeprops-rendereditcellcontentpropstrow-tsummaryrow--reactnode), [`renderTextEditor`](#rendertexteditortrow-tsummaryrowprops-rendereditcellcontentpropstrow-tsummaryrow) function
 
 #### `RenderSummaryCellContentProps<TSummaryRow, TRow>`
 
@@ -1637,7 +1637,7 @@ interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
 }
 ```
 
-**See also:** `column.renderSummaryCell`
+**See also:** [`column.renderSummaryCell`](#rendersummarycell-maybeprops-rendersummarycellcontentpropstsummaryrow-trow--reactnode)
 
 #### `RenderGroupCellContentProps<TRow, TSummaryRow>`
 
@@ -1655,7 +1655,7 @@ interface RenderGroupCellContentProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `column.renderGroupCell`, `renderToggleGroup` function
+**See also:** [`column.renderGroupCell`](#rendergroupcell-maybeprops-rendergroupcellcontentpropstrow-tsummaryrow--reactnode), [`renderToggleGroup`](#rendertogglegroupr-srprops-rendergroupcellcontentpropsr-sr) function, [`<ToggleGroup />`](#togglegroup-)
 
 #### `RenderRowProps<TRow, TSummaryRow>`
 
@@ -1680,7 +1680,7 @@ interface RenderRowProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `renderers.renderRow`, `<Row />`
+**See also:** [`renderers.renderRow`](#renderers-mayberenderersr-sr), [`<Row />`](#row-)
 
 #### `RenderCellProps<TRow, TSummaryRow>`
 
@@ -1700,7 +1700,7 @@ interface RenderCellProps<TRow, TSummaryRow> {
 }
 ```
 
-**See also:** `renderers.renderCell`, `<Cell />`
+**See also:** [`renderers.renderCell`](#renderers-mayberenderersr-sr), [`<Cell />`](#cell-)
 
 #### `RenderCheckboxProps`
 
@@ -1725,7 +1725,7 @@ interface RenderCheckboxProps {
 }
 ```
 
-**See also:** `renderCheckbox` function, `renderers.renderCheckbox`
+**See also:** [`renderCheckbox`](#rendercheckboxprops-rendercheckboxprops) function, [`renderers.renderCheckbox`](#renderers-mayberenderersr-sr), [`<SelectCheckbox />`](#selectcheckbox-)
 
 #### `RenderSortStatusProps`
 
@@ -1735,7 +1735,7 @@ Props for custom sort status renderers.
 interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 ```
 
-**See also:** `renderers.renderSortStatus`
+**See also:** [`renderers.renderSortStatus`](#renderers-mayberenderersr-sr)
 
 #### `RenderSortIconProps`
 
@@ -1748,7 +1748,7 @@ interface RenderSortIconProps {
 }
 ```
 
-**See also:** `renderSortIcon` function
+**See also:** [`renderSortIcon`](#rendersorticonprops-rendersorticonprops) function
 
 #### `RenderSortPriorityProps`
 
@@ -1761,7 +1761,7 @@ interface RenderSortPriorityProps {
 }
 ```
 
-**See also:** `renderSortPriority` function
+**See also:** [`renderSortPriority`](#rendersortpriorityprops-rendersortpriorityprops) function
 
 #### `Renderers<TRow, TSummaryRow>`
 
@@ -1777,7 +1777,7 @@ interface Renderers<TRow, TSummaryRow> {
 }
 ```
 
-**See also:** `renderers` prop on `<DataGrid />`, [`DataGridRenderersContext`](#datagridrendererscontext)
+**See also:** [`renderers`](#renderers-mayberenderersr-sr) prop on `<DataGrid />`, [`DataGridRenderersContext`](#datagridrendererscontext)
 
 #### `CellMouseArgs<TRow, TSummaryRow>`
 
@@ -1807,7 +1807,7 @@ function onCellClick(args: CellMouseArgs<Row>, event: CellMouseEvent) {
 }
 ```
 
-**See also:** `onCellMouseDown`, `onCellClick`, `onCellDoubleClick`, and `onCellContextMenu` props on `<DataGrid />`
+**See also:** [`onCellMouseDown`](#oncellmousedown-cellmouseeventhandlerr-sr), [`onCellClick`](#oncellclick-cellmouseeventhandlerr-sr), [`onCellDoubleClick`](#oncelldoubleclick-cellmouseeventhandlerr-sr), and [`onCellContextMenu`](#oncellcontextmenu-cellmouseeventhandlerr-sr) props on `<DataGrid />`
 
 #### `CellMouseEventHandler<TRow, TSummaryRow>` (internal)
 
@@ -1854,7 +1854,7 @@ function onCellMouseDown(args: CellMouseArgs<Row>, event: CellMouseEvent) {
 }
 ```
 
-**See also:** `onCellMouseDown`, `onCellClick`, `onCellDoubleClick`, and `onCellContextMenu` props on `<DataGrid />`
+**See also:** [`onCellMouseDown`](#oncellmousedown-cellmouseeventhandlerr-sr), [`onCellClick`](#oncellclick-cellmouseeventhandlerr-sr), [`onCellDoubleClick`](#oncelldoubleclick-cellmouseeventhandlerr-sr), and [`onCellContextMenu`](#oncellcontextmenu-cellmouseeventhandlerr-sr) props on `<DataGrid />`
 
 #### `CellKeyDownArgs<TRow, TSummaryRow>`
 
@@ -1902,7 +1902,7 @@ function onCellKeyDown(args: CellKeyDownArgs<Row>, event: CellKeyboardEvent) {
 }
 ```
 
-**See also:** `onCellKeyDown` prop on `<DataGrid />`
+**See also:** [`onCellKeyDown`](#oncellkeydown-maybeargs-cellkeydownargsr-sr-event-cellkeyboardevent--void) prop on `<DataGrid />`
 
 #### `CellKeyboardEvent`
 
@@ -1912,7 +1912,7 @@ Extends `React.KeyboardEvent<HTMLDivElement>` with grid-specific methods.
 type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 ```
 
-**See also:** `onCellKeyDown` prop on `<DataGrid />`
+**See also:** [`onCellKeyDown`](#oncellkeydown-maybeargs-cellkeydownargsr-sr-event-cellkeyboardevent--void) prop on `<DataGrid />`
 
 #### `CellClipboardEvent` (internal)
 
@@ -1922,7 +1922,7 @@ Type alias for `React.ClipboardEvent<HTMLDivElement>`. Used for copy and paste e
 type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
 ```
 
-**See also:** `onCellCopy` and `onCellPaste` props on `<DataGrid />`
+**See also:** [`onCellCopy`](#oncellcopy-maybeargs-cellcopyargsr-sr-event-cellclipboardevent--void) and [`onCellPaste`](#oncellpaste-maybeargs-cellpasteargsr-sr-event-cellclipboardevent--r) props on `<DataGrid />`
 
 #### `CellCopyArgs<TRow, TSummaryRow>`
 
@@ -1935,7 +1935,7 @@ interface CellCopyArgs<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `onCellCopy` prop on `<DataGrid />`
+**See also:** [`onCellCopy`](#oncellcopy-maybeargs-cellcopyargsr-sr-event-cellclipboardevent--void) prop on `<DataGrid />`
 
 #### `CellPasteArgs<TRow, TSummaryRow>`
 
@@ -1948,7 +1948,7 @@ interface CellPasteArgs<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `onCellPaste` prop on `<DataGrid />`
+**See also:** [`onCellPaste`](#oncellpaste-maybeargs-cellpasteargsr-sr-event-cellclipboardevent--r) prop on `<DataGrid />`
 
 #### `PositionChangeArgs<TRow, TSummaryRow>`
 
@@ -1971,7 +1971,7 @@ interface PositionChangeArgs<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `onActivePositionChange` prop on `<DataGrid />`
+**See also:** [`onActivePositionChange`](#onactivepositionchange-maybeargs-positionchangeargsr-sr--void) prop on `<DataGrid />`
 
 #### `ColSpanArgs<TRow, TSummaryRow>`
 
@@ -2003,7 +2003,7 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-**See also:** `column.colSpan`
+**See also:** [`column.colSpan`](#colspan-maybeargs-colspanargstrow-tsummaryrow--maybenumber)
 
 #### `RowHeightArgs<TRow>`
 
@@ -2026,7 +2026,7 @@ function getRowHeight(args: RowHeightArgs<Row>): number {
 <TreeDataGrid rowHeight={getRowHeight} ... />
 ```
 
-**See also:** `rowHeight` prop on `<TreeDataGrid />`
+**See also:** [`rowHeight`](#rowheight-maybenumber--args-rowheightargsr--number) prop on `<TreeDataGrid />`
 
 #### `SortColumn`
 
@@ -2039,7 +2039,7 @@ interface SortColumn {
 }
 ```
 
-**See also:** `sortColumns` and `onSortColumnsChange` props on `<DataGrid />`
+**See also:** [`sortColumns`](#sortcolumns-maybereadonly-sortcolumn) and [`onSortColumnsChange`](#onsortcolumnschange-maybesortcolumns-sortcolumn--void) props on `<DataGrid />`
 
 #### `SortDirection`
 
@@ -2062,7 +2062,7 @@ interface RowsChangeData<R, SR = unknown> {
 }
 ```
 
-**See also:** `onRowsChange` prop on `<DataGrid />`
+**See also:** [`onRowsChange`](#onrowschange-mayberows-r-data-rowschangedatar-sr--void) prop on `<DataGrid />`
 
 #### `SelectRowEvent<TRow>`
 
@@ -2102,7 +2102,7 @@ interface FillEvent<TRow> {
 }
 ```
 
-**See also:** `onFill` prop on `<DataGrid />`
+**See also:** [`onFill`](#onfill-maybeevent-filleventr--r) prop on `<DataGrid />`
 
 #### `DataGridHandle`
 
@@ -2133,7 +2133,7 @@ function MyGrid() {
 }
 ```
 
-**See also:** `ref` prop on `<DataGrid />`
+**See also:** [`ref`](#ref-maybereactrefdatagridhandle) prop on `<DataGrid />`
 
 #### `Position` (internal)
 
@@ -2184,7 +2184,7 @@ A map of column widths.
 type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
 ```
 
-**See also:** `columnWidths` and `onColumnWidthsChange` props on `<DataGrid />`
+**See also:** [`columnWidths`](#columnwidths-maybecolumnwidths) and [`onColumnWidthsChange`](#oncolumnwidthschange-maybecolumnwidths-columnwidths--void) props on `<DataGrid />`
 
 #### `ColumnWidth`
 
@@ -2209,7 +2209,7 @@ Text direction of the grid.
 type Direction = 'ltr' | 'rtl';
 ```
 
-**See also:** `direction` prop on `<DataGrid />`
+**See also:** [`direction`](#direction-maybeltr--rtl) prop on `<DataGrid />`
 
 #### `GroupRow<TRow>` (internal)
 
@@ -2229,7 +2229,7 @@ interface GroupRow<TRow> {
 }
 ```
 
-**See also:** [`RenderGroupCellContentProps`](#rendergroupcellcontentpropstrow-tsummaryrow), `<TreeDataGrid />`
+**See also:** [`RenderGroupCellContentProps`](#rendergroupcellcontentpropstrow-tsummaryrow), [`RowHeightArgs`](#rowheightargstrow), [`<TreeDataGrid />`](#treedatagrid-)
 
 #### `Maybe<T>` (internal)
 
