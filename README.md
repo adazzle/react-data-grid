@@ -1024,7 +1024,7 @@ The default row component. Can be wrapped via the `renderers.renderRow` prop.
 ### SelectCheckbox()
 
 ```ts
-function SelectCheckbox(__namedParameters: SelectCheckboxProps): ReactNode;
+function SelectCheckbox(props: SelectCheckboxProps): ReactNode;
 ```
 
 A component for rendering row selection checkboxes.
@@ -1036,7 +1036,7 @@ The same props as [`RenderCheckboxProps`](#rendercheckboxprops), with `value: bo
 ### ToggleGroup()
 
 ```ts
-function ToggleGroup<R, SR>(__namedParameters: RenderGroupCellContentProps<R, SR>): Element;
+function ToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>): Element;
 ```
 
 Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
@@ -1047,7 +1047,7 @@ Low-level component used by `renderToggleGroup` to render the expand/collapse co
 
 ```ts
 function TreeDataGrid<R, SR = unknown, K extends Key = Key>(
-  __namedParameters: TreeDataGridProps<R, SR, K>
+  props: TreeDataGridProps<R, SR, K>
 ): Element;
 ```
 
@@ -1308,7 +1308,7 @@ function CustomSelectCell({ row }: RenderCellContentProps<Row>) {
 ### renderCheckbox()
 
 ```ts
-function renderCheckbox(__namedParameters: RenderCheckboxProps): Element;
+function renderCheckbox(props: RenderCheckboxProps): Element;
 ```
 
 Renders a checkbox input with proper styling and accessibility.
@@ -1330,9 +1330,7 @@ import { DataGrid, renderCheckbox } from 'react-data-grid';
 ### renderHeaderCell()
 
 ```ts
-function renderHeaderCell<R, SR>(
-  __namedParameters: RenderHeaderCellContentProps<R, SR>
-): string | Element;
+function renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>): string | Element;
 ```
 
 The default header cell content renderer. Renders sortable columns with sort indicators.
@@ -1357,7 +1355,7 @@ const columns: readonly Column<Row>[] = [
 ### renderSortIcon()
 
 ```ts
-function renderSortIcon(__namedParameters: RenderSortIconProps): Element | null;
+function renderSortIcon(props: RenderSortIconProps): Element | null;
 ```
 
 Renders the sort direction arrow icon.
@@ -1367,7 +1365,7 @@ Renders the sort direction arrow icon.
 ### renderSortPriority()
 
 ```ts
-function renderSortPriority(__namedParameters: RenderSortPriorityProps): number | undefined;
+function renderSortPriority(props: RenderSortPriorityProps): number | undefined;
 ```
 
 Renders the sort priority number for multi-column sorting.
@@ -1377,7 +1375,7 @@ Renders the sort priority number for multi-column sorting.
 ### renderTextEditor()
 
 ```ts
-function renderTextEditor<R, SR>(__namedParameters: RenderEditCellContentProps<R, SR>): Element;
+function renderTextEditor<R, SR>(props: RenderEditCellContentProps<R, SR>): Element;
 ```
 
 A basic text editor provided for convenience.

@@ -134,6 +134,11 @@ app.converter.on(Converter.EVENT_RESOLVE_END, ({ project }) => {
     ) {
       delete reflection.defaultValue;
     }
+
+    // TypeDoc names destructured parameters `__namedParameters`
+    if (reflection instanceof ParameterReflection && reflection.name === '__namedParameters') {
+      reflection.name = 'props';
+    }
   }
 });
 
