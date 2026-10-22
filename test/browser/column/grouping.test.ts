@@ -258,6 +258,10 @@ test('keyboard navigation', async () => {
   await safeTab();
   await validateCellPosition(0, 3);
 
+  // page up on the main header row does nothing
+  await userEvent.keyboard('{PageUp}');
+  await validateCellPosition(0, 3);
+
   // arrow navigation
   await userEvent.keyboard('{arrowup}');
   await validateCellPosition(0, 3);
