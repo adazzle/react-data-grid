@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { page, userEvent } from 'vitest/browser';
+import { page, userEvent } from 'vite-plus/test/browser';
 
 import type { Column } from '../../src';
 import { renderTextEditor, SelectColumn, TreeDataGrid } from '../../src';
 import { rowActiveClassname } from '../../src/style/row';
-import { canCopyPaste, getCellsAtRowIndex, getRowWithCell, testCount, testRowCount } from './utils';
+import { getCellsAtRowIndex, getRowWithCell, testCount, testRowCount } from './utils';
 
 const treeGrid = page.getTreeGrid();
 const headerRow = treeGrid.getHeaderRow();
@@ -99,9 +99,7 @@ function TestGrid({
 }) {
   const [rows, setRows] = useState(initialRows);
   const [selectedRows, setSelectedRows] = useState((): ReadonlySet<number> => new Set());
-  const [expandedGroupIds, setExpandedGroupIds] = useState(
-    (): ReadonlySet<unknown> => new Set<unknown>()
-  );
+  const [expandedGroupIds, setExpandedGroupIds] = useState((): ReadonlySet<unknown> => new Set());
 
   return (
     <TreeDataGrid
@@ -414,6 +412,7 @@ test('cell navigation in a treegrid', async () => {
   await expect.element(rows.nth(1)).not.toHaveClass(rowActiveClassname);
   await userEvent.keyboard('{arrowleft}{arrowleft}');
   await expect.element(rows.nth(1)).toHaveClass(rowActiveClassname);
+  await expect.element(rows.nth(1)).toHaveFocus();
 
   await userEvent.keyboard('{end}');
   await expect.element(rows.nth(5)).toHaveClass(rowActiveClassname);
@@ -429,7 +428,7 @@ test('cell navigation in a treegrid', async () => {
   await testRowCount(4);
 });
 
-test('copy/paste when grouping is enabled', { fails: !canCopyPaste }, async () => {
+test('copy/paste when grouping is enabled', async () => {
   await setup(['year']);
   await userEvent.click(page.getCell({ name: '2021' }));
   await userEvent.copy();
@@ -464,7 +463,7 @@ test('copy/paste when grouping is enabled', { fails: !canCopyPaste }, async () =
   );
 });
 
-test('update row using cell renderer', async () => {
+test('update row using cell content renderer', async () => {
   await setup(['year']);
   await userEvent.click(page.getCell({ name: '2021' }));
   await userEvent.click(page.getCell({ name: 'USA' }));
