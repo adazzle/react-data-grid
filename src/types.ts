@@ -85,9 +85,7 @@ export interface Column<TRow, TSummaryRow = unknown> {
   }>;
 }
 
-export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Required<
-  Column<TRow, TSummaryRow>
-> {
+export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Column<TRow, TSummaryRow> {
   /** The column group that contains the column, or `undefined` if the column is not in a group */
   readonly parent: CalculatedColumnParent<TRow, TSummaryRow> | undefined;
   /** The index of the column in the grid. Column groups are flattened and frozen columns are moved to their edge, so it can differ from the column's index in `columns` */
@@ -103,6 +101,17 @@ export interface CalculatedColumn<TRow, TSummaryRow = unknown> extends Required<
   readonly frozen: ColumnFrozen;
   readonly renderCell: (props: RenderCellContentProps<TRow, TSummaryRow>) => ReactNode;
   readonly renderHeaderCell: (props: RenderHeaderCellContentProps<TRow, TSummaryRow>) => ReactNode;
+  // Always set, `undefined` when not set on the column
+  readonly cellClass: Column<TRow, TSummaryRow>['cellClass'];
+  readonly headerCellClass: Column<TRow, TSummaryRow>['headerCellClass'];
+  readonly summaryCellClass: Column<TRow, TSummaryRow>['summaryCellClass'];
+  readonly renderSummaryCell: Column<TRow, TSummaryRow>['renderSummaryCell'];
+  readonly renderGroupCell: Column<TRow, TSummaryRow>['renderGroupCell'];
+  readonly renderEditCell: Column<TRow, TSummaryRow>['renderEditCell'];
+  readonly editable: Column<TRow, TSummaryRow>['editable'];
+  readonly colSpan: Column<TRow, TSummaryRow>['colSpan'];
+  readonly sortDescendingFirst: Column<TRow, TSummaryRow>['sortDescendingFirst'];
+  readonly editorOptions: Column<TRow, TSummaryRow>['editorOptions'];
 }
 
 export interface ColumnGroup<R, SR = unknown> {
