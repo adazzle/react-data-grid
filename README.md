@@ -723,7 +723,9 @@ Custom class name for the header row.
 
 ###### `direction?: Maybe<'ltr' | 'rtl'>`
 
-This property sets the text direction of the grid. It defaults to `'ltr'` (left-to-right). See the [`Direction`](#direction) type. Setting `direction` to `'rtl'` has the following effects:
+This property sets the text direction of the grid. It defaults to `'ltr'` (left-to-right). See the [`Direction`](#direction) type.
+
+Setting `direction` to `'rtl'` has the following effects:
 
 - Columns flow from right to left
 - Start-frozen columns are pinned on the right, and end-frozen columns are pinned on the left
@@ -1210,6 +1212,8 @@ const nonSelectColumns = columns.filter((column) => column.key !== SELECT_COLUMN
 
 Defines the configuration for a column in the grid.
 
+**See also:** `columns` prop on `<DataGrid />`
+
 ##### `name: string | ReactElement`
 
 The name of the column. Displayed in the header cell by default.
@@ -1361,7 +1365,7 @@ const columns: readonly Column<Row>[] = [
 
 **Default:** `false`
 
-Determines whether the column is frozen, and on which edge. Frozen columns stay in place when the grid is scrolled horizontally.
+Determines whether the column is frozen, and on which edge. Frozen columns stay in place when the grid is scrolled horizontally. See the [`ColumnFrozen`](#columnfrozen) type.
 
 - `'start'` (or `true` for backward compatibility) — pins the column to the start edge (left in LTR, right in RTL).
 - `'end'` — pins the column to the end edge (right in LTR, left in RTL).
@@ -1420,8 +1424,6 @@ Commit changes when clicking outside the cell.
 **Default:** `true`
 
 Close the editor when the row value changes externally.
-
-**See also:** `columns` prop on `<DataGrid />`
 
 #### `ColumnGroup<TRow, TSummaryRow>`
 
@@ -1533,6 +1535,16 @@ type DefaultColumnOptions<TRow, TSummaryRow> = Pick<
 
 **See also:** `defaultColumnOptions` prop on `<DataGrid />`
 
+#### `ColumnFrozen`
+
+Whether a column is frozen, and on which edge.
+
+```tsx
+type ColumnFrozen = boolean | 'start' | 'end';
+```
+
+**See also:** `column.frozen`
+
 #### `RenderCellContentProps<TRow, TSummaryRow>`
 
 Props passed to custom cell content renderers (`column.renderCell`).
@@ -1563,7 +1575,7 @@ function renderCell({ row, column, onRowChange }: RenderCellContentProps<MyRow>)
 }
 ```
 
-**See also:** `Column.renderCell`, `renderValue` function
+**See also:** `column.renderCell`, `renderValue` function
 
 #### `RenderHeaderCellContentProps<TRow, TSummaryRow>`
 
@@ -1578,7 +1590,7 @@ interface RenderHeaderCellContentProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `Column.renderHeaderCell`, `renderHeaderCell` function
+**See also:** `column.renderHeaderCell`, `renderHeaderCell` function
 
 #### `RenderEditCellContentProps<TRow, TSummaryRow>`
 
@@ -1611,7 +1623,7 @@ function renderEditor({ row, column, onRowChange, onClose }: RenderEditCellConte
 }
 ```
 
-**See also:** `Column.renderEditCell`, `renderTextEditor` function
+**See also:** `column.renderEditCell`, `renderTextEditor` function
 
 #### `RenderSummaryCellContentProps<TSummaryRow, TRow>`
 
@@ -1625,7 +1637,7 @@ interface RenderSummaryCellContentProps<TSummaryRow, TRow = unknown> {
 }
 ```
 
-**See also:** `Column.renderSummaryCell`
+**See also:** `column.renderSummaryCell`
 
 #### `RenderGroupCellContentProps<TRow, TSummaryRow>`
 
@@ -1643,7 +1655,7 @@ interface RenderGroupCellContentProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `Column.renderGroupCell`, `renderToggleGroup` function
+**See also:** `column.renderGroupCell`, `renderToggleGroup` function
 
 #### `RenderRowProps<TRow, TSummaryRow>`
 
@@ -1668,7 +1680,7 @@ interface RenderRowProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** `Renderers.renderRow`, `<Row />`
+**See also:** `renderers.renderRow`, `<Row />`
 
 #### `RenderCellProps<TRow, TSummaryRow>`
 
@@ -1688,7 +1700,7 @@ interface RenderCellProps<TRow, TSummaryRow> {
 }
 ```
 
-**See also:** `Renderers.renderCell`, `<Cell />`
+**See also:** `renderers.renderCell`, `<Cell />`
 
 #### `RenderCheckboxProps`
 
@@ -1713,7 +1725,7 @@ interface RenderCheckboxProps {
 }
 ```
 
-**See also:** `renderCheckbox` function, `Renderers.renderCheckbox`
+**See also:** `renderCheckbox` function, `renderers.renderCheckbox`
 
 #### `RenderSortStatusProps`
 
@@ -1723,7 +1735,7 @@ Props for custom sort status renderers.
 interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 ```
 
-**See also:** `Renderers.renderSortStatus`
+**See also:** `renderers.renderSortStatus`
 
 #### `RenderSortIconProps`
 
@@ -1819,6 +1831,8 @@ type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
   isGridDefaultPrevented: () => boolean;
 };
 ```
+
+**See also:** [`CellMouseEvent`](#cellmouseevent), [`CellKeyboardEvent`](#cellkeyboardevent)
 
 #### `CellMouseEvent`
 
@@ -1989,7 +2003,7 @@ const columns: readonly Column<Row>[] = [
 ];
 ```
 
-**See also:** `Column.colSpan`
+**See also:** `column.colSpan`
 
 #### `RowHeightArgs<TRow>`
 
@@ -2174,17 +2188,16 @@ type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
 
 #### `ColumnWidth`
 
-Represents a single column's width measurement.
+Represents a single column's width.
 
 ```tsx
 interface ColumnWidth {
+  /** `'resized'` if the user resized the column, or `'measured'` if the grid measured it */
   readonly type: 'resized' | 'measured';
+  /** The width in pixels */
   readonly width: number;
 }
 ```
-
-- `type`: `'resized'` when set by the user via column resizing, `'measured'` when auto-measured by the grid
-- `width`: The width in pixels
 
 **See also:** [`ColumnWidths`](#columnwidths)
 
