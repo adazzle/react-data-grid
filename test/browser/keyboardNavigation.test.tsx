@@ -107,6 +107,17 @@ test('keyboard navigation', async () => {
   await validateCellPosition(6, 0);
 });
 
+test('page up on a top summary row does nothing', async () => {
+  await setup({ columns, rows, topSummaryRows, bottomSummaryRows });
+
+  await safeTab();
+  await validateCellPosition(0, 0);
+  await userEvent.keyboard('{arrowdown}');
+  await validateCellPosition(0, 1);
+  await userEvent.keyboard('{PageUp}');
+  await validateCellPosition(0, 1);
+});
+
 test('page up and page down without rows when rowHeight is a function', async () => {
   await setup<Row, Row>({
     columns,

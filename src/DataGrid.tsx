@@ -866,7 +866,8 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         if (activePositionIsRow) return { idx, rowIdx: maxRowIdx };
         return { idx: maxColIdx, rowIdx: ctrlKey ? maxRowIdx : rowIdx };
       case 'PageUp': {
-        if (rowIdx === minRowIdx) return activePosition;
+        // Header and top summary rows are above the rows, so there's nothing to page up to.
+        if (rowIdx < 0) return activePosition;
         const nextRowY = getRowTop(rowIdx) + getRowHeight(rowIdx) - clientHeight;
         return { idx, rowIdx: nextRowY > 0 ? findRowIdx(nextRowY) : 0 };
       }
