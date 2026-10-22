@@ -172,7 +172,7 @@ describe('colSpan', () => {
     await validateCellPosition(6, 13);
   });
 
-  it('should not pass summary rows to colSpan when navigating column group header rows', async () => {
+  it('should call colSpan with header args when navigating to a column group header row', async () => {
     const colSpan = vi.fn(() => undefined);
     const columns: readonly ColumnOrColumnGroup<number, number>[] = [
       {
