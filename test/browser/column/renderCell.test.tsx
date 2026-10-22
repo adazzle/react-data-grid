@@ -136,20 +136,6 @@ describe('Custom cell content renderer', () => {
       expect(keys).toStrictEqual(idKeys);
     }
   });
-
-  it('should receive custom column properties', async () => {
-    const column = {
-      key: 'id',
-      name: 'ID',
-      custom: 'custom value',
-      renderCell({ column }) {
-        return 'custom' in column ? String(column.custom) : 'missing';
-      }
-    } satisfies Column<Row> & { custom: string };
-
-    await setup({ columns: [column], rows: [{ id: 1 }] });
-    await expect.element(cells.nth(0)).toHaveTextContent('custom value');
-  });
 });
 
 test('Focus child if it sets tabIndex', async () => {

@@ -131,14 +131,7 @@ export function useCalculatedColumns<R, SR>({
           draggable: rawColumn.draggable ?? defaultDraggable,
           sortDescendingFirst: rawColumn.sortDescendingFirst,
           editorOptions: rawColumn.editorOptions
-        } satisfies Record<keyof MutableCalculatedColumn<R, SR>, unknown>;
-
-        // Copy custom properties last, so they only change the shape of the columns that have them
-        for (const key of Object.keys(rawColumn)) {
-          if (!Object.hasOwn(column, key)) {
-            Reflect.set(column, key, Reflect.get(rawColumn, key));
-          }
-        }
+        };
 
         columns.push(column);
 
