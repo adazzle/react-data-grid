@@ -96,4 +96,8 @@ afterEach(() => {
       'Focus is set on a browser UI element at the end of a test. Use safeTab() to return focus to the page.'
     )
     .toBe(true);
+
+  // If a test file ends with a focused element, Firefox may not focus
+  // the first element clicked in an iframe created by the next test file.
+  (document.activeElement as HTMLElement | null)?.blur();
 });
