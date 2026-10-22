@@ -32,6 +32,7 @@
   "hideBreadcrumbs": true,
   "useCodeBlocks": true,
   "expandParameters": true,
-  "parametersFormat": "table",
+  "parametersFormat": "none",
+  "typeDeclarationVisibility": "compact",
   "useHTMLAnchors": true
 }
