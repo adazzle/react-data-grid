@@ -84,8 +84,6 @@ import SummaryRow from './SummaryRow';
  * Default options applied to all columns.
  *
  * @see {@linkcode DataGridProps.defaultColumnOptions | defaultColumnOptions} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type DefaultColumnOptions<R, SR> = Pick<
   Column<R, SR>,
@@ -119,8 +117,6 @@ export type DefaultColumnOptions<R, SR> = Pick<
  * ```
  *
  * @see {@linkcode DataGridProps.ref | ref} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface DataGridHandle {
   element: HTMLDivElement | null;
@@ -132,8 +128,6 @@ export interface DataGridHandle {
  * @typeParam R - Row type
  * @typeParam SR - Summary row type
  * @typeParam K - Row key type
- *
- * @group Components
  */
 export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
   /**
@@ -724,8 +718,6 @@ export interface DataGridProps<R, SR = unknown, K extends Key = Key> {
  * @typeParam R - Row type
  * @typeParam SR - Summary row type
  * @typeParam K - Row key type
- *
- * @group Components
  */
 export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridProps<R, SR, K>) {
   const {

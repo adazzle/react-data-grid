@@ -53,8 +53,6 @@ function autoFocusAndSelect(input: HTMLInputElement | null) {
  *   }
  * ];
  * ```
- *
- * @group Render Functions
  */
 export function renderTextEditor<R, SR>({
   row,

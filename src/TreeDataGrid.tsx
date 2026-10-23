@@ -31,8 +31,6 @@ import { defaultRenderRow } from './Row';
  * @typeParam R - Row type
  * @typeParam SR - Summary row type
  * @typeParam K - Row key type
- *
- * @group Components
  */
 export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends Omit<
   DataGridProps<R, SR, K>,
@@ -178,8 +176,6 @@ type ReadonlyGroupByMap<R> = ReadonlyMap<string, GroupBy<R>>;
  * @typeParam R - Row type
  * @typeParam SR - Summary row type
  * @typeParam K - Row key type
- *
- * @group Components
  */
 export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   columns: rawColumns,

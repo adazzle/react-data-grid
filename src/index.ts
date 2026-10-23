@@ -1,19 +1,30 @@
 import './style/layers.css';
 
-// the order of the exports is the order of the API reference in the README
+// the API reference in the README lists the exports in this order, under the section of the comment above them
 
+// Components
 export { DataGrid, type DataGridProps } from './DataGrid';
 export { TreeDataGrid, type TreeDataGridProps } from './TreeDataGrid';
 export { Row } from './Row';
 export { Cell } from './Cell';
 export { SelectCheckbox, ToggleGroup } from './cellRenderers';
+
+// Hooks
 export { useHeaderRowSelection, useRowSelection } from './hooks';
+
+// Render Functions
 export { renderHeaderCell } from './renderHeaderCell';
 export { renderTextEditor } from './editors/renderTextEditor';
 export { renderSortIcon, renderSortPriority } from './sortStatus';
 export { renderCheckbox, renderToggleGroup, renderValue } from './cellRenderers';
+
+// Context
 export { DataGridRenderersContext } from './DataGridRenderersContext';
+
+// Other
 export { SelectColumn, SELECT_COLUMN_KEY } from './Columns';
+
+// Types
 export type {
   Column,
   ColumnGroup,

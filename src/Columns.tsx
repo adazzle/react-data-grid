@@ -16,8 +16,6 @@ import { SelectCheckbox } from './cellRenderers';
  *
  * const nonSelectColumns = columns.filter((column) => column.key !== SELECT_COLUMN_KEY);
  * ```
- *
- * @group Other
  */
 export const SELECT_COLUMN_KEY = 'rdg-select-column';
 
@@ -94,8 +92,6 @@ function GroupSelectCell({ row, tabIndex }: RenderGroupCellContentProps<unknown>
  *   );
  * }
  * ```
- *
- * @group Other
  */
 // oxlint-disable-next-line typescript/no-explicit-any
 export const SelectColumn: Column<any, any> = {

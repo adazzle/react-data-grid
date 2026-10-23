@@ -46,8 +46,6 @@ RowSelectionChangeContext.displayName = 'RowSelectionChangeContext';
  *   );
  * }
  * ```
- *
- * @group Hooks
  */
 export function useRowSelection() {
   const rowSelectionContext = use(RowSelectionContext);
@@ -112,8 +110,6 @@ HeaderRowSelectionChangeContext.displayName = 'HeaderRowSelectionChangeContext';
  *   );
  * }
  * ```
- *
- * @group Hooks
  */
 export function useHeaderRowSelection() {
   const headerRowSelectionContext = use(HeaderRowSelectionContext);

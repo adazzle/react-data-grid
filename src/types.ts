@@ -15,8 +15,6 @@ export type StateSetter<S> = React.Dispatch<React.SetStateAction<S>>;
  * Defines the configuration for a column in the grid.
  *
  * @see {@linkcode DataGridProps.columns | columns} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface Column<R, SR = unknown> {
   /** The name of the column. Displayed in the header cell by default. */
@@ -213,8 +211,6 @@ export interface Column<R, SR = unknown> {
  * Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. Every `Column` property is set: the ones with a default value, like `width` and `renderCell`, are resolved to their default value when not set, and the others are `undefined` when not set.
  *
  * @see {@linkcode Column}, {@linkcode DataGridProps.onColumnResize | onColumnResize} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
   /** The column group that contains the column, or `undefined` if the column is not in a group */
@@ -264,8 +260,6 @@ export interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
  * ```
  *
  * @see {@linkcode ColumnOrColumnGroup}
- *
- * @group Types
  */
 export interface ColumnGroup<R, SR = unknown> {
   /** The name of the column group. It will be displayed in the header cell */
@@ -278,8 +272,6 @@ export interface ColumnGroup<R, SR = unknown> {
  * Represents a parent column group in the calculated column structure.
  *
  * @see {@linkcode CalculatedColumn}
- *
- * @group Types
  */
 export interface CalculatedColumnParent<R, SR> {
   readonly name: string | ReactElement;
@@ -294,8 +286,6 @@ export interface CalculatedColumnParent<R, SR> {
  * Union type representing either a `Column` or a `ColumnGroup`.
  *
  * @see {@linkcode DataGridProps.columns | columns} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
 
@@ -303,8 +293,6 @@ export type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R
  * Union type representing either a `CalculatedColumnParent` or a `CalculatedColumn`.
  *
  * @see {@linkcode CalculatedColumn}, {@linkcode CalculatedColumnParent}
- *
- * @group Types
  */
 export type CalculatedColumnOrColumnGroup<R, SR> =
   | CalculatedColumnParent<R, SR>
@@ -340,8 +328,6 @@ export interface Position {
  * ```
  *
  * @see {@linkcode Column.renderCell | column.renderCell}, {@linkcode renderValue} function
- *
- * @group Types
  */
 export interface RenderCellContentProps<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
@@ -356,8 +342,6 @@ export interface RenderCellContentProps<R, SR = unknown> {
  * Props passed to summary cell content renderers (`column.renderSummaryCell`).
  *
  * @see {@linkcode Column.renderSummaryCell | column.renderSummaryCell}
- *
- * @group Types
  */
 export interface RenderSummaryCellContentProps<SR, R = unknown> {
   column: CalculatedColumn<R, SR>;
@@ -369,8 +353,6 @@ export interface RenderSummaryCellContentProps<SR, R = unknown> {
  * Props passed to group cell content renderers (`column.renderGroupCell`) when using `TreeDataGrid`.
  *
  * @see {@linkcode Column.renderGroupCell | column.renderGroupCell}, {@linkcode renderToggleGroup} function, {@linkcode ToggleGroup | <ToggleGroup />}
- *
- * @group Types
  */
 export interface RenderGroupCellContentProps<R, SR = unknown> {
   groupKey: unknown;
@@ -402,8 +384,6 @@ export interface RenderGroupCellContentProps<R, SR = unknown> {
  * ```
  *
  * @see {@linkcode Column.renderEditCell | column.renderEditCell}, {@linkcode renderTextEditor} function
- *
- * @group Types
  */
 export interface RenderEditCellContentProps<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
@@ -417,8 +397,6 @@ export interface RenderEditCellContentProps<R, SR = unknown> {
  * Props passed to custom header cell content renderers (`column.renderHeaderCell`).
  *
  * @see {@linkcode Column.renderHeaderCell | column.renderHeaderCell}, {@linkcode renderHeaderCell} function
- *
- * @group Types
  */
 export interface RenderHeaderCellContentProps<R, SR = unknown> {
   column: CalculatedColumn<R, SR>;
@@ -442,8 +420,6 @@ interface BaseRenderCellProps<R, SR = unknown>
  * Props passed to the cell renderer when using `renderers.renderCell`.
  *
  * @see {@linkcode DataGridProps.renderers | renderers.renderCell}, {@linkcode Cell | <Cell />}
- *
- * @group Types
  */
 export interface RenderCellProps<R, SR> extends BaseRenderCellProps<R, SR> {
   column: CalculatedColumn<R, SR>;
@@ -491,8 +467,6 @@ export type CellEvent<E extends React.SyntheticEvent<HTMLDivElement>> = E & {
  * ```
  *
  * @see {@linkcode DataGridProps.onCellMouseDown | onCellMouseDown}, {@linkcode DataGridProps.onCellClick | onCellClick}, {@linkcode DataGridProps.onCellDoubleClick | onCellDoubleClick}, and {@linkcode DataGridProps.onCellContextMenu | onCellContextMenu} props on `<DataGrid />`
- *
- * @group Types
  */
 export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
 
@@ -500,8 +474,6 @@ export type CellMouseEvent = CellEvent<React.MouseEvent<HTMLDivElement>>;
  * Extends `React.KeyboardEvent<HTMLDivElement>` with grid-specific methods.
  *
  * @see {@linkcode DataGridProps.onCellKeyDown | onCellKeyDown} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type CellKeyboardEvent = CellEvent<React.KeyboardEvent<HTMLDivElement>>;
 
@@ -526,8 +498,6 @@ export type CellClipboardEvent = React.ClipboardEvent<HTMLDivElement>;
  * ```
  *
  * @see {@linkcode DataGridProps.onCellMouseDown | onCellMouseDown}, {@linkcode DataGridProps.onCellClick | onCellClick}, {@linkcode DataGridProps.onCellDoubleClick | onCellDoubleClick}, and {@linkcode DataGridProps.onCellContextMenu | onCellContextMenu} props on `<DataGrid />`
- *
- * @group Types
  */
 export interface CellMouseArgs<R, SR = unknown> {
   /** The column object of the cell. */
@@ -577,8 +547,6 @@ export interface EditCellKeyDownArgs<R, SR = unknown> {
  * ```
  *
  * @see {@linkcode DataGridProps.onCellKeyDown | onCellKeyDown} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type CellKeyDownArgs<R, SR = unknown> =
   | ActiveCellKeyDownArgs<R, SR>
@@ -588,8 +556,6 @@ export type CellKeyDownArgs<R, SR = unknown> =
  * Arguments passed to `onActivePositionChange`.
  *
  * @see {@linkcode DataGridProps.onActivePositionChange | onActivePositionChange} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface PositionChangeArgs<R, SR = unknown> {
   /** row index of the active position */
@@ -641,8 +607,6 @@ export interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps
  * Props passed to custom row renderers.
  *
  * @see {@linkcode DataGridProps.renderers | renderers.renderRow}, {@linkcode Row | <Row />}
- *
- * @group Types
  */
 export interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, SR> {
   row: R;
@@ -657,8 +621,6 @@ export interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, S
  * Data provided to the `onRowsChange` callback.
  *
  * @see {@linkcode DataGridProps.onRowsChange | onRowsChange} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface RowsChangeData<R, SR = unknown> {
   /** Indexes of the rows that changed */
@@ -671,8 +633,6 @@ export interface RowsChangeData<R, SR = unknown> {
  * Event object for row selection changes.
  *
  * @see {@linkcode useRowSelection} hook
- *
- * @group Types
  */
 export interface SelectRowEvent<R> {
   row: R;
@@ -684,8 +644,6 @@ export interface SelectRowEvent<R> {
  * Event object for header row selection changes.
  *
  * @see {@linkcode useHeaderRowSelection} hook
- *
- * @group Types
  */
 export interface SelectHeaderRowEvent {
   checked: boolean;
@@ -695,8 +653,6 @@ export interface SelectHeaderRowEvent {
  * Event object for drag-fill operations.
  *
  * @see {@linkcode DataGridProps.onFill | onFill} prop on `<DataGrid />`
- *
- * @group Types
  */
 export interface FillEvent<R> {
   columnKey: string;
@@ -713,16 +669,12 @@ interface CellCopyPasteArgs<R, SR = unknown> {
  * Arguments passed to `onCellCopy`.
  *
  * @see {@linkcode DataGridProps.onCellCopy | onCellCopy} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type CellCopyArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 /**
  * Arguments passed to `onCellPaste`.
  *
  * @see {@linkcode DataGridProps.onCellPaste | onCellPaste} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type CellPasteArgs<R, SR = unknown> = CellCopyPasteArgs<R, SR>;
 
@@ -747,8 +699,6 @@ export interface GroupRow<R> {
  * Describes a sorted column.
  *
  * @see {@linkcode DataGridProps.sortColumns | sortColumns} and {@linkcode DataGridProps.onSortColumnsChange | onSortColumnsChange} props on `<DataGrid />`
- *
- * @group Types
  */
 export interface SortColumn {
   readonly columnKey: string;
@@ -760,14 +710,10 @@ export type CellNavigationMode = 'NONE' | 'CHANGE_ROW';
  * Whether a column is frozen, and on which edge.
  *
  * @see {@linkcode Column.frozen | column.frozen}
- *
- * @group Types
  */
 export type ColumnFrozen = boolean | 'start' | 'end';
 /**
  * @see {@linkcode SortColumn}
- *
- * @group Types
  */
 export type SortDirection = 'ASC' | 'DESC';
 
@@ -793,8 +739,6 @@ export type SortDirection = 'ASC' | 'DESC';
  * ```
  *
  * @see {@linkcode Column.colSpan | column.colSpan}
- *
- * @group Types
  */
 export type ColSpanArgs<R, SR> =
   | { readonly type: 'HEADER' }
@@ -817,8 +761,6 @@ export type ColSpanArgs<R, SR> =
  * ```
  *
  * @see {@linkcode TreeDataGridProps.rowHeight | rowHeight} prop on `<TreeDataGrid />`
- *
- * @group Types
  */
 export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: GroupRow<R> };
 
@@ -826,8 +768,6 @@ export type RowHeightArgs<R> = { type: 'ROW'; row: R } | { type: 'GROUP'; row: G
  * Props for custom sort icon renderers.
  *
  * @see {@linkcode renderSortIcon} function
- *
- * @group Types
  */
 export interface RenderSortIconProps {
   /** The sort direction of the column, or `undefined` if it is not sorted */
@@ -838,8 +778,6 @@ export interface RenderSortIconProps {
  * Props for custom sort priority renderers.
  *
  * @see {@linkcode renderSortPriority} function
- *
- * @group Types
  */
 export interface RenderSortPriorityProps {
   /** The column's position in `sortColumns`, starting at 1, when sorting by multiple columns, or `undefined` otherwise */
@@ -850,8 +788,6 @@ export interface RenderSortPriorityProps {
  * Props for custom sort status renderers.
  *
  * @see {@linkcode DataGridProps.renderers | renderers.renderSortStatus}
- *
- * @group Types
  */
 export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPriorityProps {}
 
@@ -859,8 +795,6 @@ export interface RenderSortStatusProps extends RenderSortIconProps, RenderSortPr
  * Props for custom checkbox renderers.
  *
  * @see {@linkcode renderCheckbox} function, {@linkcode DataGridProps.renderers | renderers.renderCheckbox}, {@linkcode SelectCheckbox | <SelectCheckbox />}
- *
- * @group Types
  */
 export interface RenderCheckboxProps {
   /** Whether the checkbox is checked */
@@ -883,8 +817,6 @@ export interface RenderCheckboxProps {
  * Custom renderer configuration for the grid.
  *
  * @see {@linkcode DataGridProps.renderers | renderers} prop on `<DataGrid />`, {@linkcode DataGridRenderersContext}
- *
- * @group Types
  */
 export interface Renderers<R, SR> {
   readonly renderCell?: Maybe<(key: Key, props: RenderCellProps<R, SR>) => ReactNode>;
@@ -898,8 +830,6 @@ export interface Renderers<R, SR> {
  * Options for programmatically updating the grid's active position.
  *
  * @see {@linkcode DataGridHandle}, {@linkcode CellKeyDownArgs}
- *
- * @group Types
  */
 export interface SetActivePositionOptions {
   enableEditor?: Maybe<boolean>;
@@ -910,8 +840,6 @@ export interface SetActivePositionOptions {
  * Represents a single column's width.
  *
  * @see {@linkcode ColumnWidths}
- *
- * @group Types
  */
 export interface ColumnWidth {
   /** `'resized'` if the user resized the column, or `'measured'` if the grid measured it */
@@ -924,8 +852,6 @@ export interface ColumnWidth {
  * A map of column widths.
  *
  * @see {@linkcode DataGridProps.columnWidths | columnWidths} and {@linkcode DataGridProps.onColumnWidthsChange | onColumnWidthsChange} props on `<DataGrid />`
- *
- * @group Types
  */
 export type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
 
@@ -933,8 +859,6 @@ export type ColumnWidths = ReadonlyMap<string, ColumnWidth>;
  * Text direction of the grid.
  *
  * @see {@linkcode DataGridProps.direction | direction} prop on `<DataGrid />`
- *
- * @group Types
  */
 export type Direction = 'ltr' | 'rtl';
 

@@ -35,8 +35,6 @@ const headerSortNameClassname = `rdg-header-sort-name ${headerSortName}`;
  *   }
  * ];
  * ```
- *
- * @group Render Functions
  */
 export function renderHeaderCell<R, SR>({
   column,

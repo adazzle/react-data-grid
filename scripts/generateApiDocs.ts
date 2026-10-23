@@ -26,6 +26,7 @@ import {
   isTypeLiteralNode,
   isVariableStatement
 } from 'typescript/ast/is';
+import { getLeadingCommentRanges } from 'typescript/ast/scanner';
 import { API } from 'typescript/sync';
 
 // Generates the API reference of the README from the declarations and JSDoc comments of `lib/index.d.ts`,
@@ -36,7 +37,7 @@ const entryPath = 'src/index.ts';
 const readmePath = 'README.md';
 const startMarker = '<!-- api:start -->';
 const endMarker = '<!-- api:end -->';
-// the `@group` tags of the exports
+// the sections of the API reference, set by comments above the exports of the entry point, e.g. `// Hooks`
 const sections = ['Components', 'Hooks', 'Render Functions', 'Context', 'Other', 'Types'];
 
 interface Doc {
@@ -85,16 +86,12 @@ for (const statement of declarationsFile.sourceFile.statements) {
   declarations.set(name, { name, node: statement, doc: getDoc(statement) });
 }
 
-// group the exports by their `@group` tag, in the order they are exported from the entry point
+// group the exports by their section, in the order they are exported from the entry point
 const groups = new Map<string, Declaration[]>(sections.map((section) => [section, []]));
-for (const name of getExportOrder(entryFile.sourceFile)) {
-  const declaration = declarations.get(exportedNames.get(name)!)!;
-  const group = declaration.doc.tags.find((tag) => tag.name === 'group')?.text;
-  const items = group === undefined ? undefined : groups.get(group);
-  if (items === undefined) {
-    throw new Error(`${name} must have a @group tag with one of: ${sections.join(', ')}`);
-  }
-  items.push({ ...declaration, name });
+for (const { name, section } of getExports(entryFile.sourceFile)) {
+  const declaration = declarations.get(exportedNames.get(name)!);
+  if (declaration === undefined) throw new Error(`${name} is not exported by ${declarationsPath}`);
+  groups.get(section)!.push({ ...declaration, name });
 }
 
 // the types that are referenced by the exports, but not exported:
@@ -124,7 +121,13 @@ for (const [section, items] of groups) {
     items.filter(({ node }) => isType(node)).map((item) => [item.name, item])
   );
   for (const item of items) {
-    if (section === 'Components' && isType(item.node)) continue;
+    if (section === 'Components' && isType(item.node)) {
+      // the props interface of a component is listed after it
+      if (!items.some(({ name }) => item.name === `${name}Props`)) {
+        throw new Error(`${item.name} must be the props of a component, or be listed under Types`);
+      }
+      continue;
+    }
     // e.g. `DataGridProps` after `DataGrid`
     const propsInterface =
       section === 'Components' ? propsInterfaces.get(`${item.name}Props`) : undefined;
@@ -249,8 +252,8 @@ function renderTags({ tags }: Doc) {
   };
   return tags
     .filter(({ name }) => {
-      // `@group` sets the section, and the type parameters are described in the "Generics" section
-      if (name === 'group' || name === 'typeParam') return false;
+      // the type parameters are described in the "Generics" section
+      if (name === 'typeParam') return false;
       if (name in labels) return true;
       throw new Error(`The @${name} tag is not supported in the API reference`);
     })
@@ -407,16 +410,31 @@ function getExportSpecifiers(node: Node) {
   return node.exportClause.elements;
 }
 
-// the exported names of the entry point, in order
-function getExportOrder(entry: SourceFile) {
-  const names = entry.statements.flatMap((statement) =>
-    getExportSpecifiers(statement).map((specifier) => specifier.name.getText())
-  );
-  for (const name of exportedNames.keys()) {
-    if (!names.includes(name))
-      throw new Error(`${name} must be exported by name from ${entryPath}`);
+// the exported names of the entry point in order, with the section of the comment above them, e.g. `// Hooks`
+function getExports(entry: SourceFile) {
+  const exports: { name: string; section: string }[] = [];
+  let section: string | undefined;
+  for (const statement of entry.statements) {
+    const specifiers = getExportSpecifiers(statement);
+    if (specifiers.length === 0) continue;
+    const comment = getLeadingCommentRanges(entry.text, statement.pos)?.at(-1);
+    if (comment !== undefined) {
+      section = entry.text.slice(comment.pos, comment.end).replace(/^\/\/\s*/, '');
+      if (!sections.includes(section)) {
+        throw new Error(`"${section}" in ${entryPath} must be one of: ${sections.join(', ')}`);
+      }
+    }
+    if (section === undefined) {
+      throw new Error(`The exports of ${entryPath} must follow a section comment, e.g. // Hooks`);
+    }
+    for (const specifier of specifiers) exports.push({ name: specifier.name.getText(), section });
   }
-  return names;
+  for (const name of exportedNames.keys()) {
+    if (!exports.some((item) => item.name === name)) {
+      throw new Error(`${name} must be exported by name from ${entryPath}`);
+    }
+  }
+  return exports;
 }
 
 // the JSDoc comment directly before the node

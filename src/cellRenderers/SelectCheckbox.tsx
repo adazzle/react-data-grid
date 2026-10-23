@@ -15,8 +15,6 @@ interface SelectCheckboxProps extends SharedInputProps {
  * A component for rendering row selection checkboxes.
  *
  * The same props as {@linkcode RenderCheckboxProps}, with `value: boolean` in place of `checked`.
- *
- * @group Components
  */
 export function SelectCheckbox({
   value,

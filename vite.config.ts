@@ -572,8 +572,8 @@ copy(
       'jsdoc/check-tag-names': [
         'warn',
         {
-          // TSDoc tags, and `@group`, which sets the section of the README's API reference
-          definedTags: ['defaultValue', 'group', 'typeParam']
+          // TSDoc tags
+          definedTags: ['defaultValue', 'typeParam']
         }
       ],
       'jsdoc/empty-tags': 'warn',

@@ -41,8 +41,6 @@ const caretClassname = `rdg-caret ${caret}`;
  *   }
  * ];
  * ```
- *
- * @group Render Functions
  */
 export function renderToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, SR>) {
   return <ToggleGroup {...props} />;
@@ -50,8 +48,6 @@ export function renderToggleGroup<R, SR>(props: RenderGroupCellContentProps<R, S
 
 /**
  * Low-level component used by `renderToggleGroup` to render the expand/collapse control. Useful if you build a custom group cell renderer.
- *
- * @group Components
  */
 export function ToggleGroup<R, SR>({
   groupKey,

@@ -34,8 +34,6 @@ import type { Maybe, Renderers } from './types';
  *   );
  * }
  * ```
- *
- * @group Context
  */
 // oxlint-disable-next-line typescript/no-explicit-any
 export const DataGridRenderersContext = createContext<Maybe<Renderers<any, any>>>(undefined);

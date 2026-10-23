@@ -35,8 +35,6 @@ const checkboxClassname = `rdg-checkbox-input ${checkbox}`;
  *   }}
  * />;
  * ```
- *
- * @group Render Functions
  */
 export function renderCheckbox({ onChange, indeterminate, ...props }: RenderCheckboxProps) {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
