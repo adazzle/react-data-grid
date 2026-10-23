@@ -463,23 +463,20 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     enableVirtualization
   });
 
-  const {
-    viewportColumns,
-    iterateOverViewportColumnsForRow,
-    iterateOverViewportColumnsForRowOutsideOfViewport
-  } = useViewportColumns({
-    columns,
-    colSpanColumns,
-    colOverscanStartIdx,
-    colOverscanEndIdx,
-    lastStartFrozenColumnIndex,
-    firstEndFrozenColumnIndex,
-    rowOverscanStartIdx,
-    rowOverscanEndIdx,
-    rows,
-    topSummaryRows,
-    bottomSummaryRows
-  });
+  const { viewportColumns, mapViewportColumns, mapViewportColumnsOutsideOfViewport } =
+    useViewportColumns({
+      columns,
+      colSpanColumns,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      lastStartFrozenColumnIndex,
+      firstEndFrozenColumnIndex,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx,
+      rows,
+      topSummaryRows,
+      bottomSummaryRows
+    });
 
   const { gridTemplateColumns, handleColumnResize } = useColumnWidths(
     columns,
@@ -1103,10 +1100,10 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
       const isActiveRow = rowIdx === activeRowIdx;
 
       // if the row is outside the viewport then only render its active column, if any
-      const iterateOverColumns =
+      const mapColumns =
         isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
-          ? iterateOverViewportColumnsForRowOutsideOfViewport
-          : iterateOverViewportColumnsForRow;
+          ? mapViewportColumnsOutsideOfViewport
+          : mapViewportColumns;
 
       const row = rows[rowIdx];
       const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
@@ -1123,7 +1120,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
         'aria-selected': isSelectable ? isRowSelected : undefined,
         rowIdx,
         row,
-        iterateOverViewportColumnsForRow: iterateOverColumns,
+        mapViewportColumns: mapColumns,
         isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
         isRowSelected,
         onCellMouseDown: onCellMouseDownLatest,
@@ -1201,7 +1198,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                 key={index}
                 rowIdx={index + 1}
                 level={-groupedColumnHeaderRowsCount + index}
-                iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                mapViewportColumns={mapViewportColumns}
                 activeCellIdx={
                   activePosition.rowIdx === minRowIdx + index ? activePosition.idx : undefined
                 }
@@ -1211,7 +1208,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
             <HeaderRow
               headerRowClass={headerRowClass}
               rowIdx={headerRowsCount}
-              iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+              mapViewportColumns={mapViewportColumns}
               onColumnResize={handleColumnResizeLatest}
               onColumnResizeEnd={handleColumnResizeEndLatest}
               onColumnsReorder={onColumnsReorderLatest}
@@ -1245,7 +1242,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                   row={row}
                   top={top}
                   bottom={undefined}
-                  iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                  mapViewportColumns={mapViewportColumns}
                   activeCellIdx={isSummaryRowActive ? activePosition.idx : undefined}
                   isTop
                   setActivePosition={setPositionLatest}
@@ -1278,7 +1275,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                   row={row}
                   top={top}
                   bottom={bottom}
-                  iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                  mapViewportColumns={mapViewportColumns}
                   activeCellIdx={isSummaryRowActive ? activePosition.idx : undefined}
                   isTop={false}
                   setActivePosition={setPositionLatest}

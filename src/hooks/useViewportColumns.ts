@@ -4,10 +4,10 @@ import {
   getColSpan,
   getViewportColSpanArgs,
   getViewportColumns,
-  getViewportColumnsWithColSpan,
+  mapColumnsWithColSpan,
   min
 } from '../utils';
-import type { CalculatedColumn, IterateOverViewportColumnsForRow, Maybe } from '../types';
+import type { CalculatedColumn, MapViewportColumns, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
@@ -105,8 +105,8 @@ export function useViewportColumns<R, SR>({
     effectiveOverscanEndIdx
   ]);
 
-  const iterateOverViewportColumnsForRow = useCallback<IterateOverViewportColumnsForRow<R, SR>>(
-    (activeColumnIdx = -1, args) => {
+  const mapViewportColumns = useCallback<MapViewportColumns<R, SR>>(
+    (activeColumnIdx = -1, colSpanArgs, callback) => {
       const rowColumns =
         activeColumnIdx === -1
           ? viewportColumns
@@ -119,13 +119,14 @@ export function useViewportColumns<R, SR>({
               activeColumnIdx
             );
 
-      return getViewportColumnsWithColSpan(
+      return mapColumnsWithColSpan(
         rowColumns,
         activeColumnIdx,
         lastStartFrozenColumnIndex,
         firstEndFrozenColumnIndex,
-        args
-      ).values();
+        colSpanArgs,
+        callback
+      );
     },
     [
       viewportColumns,
@@ -137,27 +138,25 @@ export function useViewportColumns<R, SR>({
     ]
   );
 
-  const iterateOverViewportColumnsForRowOutsideOfViewport = useCallback<
-    IterateOverViewportColumnsForRow<R, SR>
-  >(
-    (activeColumnIdx = -1, args) => {
-      const rowColumns =
-        activeColumnIdx >= 0 && activeColumnIdx < columns.length ? [columns[activeColumnIdx]] : [];
+  const mapViewportColumnsOutsideOfViewport = useCallback<MapViewportColumns<R, SR>>(
+    (activeColumnIdx = -1, colSpanArgs, callback) => {
+      if (activeColumnIdx < 0 || activeColumnIdx >= columns.length) return [];
 
-      return getViewportColumnsWithColSpan(
-        rowColumns,
+      return mapColumnsWithColSpan(
+        [columns[activeColumnIdx]],
         activeColumnIdx,
         lastStartFrozenColumnIndex,
         firstEndFrozenColumnIndex,
-        args
-      ).values();
+        colSpanArgs,
+        callback
+      );
     },
     [columns, lastStartFrozenColumnIndex, firstEndFrozenColumnIndex]
   );
 
   return {
     viewportColumns,
-    iterateOverViewportColumnsForRow,
-    iterateOverViewportColumnsForRowOutsideOfViewport
+    mapViewportColumns,
+    mapViewportColumnsOutsideOfViewport
   } as const;
 }

@@ -281,22 +281,28 @@ export type CellMouseEventHandler<R, SR> = Maybe<
   (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
 >;
 
-export type ViewportColumnWithColSpan<TRow, TSummaryRow> = [
-  column: CalculatedColumn<TRow, TSummaryRow>,
-  isCellActive: boolean,
-  colSpan: number | undefined
-];
-
-export type IterateOverViewportColumnsForRow<TRow, TSummaryRow> = (
+export type MapViewportColumns<TRow, TSummaryRow> = <T>(
   activeIdx: number | undefined,
-  args?: ColSpanArgs<TRow, TSummaryRow>
-) => IteratorObject<ViewportColumnWithColSpan<TRow, TSummaryRow>>;
+  colSpanArgs: ColSpanArgs<TRow, TSummaryRow> | undefined,
+  callback: (
+    column: CalculatedColumn<TRow, TSummaryRow>,
+    isCellActive: boolean,
+    colSpan: number | undefined,
+    index: number
+  ) => T
+) => T[];
 
 export interface BaseRenderRowProps<TRow, TSummaryRow = unknown> extends BaseRenderCellProps<
   TRow,
   TSummaryRow
 > {
-  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<TRow, TSummaryRow>;
+  /**
+   * Calls `callback` for each cell to render in the row, and returns the results.
+   * `activeIdx` is the column index of the row's active cell, if any: that cell is rendered even when it is scrolled out of view.
+   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped.
+   * The callback receives the cell's column, whether the cell is active, its `colSpan`, and its index in the results.
+   */
+  mapViewportColumns: MapViewportColumns<TRow, TSummaryRow>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;

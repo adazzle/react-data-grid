@@ -1,4 +1,4 @@
-import type { CalculatedColumn, ColSpanArgs, Maybe, ViewportColumnWithColSpan } from '../types';
+import type { CalculatedColumn, ColSpanArgs, Maybe } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 // These functions build arrays with plain loops instead of using generators:
@@ -103,14 +103,21 @@ export function getViewportColumns<R, SR>(
   return viewportColumns;
 }
 
-export function getViewportColumnsWithColSpan<R, SR>(
+// The callback receives each cell's values as arguments, so no object is allocated per cell
+export function mapColumnsWithColSpan<R, SR, T>(
   viewportColumns: readonly CalculatedColumn<R, SR>[],
   activeColumnIdx: number,
   lastStartFrozenColumnIndex: number,
   firstEndFrozenColumnIndex: number,
-  args: ColSpanArgs<R, SR> | undefined
-): ViewportColumnWithColSpan<R, SR>[] {
-  const viewportColumnsWithColSpan: ViewportColumnWithColSpan<R, SR>[] = [];
+  colSpanArgs: ColSpanArgs<R, SR> | undefined,
+  callback: (
+    column: CalculatedColumn<R, SR>,
+    isCellActive: boolean,
+    colSpan: number | undefined,
+    index: number
+  ) => T
+): T[] {
+  const results: T[] = [];
   // index of the first column after the previous cell, including the columns it spans
   let nextColumnIdx = 0;
 
@@ -121,10 +128,11 @@ export function getViewportColumnsWithColSpan<R, SR>(
     if (column.idx < nextColumnIdx) continue;
 
     const colSpan =
-      args && getColSpan(column, lastStartFrozenColumnIndex, firstEndFrozenColumnIndex, args);
-    viewportColumnsWithColSpan.push([column, column.idx === activeColumnIdx, colSpan]);
+      colSpanArgs &&
+      getColSpan(column, lastStartFrozenColumnIndex, firstEndFrozenColumnIndex, colSpanArgs);
+    results.push(callback(column, column.idx === activeColumnIdx, colSpan, results.length));
     nextColumnIdx = column.idx + (colSpan ?? 1);
   }
 
-  return viewportColumnsWithColSpan;
+  return results;
 }

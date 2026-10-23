@@ -33,7 +33,7 @@ function GroupedRow<R, SR>({
   className,
   row,
   rowIdx,
-  iterateOverViewportColumnsForRow,
+  mapViewportColumns,
   activeCellIdx,
   isRowSelected,
   setActivePosition,
@@ -75,31 +75,29 @@ function GroupedRow<R, SR>({
         style={{ gridRowStart }}
         {...props}
       >
-        {iterateOverViewportColumnsForRow(activeCellIdx)
-          .map(([column, isCellActive], index) => {
-            // Select is always the first column
-            if (index === 0 && column.key === SELECT_COLUMN_KEY) {
-              // oxlint-disable-next-line react/immutability
-              idx += 1;
-            }
+        {mapViewportColumns(activeCellIdx, undefined, (column, isCellActive, colSpan, index) => {
+          // Select is always the first column
+          if (index === 0 && column.key === SELECT_COLUMN_KEY) {
+            // oxlint-disable-next-line react/immutability
+            idx += 1;
+          }
 
-            return (
-              <GroupCell
-                key={column.key}
-                id={row.id}
-                groupKey={row.groupKey}
-                childRows={row.childRows}
-                isExpanded={row.isExpanded}
-                isCellActive={isCellActive}
-                column={column}
-                row={row}
-                groupColumnIndex={idx}
-                toggleGroup={toggleGroup}
-                isGroupByColumn={groupBy.includes(column.key)}
-              />
-            );
-          })
-          .toArray()}
+          return (
+            <GroupCell
+              key={column.key}
+              id={row.id}
+              groupKey={row.groupKey}
+              childRows={row.childRows}
+              isExpanded={row.isExpanded}
+              isCellActive={isCellActive}
+              column={column}
+              row={row}
+              groupColumnIndex={idx}
+              toggleGroup={toggleGroup}
+              isGroupByColumn={groupBy.includes(column.key)}
+            />
+          );
+        })}
       </div>
     </RowSelectionContext>
   );
