@@ -32,23 +32,42 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
   columns: readonly Column<NoInfer<R>, NoInfer<SR>>[];
   rowHeight?: Maybe<number | ((args: RowHeightArgs<NoInfer<R>>) => number)>;
   groupBy: readonly string[];
-  rowGrouper: (
-    rows: readonly NoInfer<R>[],
-    columnKey: string
-  ) => Record<string, readonly NoInfer<R>[]>;
+  getRowGroupKey?: Maybe<(row: NoInfer<R>, columnKey: string) => string>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
-  groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
+  getGroupId?: Maybe<(groupKey: string, parentId?: string) => string>;
 }
 
-interface GroupBy<TRow> {
+interface PartialGroupRow<TRow> {
+  readonly groups: GroupsMap<TRow>;
+  // all the descendant rows of the group, not just the direct children
   readonly childRows: readonly TRow[];
-  readonly childGroups: readonly TRow[] | ReadonlyGroupByMap<TRow>;
   readonly startRowIndex: number;
 }
 
-type GroupByMap<TRow> = Map<string, GroupBy<TRow>>;
-type ReadonlyGroupByMap<TRow> = ReadonlyMap<string, GroupBy<TRow>>;
+type GroupsMap<TRow> = ReadonlyMap<string, PartialGroupRow<TRow>>;
+
+// only used while the rows are being grouped
+interface MutablePartialGroupRow<TRow> {
+  readonly groups: MutableGroupsMap<TRow>;
+  readonly childRows: TRow[];
+  startRowIndex: number;
+}
+
+type MutableGroupsMap<TRow> = Map<string, MutablePartialGroupRow<TRow>>;
+
+interface GroupedRows<TRow> {
+  readonly groups: GroupsMap<TRow> | undefined;
+  readonly rowsCount: number;
+}
+
+// Group rows are only ever created by `TreeDataGrid`, so every instance can share a single
+// set, which keeps `isGroupRow` stable and out of the dependency arrays below
+const allGroupRows = new WeakSet<object>();
+
+function isGroupRow<TRow>(row: TRow | GroupRow<TRow>): row is GroupRow<TRow> {
+  return typeof row === 'object' && row !== null && allGroupRows.has(row);
+}
 
 export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   columns: rawColumns,
@@ -63,10 +82,10 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   onSelectedRowsChange: rawOnSelectedRowsChange,
   renderers,
   groupBy: rawGroupBy,
-  rowGrouper,
+  getRowGroupKey: rawGetRowGroupKey,
   expandedGroupIds,
   onExpandedGroupIdsChange,
-  groupIdGetter: rawGroupIdGetter,
+  getGroupId: rawGetGroupId,
   ...props
 }: TreeDataGridProps<R, SR, K>) {
   const contextRenderers = useRenderers<R, SR>();
@@ -74,7 +93,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const headerAndTopSummaryRowsCount = 1 + (props.topSummaryRows?.length ?? 0);
   const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
-  const groupIdGetter = rawGroupIdGetter ?? defaultGroupIdGetter;
+  const getRowGroupKey = rawGetRowGroupKey ?? defaultGetRowGroupKey;
+  const getGroupId = rawGetGroupId ?? defaultGetGroupId;
 
   const { columns, groupBy } = useMemo(() => {
     const columns = rawColumns.toSorted(({ key: aKey }, { key: bKey }) => {
@@ -112,59 +132,68 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     return { columns, groupBy };
   }, [rawColumns, rawGroupBy]);
 
-  const [groupedRows, rowsCount] = useMemo(() => {
-    if (groupBy.length === 0) return [undefined, rawRows.length];
+  // Grouping only depends on the rows, it is not affected by the expanded state
+  const { groups, rowsCount } = useMemo((): GroupedRows<R> => {
+    if (groupBy.length === 0) return { groups: undefined, rowsCount: rawRows.length };
 
-    function groupRows(
-      rows: readonly R[],
-      groupByIndex: number,
-      startRowIndex: number
-    ): [ReadonlyGroupByMap<R>, number] {
-      let groupRowsCount = 0;
-      const groupByKey = groupBy[groupByIndex];
-      const isLastGroupBy = groupByIndex === groupBy.length - 1;
-      const groups: GroupByMap<R> = new Map();
+    // Group the rows in a single pass, each row is added to every group it belongs to
+    const groups: MutableGroupsMap<R> = new Map();
 
-      for (const [key, childRows] of Object.entries(rowGrouper(rows, groupByKey))) {
-        // Recursively group each parent group
-        const [childGroups, childRowsCount] = isLastGroupBy
-          ? [childRows, childRows.length]
-          : groupRows(childRows, groupByIndex + 1, startRowIndex + groupRowsCount + 1); // 1 for parent row
-        groups.set(key, { childRows, childGroups, startRowIndex: startRowIndex + groupRowsCount });
-        groupRowsCount += childRowsCount + 1; // 1 for parent row
+    for (const row of rawRows) {
+      let parentGroups = groups;
+
+      for (const columnKey of groupBy) {
+        const groupKey = getRowGroupKey(row, columnKey);
+        const group = parentGroups.getOrInsertComputed(groupKey, () => ({
+          groups: new Map(),
+          childRows: [],
+          startRowIndex: 0
+        }));
+        group.childRows.push(row);
+        parentGroups = group.groups;
       }
-
-      return [groups, groupRowsCount];
     }
 
-    return groupRows(rawRows, 0, 0);
-  }, [groupBy, rowGrouper, rawRows]);
+    // Number the groups as if they were all expanded, and return the total number of rows.
+    // Neither depends on the expanded state, so collapsed groups never have to be traversed
+    // when the rows are flattened.
+    function setStartRowIndexes(groups: MutableGroupsMap<R>, startRowIndex: number): number {
+      let groupRowsCount = 0;
 
-  const [rows, isGroupRow] = useMemo((): [
-    readonly (R | GroupRow<R>)[],
-    (row: R | GroupRow<R>) => row is GroupRow<R>
-  ] => {
-    const allGroupRows = new Set<unknown>();
-    if (!groupedRows) return [rawRows, isGroupRow];
+      for (const group of groups.values()) {
+        group.startRowIndex = startRowIndex + groupRowsCount;
+        groupRowsCount++; // 1 for the group row
+        groupRowsCount +=
+          group.groups.size === 0
+            ? // the group is on the last level, it only contains rows
+              group.childRows.length
+            : setStartRowIndexes(group.groups, startRowIndex + groupRowsCount);
+      }
+
+      return groupRowsCount;
+    }
+
+    const rowsCount = setStartRowIndexes(groups, 0);
+
+    return { groups, rowsCount };
+  }, [getRowGroupKey, groupBy, rawRows]);
+
+  const rows = useMemo((): readonly (R | GroupRow<R>)[] => {
+    if (groups === undefined) {
+      return rawRows;
+    }
 
     const flattenedRows: (R | GroupRow<R>)[] = [];
 
-    const expandGroup = (
-      rows: ReadonlyGroupByMap<R> | readonly R[],
-      parentId: string | undefined,
-      level: number
-    ): void => {
-      if (isReadonlyArray(rows)) {
-        flattenedRows.push(...rows);
-        return;
-      }
-
+    // Only the expanded groups are traversed
+    function expandGroups(groups: GroupsMap<R>, parentId: string | undefined, level: number): void {
       let posInSet = 0;
 
-      for (const [groupKey, row] of rows) {
-        const id = groupIdGetter(groupKey, parentId);
+      for (const [groupKey, group] of groups) {
+        // destructuring in the loop head would stop React Compiler from compiling the component
+        const { groups: childGroups, childRows, startRowIndex } = group;
+        const id = getGroupId(groupKey, parentId);
         const isExpanded = expandedGroupIds.has(id);
-        const { childRows, childGroups, startRowIndex } = row;
 
         const groupRow: GroupRow<R> = {
           id,
@@ -174,25 +203,30 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
           childRows,
           level,
           posInSet: posInSet++,
-          startRowIndex,
-          setSize: rows.size
+          setSize: groups.size,
+          startRowIndex
         };
         flattenedRows.push(groupRow);
         allGroupRows.add(groupRow);
 
         if (isExpanded) {
-          expandGroup(childGroups, id, level + 1);
+          if (childGroups.size === 0) {
+            // the group is on the last level, it only contains rows.
+            // Push them one by one: spreading them would throw in groups with too many rows
+            for (const row of childRows) {
+              flattenedRows.push(row);
+            }
+          } else {
+            expandGroups(childGroups, id, level + 1);
+          }
         }
       }
-    };
-
-    expandGroup(groupedRows, undefined, 0);
-    return [flattenedRows, isGroupRow];
-
-    function isGroupRow(row: R | GroupRow<R>): row is GroupRow<R> {
-      return allGroupRows.has(row);
     }
-  }, [expandedGroupIds, groupedRows, rawRows, groupIdGetter]);
+
+    expandGroups(groups, undefined, 0);
+
+    return flattenedRows;
+  }, [expandedGroupIds, getGroupId, groups, rawRows]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
@@ -205,7 +239,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
 
     return rawRowHeight;
-  }, [isGroupRow, rawRowHeight]);
+  }, [rawRowHeight]);
 
   const getParentRowAndIndex = useCallback(
     (row: R | GroupRow<R>) => {
@@ -219,7 +253,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
       return undefined;
     },
-    [isGroupRow, rows]
+    [rows]
   );
 
   const rowKeyGetter = useCallback(
@@ -241,7 +275,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
       return rows.indexOf(row);
     },
-    [getParentRowAndIndex, isGroupRow, rawRowKeyGetter, rows]
+    [getParentRowAndIndex, rawRowKeyGetter, rows]
   );
 
   const selectedRows = useMemo((): Maybe<ReadonlySet<Key>> => {
@@ -263,7 +297,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     }
 
     return selectedRows;
-  }, [isGroupRow, rawRowKeyGetter, rawSelectedRows, rows]);
+  }, [rawRowKeyGetter, rawSelectedRows, rows]);
 
   function onSelectedRowsChange(newSelectedRows: Set<Key>) {
     if (!rawOnSelectedRowsChange) return;
@@ -453,10 +487,10 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   );
 }
 
-function defaultGroupIdGetter(groupKey: string, parentId: string | undefined) {
-  return parentId === undefined ? groupKey : `${parentId}__${groupKey}`;
+function defaultGetRowGroupKey(row: unknown, columnKey: string) {
+  return String((row as Record<string, unknown>)[columnKey]);
 }
 
-function isReadonlyArray(arr: unknown): arr is readonly unknown[] {
-  return Array.isArray(arr);
+function defaultGetGroupId(groupKey: string, parentId: string | undefined) {
+  return parentId === undefined ? groupKey : `${parentId}__${groupKey}`;
 }
