@@ -37,6 +37,7 @@ import {
   renderMeasuringCells,
   scrollIntoView
 } from './utils';
+import { iterateOverViewportRowIdx } from './utils/iterators';
 import type {
   CalculatedColumn,
   CellClipboardEvent,
@@ -1090,24 +1091,15 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
-  function* iterateOverViewportRowIdx() {
-    const activeRowIdx = activePosition.rowIdx;
-
-    if (activePositionIsInViewport && activeRowIdx < rowOverscanStartIdx) {
-      yield activeRowIdx;
-    }
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      yield rowIdx;
-    }
-    if (activePositionIsInViewport && activeRowIdx > rowOverscanEndIdx) {
-      yield activeRowIdx;
-    }
-  }
-
   function getViewportRows() {
     const { idx: activeIdx, rowIdx: activeRowIdx } = activePosition;
 
-    return iterateOverViewportRowIdx()
+    return iterateOverViewportRowIdx(
+      activeRowIdx,
+      activePositionIsInViewport,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx
+    )
       .map((rowIdx) => {
         const isActiveRow = rowIdx === activeRowIdx;
 
