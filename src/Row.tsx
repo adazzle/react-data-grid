@@ -15,7 +15,7 @@ function Row<R, SR>({
   isRowSelected,
   draggedOverCellIdx,
   row,
-  iterateOverViewportColumnsForRow,
+  mapViewportColumns,
   activeCellEditor,
   isTreeGrid,
   onCellMouseDown,
@@ -40,8 +40,10 @@ function Row<R, SR>({
     className
   );
 
-  const cells = iterateOverViewportColumnsForRow(activeCellIdx, { type: 'ROW', row })
-    .map(([column, isCellActive, colSpan]) => {
+  const cells = mapViewportColumns(
+    activeCellIdx,
+    { type: 'ROW', row },
+    (column, isCellActive, colSpan) => {
       if (isCellActive && activeCellEditor) {
         return activeCellEditor;
       }
@@ -60,8 +62,8 @@ function Row<R, SR>({
         onRowChange,
         setActivePosition
       });
-    })
-    .toArray();
+    }
+  );
 
   const selectionValue = useMemo(
     (): RowSelectionContextValue => ({ isRowSelected, isRowSelectionDisabled }),

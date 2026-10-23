@@ -2043,7 +2043,13 @@ interface RenderRowProps<R, SR = unknown>
       'onCellMouseDown' | 'onCellClick' | 'onCellDoubleClick' | 'onCellContextMenu'
     > {
   setActivePosition: (position: Position, options?: SetActivePositionOptions) => void;
-  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
+  /**
+   * Calls `callback` for each cell to render in the row, and returns the results.
+   * `activeIdx` is the column index of the row's active cell, if any: that cell is rendered even when it is scrolled out of view.
+   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped.
+   * The callback receives the cell's column, whether the cell is active, its `colSpan`, and its index in the results.
+   */
+  mapViewportColumns: MapViewportColumns<R, SR>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
@@ -2058,7 +2064,7 @@ interface RenderRowProps<R, SR = unknown>
 }
 ```
 
-**See also:** [`renderers.renderRow`](#renderers), [`<Row />`](#row-)
+**See also:** [`renderers.renderRow`](#renderers), [`<Row />`](#row-), [`MapViewportColumns`](#mapviewportcolumns-internal)
 
 #### `RenderCellProps`
 
@@ -2601,6 +2607,25 @@ interface GroupRow<R> {
 ```
 
 **See also:** [`RenderGroupCellContentProps`](#rendergroupcellcontentprops), [`RowHeightArgs`](#rowheightargs), [`<TreeDataGrid />`](#treedatagrid-)
+
+#### `MapViewportColumns` (internal)
+
+Type of `mapViewportColumns` in `RenderRowProps`. This helper type is not exported; the shape is shown for reference.
+
+```tsx
+type MapViewportColumns<R, SR> = <T>(
+  activeIdx: number | undefined,
+  colSpanArgs: ColSpanArgs<R, SR> | undefined,
+  callback: (
+    column: CalculatedColumn<R, SR>,
+    isCellActive: boolean,
+    colSpan: number | undefined,
+    index: number
+  ) => T
+) => T[];
+```
+
+**See also:** [`RenderRowProps`](#renderrowprops), [`ColSpanArgs`](#colspanargs)
 
 #### `Maybe` (internal)
 

@@ -1,7 +1,7 @@
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { Column, ColumnOrColumnGroup } from '../../../src';
-import { getCellsAtRowIndex, safeTab, setup, validateCellPosition } from '../utils';
+import type { Column, ColumnFrozen, ColumnOrColumnGroup } from '../../../src';
+import { getCellsAtRowIndex, safeTab, scrollGrid, setup, validateCellPosition } from '../utils';
 
 const headerCells = page.getHeaderCell();
 
@@ -221,5 +221,64 @@ describe('colSpan', () => {
         await safeTab(shift);
       }
     }
+  });
+
+  describe('when a cell spans columns outside of the overscan range', () => {
+    function setupColSpanOutsideOfOverscan(
+      spanningColumnIdx: number,
+      frozen: (idx: number) => ColumnFrozen
+    ) {
+      const columns: Column<number>[] = Array.from({ length: 40 }, (_, idx) => ({
+        key: String(idx),
+        name: String(idx),
+        width: 100,
+        frozen: frozen(idx),
+        colSpan(args) {
+          return args.type === 'ROW' && args.row === 0 && idx === spanningColumnIdx ? 2 : undefined;
+        }
+      }));
+      return setup({ columns, rows: [0, 1] });
+    }
+
+    function getCellAt(rowIdx: number, idx: number) {
+      return getCellsAtRowIndex(rowIdx).and(page.getBySelector(`[aria-colindex="${idx + 1}"]`));
+    }
+
+    it('should render the columns after an active cell before the viewport', async () => {
+      await setupColSpanOutsideOfOverscan(1, () => false);
+      await userEvent.click(getCellAt(0, 1));
+      scrollGrid({ left: 2000 });
+
+      const row0 = getCellsAtRowIndex(0);
+      // the active cell, then the same columns as the next row
+      await expect.element(getCellsAtRowIndex(1).first()).toHaveAttribute('aria-colindex', '20');
+      await expect.element(row0.first()).toHaveAttribute('aria-colindex', '2');
+      await expect.element(row0.first()).toHaveAttribute('aria-colspan', '2');
+      await expect.element(row0.nth(1)).toHaveAttribute('aria-colindex', '20');
+    });
+
+    it('should render the end-frozen columns after an active cell after the viewport', async () => {
+      await setupColSpanOutsideOfOverscan(30, (idx) => (idx === 39 ? 'end' : false));
+      scrollGrid({ left: 2000 });
+      await userEvent.click(getCellAt(0, 30));
+      scrollGrid({ left: 0 });
+
+      const row0 = getCellsAtRowIndex(0);
+      await expect.element(getCellsAtRowIndex(1).first()).toHaveAttribute('aria-colindex', '1');
+      await expect.element(row0.nth(-2)).toHaveAttribute('aria-colindex', '31');
+      await expect.element(row0.nth(-2)).toHaveAttribute('aria-colspan', '2');
+      await expect.element(row0.last()).toHaveAttribute('aria-colindex', '40');
+    });
+
+    it('should render the end-frozen columns after the last cell of the overscan range', async () => {
+      // the overscan range ends at the 20th column
+      await setupColSpanOutsideOfOverscan(19, (idx) => (idx === 39 ? 'end' : false));
+
+      const row0 = getCellsAtRowIndex(0);
+      await expect.element(getCellsAtRowIndex(1).nth(-2)).toHaveAttribute('aria-colindex', '20');
+      await expect.element(row0.nth(-2)).toHaveAttribute('aria-colindex', '20');
+      await expect.element(row0.nth(-2)).toHaveAttribute('aria-colspan', '2');
+      await expect.element(row0.last()).toHaveAttribute('aria-colindex', '40');
+    });
   });
 });

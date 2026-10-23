@@ -579,23 +579,30 @@ export type CellMouseEventHandler<R, SR> = Maybe<
   (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
 >;
 
-export type IterateOverViewportColumns<R, SR> = (
-  activeColumnIdx: number
-) => IteratorObject<CalculatedColumn<R, SR>>;
-
-export type ViewportColumnWithColSpan<R, SR> = [
-  column: CalculatedColumn<R, SR>,
-  isCellActive: boolean,
-  colSpan: number | undefined
-];
-
-export type IterateOverViewportColumnsForRow<R, SR> = (
+/**
+ * Type of `mapViewportColumns` in `RenderRowProps`. This helper type is not exported; the shape is shown for reference.
+ *
+ * @see {@linkcode RenderRowProps}, {@linkcode ColSpanArgs}
+ */
+export type MapViewportColumns<R, SR> = <T>(
   activeIdx: number | undefined,
-  args?: ColSpanArgs<R, SR>
-) => IteratorObject<ViewportColumnWithColSpan<R, SR>>;
+  colSpanArgs: ColSpanArgs<R, SR> | undefined,
+  callback: (
+    column: CalculatedColumn<R, SR>,
+    isCellActive: boolean,
+    colSpan: number | undefined,
+    index: number
+  ) => T
+) => T[];
 
 export interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps<R, SR> {
-  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<R, SR>;
+  /**
+   * Calls `callback` for each cell to render in the row, and returns the results.
+   * `activeIdx` is the column index of the row's active cell, if any: that cell is rendered even when it is scrolled out of view.
+   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped.
+   * The callback receives the cell's column, whether the cell is active, its `colSpan`, and its index in the results.
+   */
+  mapViewportColumns: MapViewportColumns<R, SR>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
@@ -606,7 +613,7 @@ export interface BaseRenderRowProps<R, SR = unknown> extends BaseRenderCellProps
 /**
  * Props passed to custom row renderers.
  *
- * @see {@linkcode DataGridProps.renderers | renderers.renderRow}, {@linkcode Row | <Row />}
+ * @see {@linkcode DataGridProps.renderers | renderers.renderRow}, {@linkcode Row | <Row />}, {@linkcode MapViewportColumns}
  */
 export interface RenderRowProps<R, SR = unknown> extends BaseRenderRowProps<R, SR> {
   row: R;
