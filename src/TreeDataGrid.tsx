@@ -57,7 +57,7 @@ interface MutablePartialGroupRow<TRow> {
 type MutableGroupsMap<TRow> = Map<string, MutablePartialGroupRow<TRow>>;
 
 interface GroupedRows<TRow> {
-  readonly groups: GroupsMap<TRow>;
+  readonly groups: GroupsMap<TRow> | undefined;
   readonly rowsCount: number;
 }
 
@@ -133,8 +133,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   }, [rawColumns, rawGroupBy]);
 
   // Grouping only depends on the rows, it is not affected by the expanded state
-  const groupedRows = useMemo((): GroupedRows<R> | undefined => {
-    if (groupBy.length === 0) return undefined;
+  const { groups, rowsCount } = useMemo((): GroupedRows<R> => {
+    if (groupBy.length === 0) return { groups: undefined, rowsCount: rawRows.length };
 
     // Group the rows in a single pass, each row is added to every group it belongs to
     const groups: MutableGroupsMap<R> = new Map();
@@ -178,10 +178,8 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     return { groups, rowsCount };
   }, [getRowGroupKey, groupBy, rawRows]);
 
-  const rowsCount = groupedRows?.rowsCount ?? rawRows.length;
-
   const rows = useMemo((): readonly (R | GroupRow<R>)[] => {
-    if (groupedRows === undefined) {
+    if (groups === undefined) {
       return rawRows;
     }
 
@@ -220,10 +218,10 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       }
     }
 
-    expandGroups(groupedRows.groups, undefined, 0);
+    expandGroups(groups, undefined, 0);
 
     return flattenedRows;
-  }, [expandedGroupIds, groupIdGetter, groupedRows, rawRows]);
+  }, [expandedGroupIds, groupIdGetter, groups, rawRows]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
