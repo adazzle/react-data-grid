@@ -34,6 +34,12 @@ export function useViewportColumns<R, SR>({
   const startIdx = useMemo(() => {
     if (colOverscanStartIdx === 0 || colSpanColumns.length === 0) return colOverscanStartIdx;
 
+    // only the unfrozen columns before the range can span over a column within it
+    const candidateColumns = colSpanColumns.filter(
+      (column) => !column.frozen && column.idx < colOverscanStartIdx
+    );
+    if (candidateColumns.length === 0) return colOverscanStartIdx;
+
     // check header row
     const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
 
@@ -56,10 +62,8 @@ export function useViewportColumns<R, SR>({
       }
     }
 
-    for (const column of colSpanColumns) {
-      if (column.frozen) continue;
+    for (const column of candidateColumns) {
       const colIdx = column.idx;
-      if (colIdx >= colOverscanStartIdx) break;
 
       for (const args of colSpanArgs) {
         const colSpan = getColSpan(
