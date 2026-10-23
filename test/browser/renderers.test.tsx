@@ -264,6 +264,51 @@ test('renderRow defined using context', async () => {
   await expect.element(row).not.toHaveClass('local');
 });
 
+test('renderRow can render its cells with mapViewportColumns', async () => {
+  const columns: readonly Column<Row>[] = [
+    {
+      key: 'col1',
+      name: 'Column1',
+      colSpan(args) {
+        return args.type === 'ROW' ? 2 : undefined;
+      }
+    },
+    { key: 'col2', name: 'Column2' },
+    { key: 'id', name: 'ID' }
+  ];
+
+  function renderRow(
+    key: React.Key,
+    { row, activeCellIdx, mapViewportColumns, gridRowStart }: RenderRowProps<Row>
+  ) {
+    return (
+      <div key={key} role="row" style={{ display: 'contents', gridRowStart }}>
+        {mapViewportColumns(
+          activeCellIdx,
+          { type: 'ROW', row },
+          (column, isCellActive, colSpan, index) => (
+            <div key={column.key} role="gridcell">
+              {`${index}: ${column.key}, colSpan ${colSpan}, active ${isCellActive}`}
+            </div>
+          )
+        )}
+      </div>
+    );
+  }
+
+  await setup({
+    columns,
+    rows: [{ id: 1, col1: 'value 1', col2: 'value 2' }],
+    renderers: { renderRow }
+  });
+
+  // the custom row has the only cells of the grid
+  const cells = page.getCell();
+  await testCount(cells, 2);
+  await expect.element(cells.nth(0)).toHaveTextContent('0: col1, colSpan 2, active false');
+  await expect.element(cells.nth(1)).toHaveTextContent('1: id, colSpan undefined, active false');
+});
+
 test('renderRow defined using both context and renderers', async () => {
   await setupContext({
     columns,

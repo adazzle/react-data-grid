@@ -462,23 +462,20 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     enableVirtualization
   });
 
-  const {
-    viewportColumns,
-    iterateOverViewportColumnsForRow,
-    iterateOverViewportColumnsForRowOutsideOfViewport
-  } = useViewportColumns({
-    columns,
-    colSpanColumns,
-    colOverscanStartIdx,
-    colOverscanEndIdx,
-    lastStartFrozenColumnIndex,
-    firstEndFrozenColumnIndex,
-    rowOverscanStartIdx,
-    rowOverscanEndIdx,
-    rows,
-    topSummaryRows,
-    bottomSummaryRows
-  });
+  const { viewportColumns, mapViewportColumns, mapViewportColumnsOutsideOfViewport } =
+    useViewportColumns({
+      columns,
+      colSpanColumns,
+      colOverscanStartIdx,
+      colOverscanEndIdx,
+      lastStartFrozenColumnIndex,
+      firstEndFrozenColumnIndex,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx,
+      rows,
+      topSummaryRows,
+      bottomSummaryRows
+    });
 
   const { gridTemplateColumns, handleColumnResize } = useColumnWidths(
     columns,
@@ -1090,66 +1087,64 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
     );
   }
 
-  function* iterateOverViewportRowIdx() {
+  function getViewportRows() {
     const activeRowIdx = activePosition.rowIdx;
+    const viewportRows: React.ReactNode[] = [];
 
     if (activePositionIsInViewport && activeRowIdx < rowOverscanStartIdx) {
-      yield activeRowIdx;
+      viewportRows.push(renderViewportRow(activeRowIdx));
     }
     for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      yield rowIdx;
+      viewportRows.push(renderViewportRow(rowIdx));
     }
     if (activePositionIsInViewport && activeRowIdx > rowOverscanEndIdx) {
-      yield activeRowIdx;
+      viewportRows.push(renderViewportRow(activeRowIdx));
     }
+
+    return viewportRows;
   }
 
-  function getViewportRows() {
+  function renderViewportRow(rowIdx: number) {
     const { idx: activeIdx, rowIdx: activeRowIdx } = activePosition;
+    const isActiveRow = rowIdx === activeRowIdx;
 
-    return iterateOverViewportRowIdx()
-      .map((rowIdx) => {
-        const isActiveRow = rowIdx === activeRowIdx;
+    // if the row is outside the viewport then only render its active column, if any
+    const mapColumns =
+      isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
+        ? mapViewportColumnsOutsideOfViewport
+        : mapViewportColumns;
 
-        // if the row is outside the viewport then only render its active column, if any
-        const iterateOverColumns =
-          isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
-            ? iterateOverViewportColumnsForRowOutsideOfViewport
-            : iterateOverViewportColumnsForRow;
+    const row = rows[rowIdx];
+    const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
+    let key: K | number = rowIdx;
+    let isRowSelected = false;
+    if (typeof rowKeyGetter === 'function') {
+      key = rowKeyGetter(row);
+      isRowSelected = selectedRows?.has(key) ?? false;
+    }
 
-        const row = rows[rowIdx];
-        const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
-        let key: K | number = rowIdx;
-        let isRowSelected = false;
-        if (typeof rowKeyGetter === 'function') {
-          key = rowKeyGetter(row);
-          isRowSelected = selectedRows?.has(key) ?? false;
-        }
-
-        return renderRow(key, {
-          // aria-rowindex is 1-based
-          'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
-          'aria-selected': isSelectable ? isRowSelected : undefined,
-          rowIdx,
-          row,
-          iterateOverViewportColumnsForRow: iterateOverColumns,
-          isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
-          isRowSelected,
-          onCellMouseDown: onCellMouseDownLatest,
-          onCellClick: onCellClickLatest,
-          onCellDoubleClick: onCellDoubleClickLatest,
-          onCellContextMenu: onCellContextMenuLatest,
-          rowClass,
-          gridRowStart,
-          activeCellIdx: isActiveRow ? activeIdx : undefined,
-          draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
-          onRowChange: updateRowLatest,
-          setActivePosition: setPositionLatest,
-          activeCellEditor: getCellEditor(rowIdx),
-          isTreeGrid
-        });
-      })
-      .toArray();
+    return renderRow(key, {
+      // aria-rowindex is 1-based
+      'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
+      'aria-selected': isSelectable ? isRowSelected : undefined,
+      rowIdx,
+      row,
+      mapViewportColumns: mapColumns,
+      isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
+      isRowSelected,
+      onCellMouseDown: onCellMouseDownLatest,
+      onCellClick: onCellClickLatest,
+      onCellDoubleClick: onCellDoubleClickLatest,
+      onCellContextMenu: onCellContextMenuLatest,
+      rowClass,
+      gridRowStart,
+      activeCellIdx: isActiveRow ? activeIdx : undefined,
+      draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
+      onRowChange: updateRowLatest,
+      setActivePosition: setPositionLatest,
+      activeCellEditor: getCellEditor(rowIdx),
+      isTreeGrid
+    });
   }
 
   // Keep the state and prop in sync
@@ -1211,7 +1206,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                 key={index}
                 rowIdx={index + 1}
                 level={-groupedColumnHeaderRowsCount + index}
-                iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                mapViewportColumns={mapViewportColumns}
                 activeCellIdx={
                   activePosition.rowIdx === minRowIdx + index ? activePosition.idx : undefined
                 }
@@ -1221,7 +1216,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
             <HeaderRow
               headerRowClass={headerRowClass}
               rowIdx={headerRowsCount}
-              iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+              mapViewportColumns={mapViewportColumns}
               onColumnResize={handleColumnResizeLatest}
               onColumnResizeEnd={handleColumnResizeEndLatest}
               onColumnsReorder={onColumnsReorderLatest}
@@ -1255,7 +1250,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                   row={row}
                   top={top}
                   bottom={undefined}
-                  iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                  mapViewportColumns={mapViewportColumns}
                   activeCellIdx={isSummaryRowActive ? activePosition.idx : undefined}
                   isTop
                   setActivePosition={setPositionLatest}
@@ -1288,7 +1283,7 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
                   row={row}
                   top={top}
                   bottom={bottom}
-                  iterateOverViewportColumnsForRow={iterateOverViewportColumnsForRow}
+                  mapViewportColumns={mapViewportColumns}
                   activeCellIdx={isSummaryRowActive ? activePosition.idx : undefined}
                   isTop={false}
                   setActivePosition={setPositionLatest}
