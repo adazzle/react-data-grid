@@ -1,6 +1,32 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import GithubSlugger from 'github-slugger';
-import { parseSync } from 'oxc-parser';
+import { SyntaxKind } from 'typescript/ast';
+import type {
+  Declaration as DeclarationNode,
+  FunctionDeclaration,
+  InterfaceDeclaration,
+  JSDoc,
+  JSDocComment,
+  NodeArray,
+  Node,
+  ParameterDeclaration,
+  PropertySignatureDeclaration,
+  SourceFile,
+  TypeElement,
+  VariableStatement
+} from 'typescript/ast';
+import {
+  isExportDeclaration,
+  isFunctionTypeNode,
+  isIdentifier,
+  isImportDeclaration,
+  isInterfaceDeclaration,
+  isJSDocText,
+  isTypeAliasDeclaration,
+  isTypeLiteralNode,
+  isVariableStatement
+} from 'typescript/ast/is';
+import { API } from 'typescript/sync';
 
 // Generates the API reference of the README from the declarations and JSDoc comments of `lib/index.d.ts`,
 // which `vp pack` bundles from the sources. The items are listed in the order they are exported from `src/index.ts`.
@@ -10,8 +36,6 @@ const entryPath = 'src/index.ts';
 const readmePath = 'README.md';
 const startMarker = '<!-- api:start -->';
 const endMarker = '<!-- api:end -->';
-// e.g. `{@linkcode Column.width | width}`
-const linkTag = /\{@link(?:code|plain)?\s+([^}|]+?)\s*(?:\|\s*([^}]+?)\s*)?\}/g;
 // the `@group` tags of the exports
 const sections = ['Components', 'Hooks', 'Render Functions', 'Context', 'Other', 'Types'];
 
@@ -31,58 +55,39 @@ interface Declaration {
   doc: Doc;
 }
 
-// the subset of the oxc AST that is used
-interface Node {
-  type: string;
-  start: number;
-  end: number;
-  id?: Node & { name: string };
-  name?: string;
-  optional?: boolean;
-  key?: { type: string; name?: string; value?: string };
-  body?: { body: Node[] };
-  members?: Node[];
-  params?: Node[] | { params: Node[] };
-  typeParameters?: Node | null;
-  typeAnnotation?: Node;
-  returnType?: Node | null;
-  extends?: Node[];
-  expression?: Node;
-  typeArguments?: { params: Node[] } | null;
-  declarations?: Node[];
-  init?: Node | null;
-  types?: Node[];
-  elementType?: Node;
-}
-
-const code = await readFile(declarationsPath, 'utf8');
-const { program, comments } = parseSync(declarationsPath, code);
+using api = new API();
+using declarationsFile = api.createSourceFile(
+  declarationsPath,
+  await readFile(declarationsPath, 'utf8')
+);
+using entryFile = api.createSourceFile(entryPath, await readFile(entryPath, 'utf8'));
 
 const declarations = new Map<string, Declaration>();
 // exported name -> declared name, e.g. `Cell` -> `MemoCell`
 const exportedNames = new Map<string, string>();
 
-for (const statement of program.body as unknown as Node[]) {
-  if (statement.type === 'ImportDeclaration') continue;
-  if (statement.type === 'ExportNamedDeclaration') {
-    const { declaration, specifiers } = statement as unknown as {
-      declaration: Node | null;
-      specifiers: { local: { name: string }; exported: { name: string } }[];
-    };
-    if (declaration === null) {
-      for (const { local, exported } of specifiers) exportedNames.set(exported.name, local.name);
-      continue;
+for (const statement of declarationsFile.sourceFile.statements) {
+  if (isImportDeclaration(statement)) continue;
+  if (isExportDeclaration(statement)) {
+    for (const specifier of getExportSpecifiers(statement)) {
+      exportedNames.set(
+        specifier.name.getText(),
+        (specifier.propertyName ?? specifier.name).getText()
+      );
     }
-    exportedNames.set(getDeclarationName(declaration), getDeclarationName(declaration));
-    addDeclaration(declaration, statement);
-  } else {
-    addDeclaration(statement, statement);
+    continue;
   }
+  const name = getDeclarationName(statement);
+  const { modifiers } = statement as InterfaceDeclaration;
+  if (modifiers?.some((modifier) => modifier.kind === SyntaxKind.ExportKeyword)) {
+    exportedNames.set(name, name);
+  }
+  declarations.set(name, { name, node: statement, doc: getDoc(statement) });
 }
 
 // group the exports by their `@group` tag, in the order they are exported from the entry point
 const groups = new Map<string, Declaration[]>(sections.map((section) => [section, []]));
-for (const name of await getExportOrder()) {
+for (const name of getExportOrder(entryFile.sourceFile)) {
   const declaration = declarations.get(exportedNames.get(name)!)!;
   const group = declaration.doc.tags.find((tag) => tag.name === 'group')?.text;
   const items = group === undefined ? undefined : groups.get(group);
@@ -168,17 +173,21 @@ function renderItem(item: Declaration, section: string, hasPropsInterface: boole
 
     // the props of a component with an undocumented props type are described
     // by the paragraphs after the first, e.g. `SelectCheckbox`
-    const [description, ...props] = renderSummary(doc).join('').split('\n\n');
+    const [description, ...props] = doc.summary.split('\n\n');
     if (props.length === 0) {
       throw new Error(`${name} must describe its props after the first paragraph`);
     }
     return [title, description, ...renderTags(doc), heading(5, 'Props'), ...props].join('\n\n');
   }
 
-  const isFunction = node.type !== 'VariableDeclaration';
+  const isFunction = !isVariableStatement(node);
   return [
     heading(4, `\`${name}${isFunction ? '()' : ''}\``, name),
-    codeBlock(isFunction ? getFunctionSignature(name, node) : getVariableSignature(name, node)),
+    codeBlock(
+      isFunction
+        ? getFunctionSignature(name, node as FunctionDeclaration)
+        : getVariableSignature(name, node)
+    ),
     ...renderSummary(doc),
     ...renderTags(doc)
   ].join('\n\n');
@@ -192,9 +201,9 @@ function renderType({ name, node, doc }: Declaration, level: number) {
     ...renderSummary(doc)
   ];
 
-  if (hasRichMembers(node)) {
+  if (isInterfaceDeclaration(node) && hasRichMembers(node)) {
     // a heading per member, as their docs have examples, lists, or several paragraphs
-    md.push(...renderTags(doc), ...renderMembers(node.body!.body, level + 1, name));
+    md.push(...renderTags(doc), ...renderMembers(node.members, level + 1, name));
   } else {
     codeBlockTypes.add(name);
     md.push(codeBlock(getTypeDeclarations(node)), ...renderTags(doc));
@@ -203,23 +212,24 @@ function renderType({ name, node, doc }: Declaration, level: number) {
   return md.join('\n\n');
 }
 
-function renderMembers(members: Node[], level: number, parent: string): string[] {
+function renderMembers(members: NodeArray<TypeElement>, level: number, parent: string): string[] {
   return members.flatMap((member) => {
     const name = getMemberName(member);
-    const doc = parseDoc(getComment(member));
-    const typeLiteral = findTypeLiteral(member.typeAnnotation);
+    const doc = getDoc(member);
+    const typeLiteral = findTypeLiteral(member);
     // e.g. `editorOptions`, which is an object, has a heading per option
     if (typeLiteral !== undefined) {
       return [
         heading(level, `\`${name}\``, `${parent}.${name}`),
         ...renderSummary(doc),
         ...renderTags(doc),
-        ...renderMembers(typeLiteral.members!, Math.min(level + 1, 6), `${parent}.${name}`)
+        ...renderMembers(typeLiteral.members, Math.min(level + 1, 6), `${parent}.${name}`)
       ];
     }
+    const isOptional = (member as PropertySignatureDeclaration).postfixToken !== undefined;
     return [
-      heading(level, `\`${name}${member.optional === true ? '?' : ''}\``, `${parent}.${name}`),
-      codeBlock(source(member)),
+      heading(level, `\`${name}${isOptional ? '?' : ''}\``, `${parent}.${name}`),
+      codeBlock(member.getText()),
       ...renderSummary(doc),
       ...renderTags(doc)
     ];
@@ -227,7 +237,7 @@ function renderMembers(members: Node[], level: number, parent: string): string[]
 }
 
 function renderSummary({ summary }: Doc) {
-  return summary === '' ? [] : [convertLinks(summary)];
+  return summary === '' ? [] : [summary];
 }
 
 function renderTags({ tags }: Doc) {
@@ -244,101 +254,110 @@ function renderTags({ tags }: Doc) {
       if (name in labels) return true;
       throw new Error(`The @${name} tag is not supported in the API reference`);
     })
-    .map(({ name, text }) => `${labels[name]}${convertLinks(text)}`);
+    .map(({ name, text }) => `${labels[name]}${text}`);
 }
 
 // e.g. `RenderRowProps<R, SR>`
 function getComponentPropsType(node: Node) {
-  const signature =
-    node.type === 'VariableDeclaration'
-      ? node.declarations![0].id!.typeAnnotation!.typeAnnotation!
-      : node;
-  return cleanCode(source(getParams(signature)[0].typeAnnotation!.typeAnnotation!));
+  const signature = isVariableStatement(node) ? getVariableDeclaration(node).type! : node;
+  if (!isFunctionTypeNode(signature) && signature.kind !== SyntaxKind.FunctionDeclaration) {
+    throw new Error(`${getDeclarationName(node)} must be a function component`);
+  }
+  return cleanCode((signature as FunctionDeclaration).parameters[0].type!.getText());
 }
 
 // e.g. `function renderHeaderCell<R, SR>(props: RenderHeaderCellContentProps<R, SR>): …`
-function getFunctionSignature(name: string, node: Node) {
-  const typeParameters = node.typeParameters == null ? '' : source(node.typeParameters);
-  const params = getParams(node).map((param) => {
+function getFunctionSignature(name: string, node: FunctionDeclaration) {
+  const params = node.parameters.map((param: ParameterDeclaration) => {
     // destructured parameters are named `props`
-    const paramName = param.type === 'Identifier' ? param.name : 'props';
-    return `${paramName}: ${source(param.typeAnnotation!.typeAnnotation!)}`;
+    const paramName = isIdentifier(param.name) ? param.name.text : 'props';
+    return `${paramName}: ${param.type!.getText()}`;
   });
-  const returnType = node.returnType == null ? '' : source(node.returnType);
-  return `function ${name}${typeParameters}(${params.join(', ')})${returnType};`;
+  const returnType = node.type === undefined ? '' : `: ${node.type.getText()}`;
+  return `function ${name}${getTypeParameters(node)}(${params.join(', ')})${returnType};`;
 }
 
 // e.g. `const SelectColumn: Column<any, any>;` or `const SELECT_COLUMN_KEY = 'rdg-select-column';`
-function getVariableSignature(name: string, node: Node) {
-  const declarator = node.declarations![0];
-  if (declarator.init !== null && declarator.init !== undefined) {
-    return `const ${name} = ${source(declarator.init).replaceAll('"', "'")};`;
+function getVariableSignature(name: string, node: VariableStatement) {
+  const { initializer, type } = getVariableDeclaration(node);
+  if (initializer !== undefined) {
+    return `const ${name} = ${initializer.getText().replaceAll('"', "'")};`;
   }
-  return `const ${name}${source(declarator.id!.typeAnnotation!)};`;
+  return `const ${name}: ${type!.getText()};`;
 }
 
-function getParams(node: Node) {
-  const { params } = node;
-  return Array.isArray(params) ? params : params!.params;
+// e.g. `<R, SR = unknown>`
+function getTypeParameters(node: { typeParameters?: NodeArray<Node> | undefined }) {
+  const { typeParameters } = node;
+  if (typeParameters === undefined) return '';
+  return `<${typeParameters.map((parameter) => parameter.getText()).join(', ')}>`;
 }
 
 // the declaration of a type: an interface includes the members of the helper interfaces it extends,
 // e.g. `RenderRowProps` and `BaseRenderRowProps`, and a type alias is followed by the helper types it references,
 // e.g. `CellKeyDownArgs` and `ActiveCellKeyDownArgs`
 function getTypeDeclarations(node: Node) {
-  if (node.type === 'TSInterfaceDeclaration') return getInterfaceDeclaration(node);
+  if (isInterfaceDeclaration(node)) return getInterfaceDeclaration(node);
 
   const referenced = new Set(
-    Array.from(source(node).matchAll(/\b\w+\b/g), ([name]) => helperTypes.get(name)?.node)
+    Array.from(node.getText().matchAll(/\b\w+\b/g), ([name]) => helperTypes.get(name)?.node)
   );
   referenced.delete(undefined);
   referenced.delete(node);
   return [node, ...referenced]
     .map((declaration) =>
-      declaration!.type === 'TSInterfaceDeclaration'
-        ? getInterfaceDeclaration(declaration!)
-        : source(declaration!)
+      isInterfaceDeclaration(declaration!)
+        ? getInterfaceDeclaration(declaration)
+        : declaration!.getText()
     )
     .join('\n\n');
 }
 
-function getInterfaceDeclaration(node: Node) {
-  if (node.extends?.every((base) => !helperTypes.has(source(base.expression!))) !== false) {
-    return source(node);
+function getInterfaceDeclaration(node: InterfaceDeclaration) {
+  if (getBaseTypes(node).every((base) => !helperTypes.has(getBaseTypeName(base)))) {
+    return node.getText();
   }
 
   const { heritage, members } = getInterfaceParts(node);
-  const typeParameters = node.typeParameters == null ? '' : source(node.typeParameters);
   const extendsClause = heritage.length === 0 ? '' : ` extends ${heritage.join(', ')}`;
   const body = Array.from(members.values(), (member) => `  ${member}`).join('\n');
-  return `interface ${node.id!.name}${typeParameters}${extendsClause} {\n${body}\n}`;
+  return `interface ${node.name.text}${getTypeParameters(node)}${extendsClause} {\n${body}\n}`;
 }
 
 // the base types and members of an interface, with the members of the helper interfaces it extends
-function getInterfaceParts(node: Node) {
+function getInterfaceParts(node: InterfaceDeclaration) {
   const heritage: string[] = [];
   const members = new Map<string, string>();
 
-  for (const base of node.extends ?? []) {
-    const helperType = helperTypes.get(source(base.expression!));
-    if (helperType?.node.type === 'TSInterfaceDeclaration') {
+  for (const base of getBaseTypes(node)) {
+    const helperType = helperTypes.get(getBaseTypeName(base));
+    if (helperType !== undefined && isInterfaceDeclaration(helperType.node)) {
       const parts = getInterfaceParts(helperType.node);
       heritage.push(...parts.heritage);
       for (const [name, member] of parts.members) members.set(name, member);
     } else {
-      heritage.push(source(base));
+      heritage.push(base.getText());
     }
   }
 
-  for (const member of node.body!.body) {
+  for (const member of node.members) {
     const name = getMemberName(member);
-    const comment = getComment(member);
+    const jsDoc = getJSDoc(member);
     // a redeclared member replaces the inherited one
     members.delete(name);
-    members.set(name, `${comment === '' ? '' : `/*${comment}*/\n  `}${source(member)}`);
+    members.set(name, `${jsDoc === undefined ? '' : `${jsDoc.getText()}\n  `}${member.getText()}`);
   }
 
   return { heritage, members };
+}
+
+function getBaseTypes(node: InterfaceDeclaration): readonly Node[] {
+  return node.heritageClauses?.flatMap((clause) => clause.types) ?? [];
+}
+
+// e.g. `BaseRenderRowProps` for `BaseRenderRowProps<R, SR>`
+function getBaseTypeName(base: Node) {
+  return /^[\w.]+/.exec(base.getText())![0];
 }
 
 function compareNames(a: Declaration, b: Declaration) {
@@ -346,64 +365,52 @@ function compareNames(a: Declaration, b: Declaration) {
 }
 
 function isType(node: Node) {
-  return node.type === 'TSInterfaceDeclaration' || node.type === 'TSTypeAliasDeclaration';
+  return isInterfaceDeclaration(node) || isTypeAliasDeclaration(node);
 }
 
 // members with more than a single paragraph can't be shown as comments of a code block
-function hasRichMembers(node: Node) {
-  return (
-    node.type === 'TSInterfaceDeclaration' &&
-    node.body!.body.some((member) => {
-      const { summary, tags } = parseDoc(getComment(member));
-      return (
-        tags.some((tag) => tag.name !== 'defaultValue') ||
-        summary.includes('\n\n') ||
-        summary.includes('```') ||
-        /^\s*(?:[-*+]|\d+\.) /m.test(summary)
-      );
-    })
-  );
+function hasRichMembers(node: InterfaceDeclaration) {
+  return node.members.some((member) => {
+    const { summary, tags } = getDoc(member);
+    return (
+      tags.some((tag) => tag.name !== 'defaultValue') ||
+      summary.includes('\n\n') ||
+      summary.includes('```') ||
+      /^\s*(?:[-*+]|\d+\.) /m.test(summary)
+    );
+  });
 }
 
 // the object type of a member, e.g. `Maybe<{ … }>`
-function findTypeLiteral(node: Node | undefined): Node | undefined {
-  if (node === undefined) return undefined;
-  if (node.type === 'TSTypeLiteral') return node;
-  for (const child of [
-    node.typeAnnotation,
-    node.elementType,
-    ...(node.types ?? []),
-    ...(node.typeArguments?.params ?? [])
-  ]) {
-    const typeLiteral = findTypeLiteral(child);
-    if (typeLiteral !== undefined) return typeLiteral;
-  }
-  return undefined;
-}
-
-function addDeclaration(node: Node, statement: Node) {
-  const name = getDeclarationName(node);
-  declarations.set(name, { name, node, doc: parseDoc(getComment(statement)) });
+function findTypeLiteral(node: Node) {
+  return node.forEachChild(function find(child): DeclarationNode | undefined {
+    return isTypeLiteralNode(child) ? child : child.forEachChild(find);
+  }) as { members: NodeArray<TypeElement> } | undefined;
 }
 
 function getDeclarationName(node: Node) {
-  return node.id?.name ?? node.declarations![0].id!.name;
+  if (isVariableStatement(node)) return getVariableDeclaration(node).name.getText();
+  return (node as InterfaceDeclaration).name.text;
 }
 
-function getMemberName({ key }: Node) {
-  return key!.type === 'Identifier' ? key!.name! : key!.value!;
+function getVariableDeclaration(node: VariableStatement) {
+  return node.declarationList.declarations[0];
+}
+
+function getMemberName(member: TypeElement) {
+  // e.g. `'aria-label'`
+  return (member as PropertySignatureDeclaration).name.getText().replaceAll(/^['"]|['"]$/g, '');
+}
+
+function getExportSpecifiers(node: Node) {
+  if (!isExportDeclaration(node) || node.exportClause?.kind !== SyntaxKind.NamedExports) return [];
+  return node.exportClause.elements;
 }
 
 // the exported names of the entry point, in order
-async function getExportOrder() {
-  const entry = await readFile(entryPath, 'utf8');
-  const names = (parseSync(entryPath, entry).program.body as unknown as Node[]).flatMap(
-    (statement) =>
-      statement.type === 'ExportNamedDeclaration'
-        ? (statement as unknown as { specifiers: { exported: { name: string } }[] }).specifiers.map(
-            ({ exported }) => exported.name
-          )
-        : []
+function getExportOrder(entry: SourceFile) {
+  const names = entry.statements.flatMap((statement) =>
+    getExportSpecifiers(statement).map((specifier) => specifier.name.getText())
   );
   for (const name of exportedNames.keys()) {
     if (!names.includes(name))
@@ -413,44 +420,34 @@ async function getExportOrder() {
 }
 
 // the JSDoc comment directly before the node
-function getComment({ start }: Node) {
-  const comment = comments.findLast(
-    (comment) =>
-      comment.type === 'Block' &&
-      comment.value.startsWith('*') &&
-      comment.end <= start &&
-      code.slice(comment.end, start).trim() === ''
-  );
-  return comment?.value ?? '';
+function getJSDoc(node: Node) {
+  return node.jsDoc?.at(-1) as JSDoc | undefined;
 }
 
-function parseDoc(comment: string): Doc {
-  const summary: string[] = [];
-  const tags: { name: string; lines: string[] }[] = [];
-
-  forEachLine(
-    comment
-      .split('\n')
-      .map((line) => line.replace(/^\s*\*\s?/, ''))
-      .join('\n'),
-    (line, isInCodeBlock) => {
-      const tag = isInCodeBlock ? null : /^@(\w+)\s?(.*)$/.exec(line);
-      if (tag === null) {
-        (tags.at(-1)?.lines ?? summary).push(line);
-      } else {
-        tags.push({ name: tag[1], lines: [tag[2]] });
-      }
-    }
-  );
-
+function getDoc(node: Node): Doc {
+  const jsDoc = getJSDoc(node);
   return {
-    summary: summary.join('\n').trim(),
-    tags: tags.map(({ name, lines }) => ({ name, text: lines.join('\n').trim() }))
+    summary: renderComment(jsDoc?.comment),
+    tags: (jsDoc?.tags ?? []).map((tag) => ({
+      name: tag.tagName.text,
+      text: renderComment(tag.comment)
+    }))
   };
 }
 
-function source({ start, end }: Node) {
-  return code.slice(start, end);
+// the text of a comment, with its links as "[`width`](#!Column.width)", resolved by `resolveLinks`
+function renderComment(comment: NodeArray<JSDocComment> | undefined) {
+  if (comment === undefined) return '';
+  return comment
+    .map((part) => {
+      if (isJSDocText(part)) return part.text;
+      const target = part.name!.getText();
+      // e.g. `| width` for `{@linkcode Column.width | width}`
+      const label = part.text.replace(/^\s*\|/, '').trim();
+      return `[\`${label === '' ? target : label}\`](#!${target})`;
+    })
+    .join('')
+    .trim();
 }
 
 function heading(level: number, text: string, key?: string) {
@@ -469,16 +466,11 @@ function cleanCode(text: string) {
   return text
     .replaceAll(/^(?:export )?declare /gm, '')
     .replaceAll('import("react").', 'React.')
-    .replaceAll(linkTag, (_, target: string, label: string | undefined) => label ?? target)
+    .replaceAll(
+      /\{@link(?:code|plain)?\s+([^}|]+?)\s*(?:\|\s*([^}]+?)\s*)?\}/g,
+      (_, target: string, label: string | undefined) => label ?? target
+    )
     .replaceAll(/NoInfer<([^<>]+)>/g, '$1');
-}
-
-// `{@linkcode Column.width | width}` -> "[`width`](#!Column.width)", resolved by `resolveLinks`
-function convertLinks(text: string) {
-  return text.replaceAll(
-    linkTag,
-    (_, target: string, label: string | undefined) => `[\`${label ?? target}\`](#!${target})`
-  );
 }
 
 // replace the links to items and members, e.g. `#!Column` and `#!Column.width`,

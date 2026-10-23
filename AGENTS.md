@@ -55,7 +55,7 @@ The project uses [Vite+](https://viteplus.dev/guide/), whose global `vp` CLI wra
 - `vp <command>` runs a built-in command, e.g., `vp dev`, `vp check`, `vp test`, `vp pack`, `vp build`.
 - `vp run <task>` runs a task from `vite.config.ts`, e.g., `vp run typecheck`, `vp run eslint`, `vp run docs`, `vp run ci`.
 - Run `vp install` after pulling changes.
-- `vp run docs` runs `vp pack`, then `scripts/generateApiDocs.ts`, which parses the declarations and JSDoc comments of `lib/index.d.ts` with `oxc-parser`.
+- `vp run docs` runs `vp pack`, then `scripts/generateApiDocs.ts`, which parses the declarations and JSDoc comments of `lib/index.d.ts` with the TypeScript 7 API (`typescript/sync`).
 
 ## Validation
 

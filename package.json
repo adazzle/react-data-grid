@@ -46,7 +46,6 @@
     "github-slugger": "^2.0.0",
     "jspdf": "^4.2.0",
     "jspdf-autotable": "^5.0.7",
-    "oxc-parser": "^0.155.0",
     "oxc-transform-react": "^0.154.0",
     "playwright": "^1.62.1",
     "publint": "^0.3.25",
