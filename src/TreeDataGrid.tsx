@@ -41,11 +41,25 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
 interface PartialGroupRow<TRow> {
   readonly groups: GroupsMap<TRow>;
   // all the descendant rows of the group, not just the direct children
+  readonly childRows: readonly TRow[];
+  readonly startRowIndex: number;
+}
+
+type GroupsMap<TRow> = ReadonlyMap<string, PartialGroupRow<TRow>>;
+
+// only used while the rows are being grouped
+interface MutablePartialGroupRow<TRow> {
+  readonly groups: MutableGroupsMap<TRow>;
   readonly childRows: TRow[];
   startRowIndex: number;
 }
 
-type GroupsMap<TRow> = Map<string, PartialGroupRow<TRow>>;
+type MutableGroupsMap<TRow> = Map<string, MutablePartialGroupRow<TRow>>;
+
+interface GroupedRows<TRow> {
+  readonly groups: GroupsMap<TRow>;
+  readonly rowsCount: number;
+}
 
 // Group rows are only ever created by `TreeDataGrid`, so every instance can share a single
 // set, which keeps `isGroupRow` stable and out of the dependency arrays below
@@ -119,11 +133,11 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   }, [rawColumns, rawGroupBy]);
 
   // Grouping only depends on the rows, it is not affected by the expanded state
-  const groupedRows = useMemo(() => {
+  const groupedRows = useMemo((): GroupedRows<R> | undefined => {
     if (groupBy.length === 0) return undefined;
 
     // Group the rows in a single pass, each row is added to every group it belongs to
-    const groups: GroupsMap<R> = new Map();
+    const groups: MutableGroupsMap<R> = new Map();
 
     for (const row of rawRows) {
       let parentGroups = groups;
@@ -143,7 +157,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     // Number the groups as if they were all expanded, and return the total number of rows.
     // Neither depends on the expanded state, so collapsed groups never have to be traversed
     // when the rows are flattened.
-    function setStartRowIndexes(groups: GroupsMap<R>, startRowIndex: number): number {
+    function setStartRowIndexes(groups: MutableGroupsMap<R>, startRowIndex: number): number {
       let groupRowsCount = 0;
 
       for (const group of groups.values()) {
