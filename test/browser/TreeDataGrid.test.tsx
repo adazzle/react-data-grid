@@ -249,6 +249,37 @@ test('should expand a group with more rows than a function call can take as argu
   await expect.element(page.getCell({ name: '0', exact: true })).toBeVisible();
 });
 
+test('should keep the row keys when an earlier group is expanded, without rowKeyGetter', async () => {
+  function Test() {
+    const [expandedGroupIds, setExpandedGroupIds] = useState(
+      (): ReadonlySet<unknown> => new Set(['Canada'])
+    );
+
+    return (
+      <TreeDataGrid
+        columns={[
+          { key: 'country', name: 'Country' },
+          { key: 'id', name: 'Id' }
+        ]}
+        rows={initialRows}
+        groupBy={['country']}
+        expandedGroupIds={expandedGroupIds}
+        onExpandedGroupIdsChange={setExpandedGroupIds}
+      />
+    );
+  }
+
+  await page.render(<Test />);
+  await testRowCount(4);
+  const idCell = page.getCell({ name: '3', exact: true });
+  const rowElement = getRowWithCell(idCell).element();
+
+  await userEvent.click(page.getCell({ name: 'USA' }));
+  await testRowCount(6);
+  // the row moved down, but its key didn't change, so React kept its element
+  expect(getRowWithCell(idCell).element()).toBe(rowElement);
+});
+
 test('should toggle group when group cell is clicked', async () => {
   await setup(['year']);
   await testRowCount(5);
