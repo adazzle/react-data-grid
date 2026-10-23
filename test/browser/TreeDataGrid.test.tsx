@@ -245,6 +245,8 @@ test('should expand a group with more rows than a function call can take as argu
 
   // the header row, the group row, and the rows of the group
   await expect.element(treeGrid).toHaveAttribute('aria-rowcount', '1000002');
+  // the row count doesn't depend on the expanded state, so also check that the rows were added
+  await expect.element(page.getCell({ name: '0', exact: true })).toBeVisible();
 });
 
 test('should toggle group when group cell is clicked', async () => {
