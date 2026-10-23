@@ -127,6 +127,7 @@ export interface CalculatedColumnParent<R, SR> {
   readonly idx: number;
   readonly colSpan: number;
   readonly level: number;
+  readonly frozen: ColumnFrozen;
   readonly headerCellClass?: Maybe<string>;
 }
 
