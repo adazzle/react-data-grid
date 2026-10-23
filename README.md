@@ -1678,7 +1678,8 @@ interface RenderRowProps<TRow, TSummaryRow = unknown> {
   /**
    * Calls `callback` for each cell to render in the row, and returns the results.
    * `activeIdx` is the column index of the row's active cell, if any: that cell is rendered even when it is scrolled out of view.
-   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped.
+   * If virtualization would leave out the active row, it is rendered with only its active cell, if any.
+   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped, even the active one.
    * The callback receives the cell's column, whether the cell is active, its `colSpan`, and its index in the results.
    */
   mapViewportColumns: MapViewportColumns<TRow, TSummaryRow>;

@@ -32,34 +32,22 @@ export function useViewportColumns<R, SR>({
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
   const startIdx = useMemo(() => {
-    if (colOverscanStartIdx === 0 || colSpanColumns.length === 0) return colOverscanStartIdx;
+    // only the unfrozen columns before the range can span over a column within it
+    const candidateColumns = colSpanColumns.filter(
+      (column) => !column.frozen && column.idx < colOverscanStartIdx
+    );
+    if (candidateColumns.length === 0) return colOverscanStartIdx;
 
-    // check header row
-    const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
+    const colSpanArgs = getRenderedRowsColSpanArgs(
+      rows,
+      topSummaryRows,
+      bottomSummaryRows,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx
+    );
 
-    // check top summary rows
-    if (topSummaryRows != null) {
-      for (const row of topSummaryRows) {
-        colSpanArgs.push({ type: 'SUMMARY', row });
-      }
-    }
-
-    // check viewport rows
-    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-      colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
-    }
-
-    // check bottom summary rows
-    if (bottomSummaryRows != null) {
-      for (const row of bottomSummaryRows) {
-        colSpanArgs.push({ type: 'SUMMARY', row });
-      }
-    }
-
-    for (const column of colSpanColumns) {
-      if (column.frozen) continue;
+    for (const column of candidateColumns) {
       const colIdx = column.idx;
-      if (colIdx >= colOverscanStartIdx) break;
 
       for (const args of colSpanArgs) {
         const colSpan = getColSpan(
@@ -167,4 +155,33 @@ export function useViewportColumns<R, SR>({
     mapViewportColumns,
     mapViewportColumnsOutsideOfViewport
   } as const;
+}
+
+// the colSpan args of the header row, the summary rows, and the rows in the overscan range
+function getRenderedRowsColSpanArgs<R, SR>(
+  rows: readonly R[],
+  topSummaryRows: Maybe<readonly SR[]>,
+  bottomSummaryRows: Maybe<readonly SR[]>,
+  rowOverscanStartIdx: number,
+  rowOverscanEndIdx: number
+): ColSpanArgs<R, SR>[] {
+  const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
+
+  if (topSummaryRows != null) {
+    for (const row of topSummaryRows) {
+      colSpanArgs.push({ type: 'SUMMARY', row });
+    }
+  }
+
+  for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+    colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
+  }
+
+  if (bottomSummaryRows != null) {
+    for (const row of bottomSummaryRows) {
+      colSpanArgs.push({ type: 'SUMMARY', row });
+    }
+  }
+
+  return colSpanArgs;
 }
