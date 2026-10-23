@@ -189,7 +189,9 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     function expandGroups(groups: GroupsMap<R>, parentId: string | undefined, level: number): void {
       let posInSet = 0;
 
-      for (const [groupKey, { groups: childGroups, childRows, startRowIndex }] of groups) {
+      for (const [groupKey, group] of groups) {
+        // destructuring in the loop head would stop React Compiler from compiling the component
+        const { groups: childGroups, childRows, startRowIndex } = group;
         const id = getGroupId(groupKey, parentId);
         const isExpanded = expandedGroupIds.has(id);
 
