@@ -2,17 +2,18 @@ import { readFile, writeFile } from 'node:fs/promises';
 import GithubSlugger from 'github-slugger';
 import { SyntaxKind } from 'typescript/ast';
 import type {
-  Declaration as DeclarationNode,
   FunctionDeclaration,
   InterfaceDeclaration,
   JSDoc,
   JSDocComment,
+  JSDocSeeTag,
   NodeArray,
   Node,
   ParameterDeclaration,
   PropertySignatureDeclaration,
   SourceFile,
   TypeElement,
+  TypeLiteralNode,
   VariableStatement
 } from 'typescript/ast';
 import {
@@ -24,6 +25,8 @@ import {
   isJSDocText,
   isTypeAliasDeclaration,
   isTypeLiteralNode,
+  isTypeReferenceNode,
+  isUnionTypeNode,
   isVariableStatement
 } from 'typescript/ast/is';
 import { getLeadingCommentRanges } from 'typescript/ast/scanner';
@@ -113,6 +116,8 @@ groups
 const generatedHeadings: GeneratedHeading[] = [];
 // the types shown as a code block, whose members link to the type
 const codeBlockTypes = new Set<string>();
+// the targets of the links in the comments of code blocks, which are shown as text but must exist
+const codeBlockLinks = new Set<string>();
 const markdown: string[] = [];
 
 for (const [section, items] of groups) {
@@ -206,6 +211,9 @@ function renderType({ name, node, doc }: Declaration, level: number) {
 
   if (isInterfaceDeclaration(node) && hasRichMembers(node)) {
     // a heading per member, as their docs have examples, lists, or several paragraphs
+    if (getBaseTypes(node).some((base) => helperTypes.has(getBaseTypeName(base)))) {
+      throw new Error(`${name} must not extend undocumented types, as their members would be lost`);
+    }
     md.push(...renderTags(doc), ...renderMembers(node.members, level + 1, name));
   } else {
     codeBlockTypes.add(name);
@@ -219,7 +227,7 @@ function renderMembers(members: NodeArray<TypeElement>, level: number, parent: s
   return members.flatMap((member) => {
     const name = getMemberName(member);
     const doc = getDoc(member);
-    const typeLiteral = findTypeLiteral(member);
+    const typeLiteral = findTypeLiteral((member as PropertySignatureDeclaration).type);
     // e.g. `editorOptions`, which is an object, has a heading per option
     if (typeLiteral !== undefined) {
       return [
@@ -385,10 +393,11 @@ function hasRichMembers(node: InterfaceDeclaration) {
 }
 
 // the object type of a member, e.g. `Maybe<{ … }>`
-function findTypeLiteral(node: Node) {
-  return node.forEachChild(function find(child): DeclarationNode | undefined {
-    return isTypeLiteralNode(child) ? child : child.forEachChild(find);
-  }) as { members: NodeArray<TypeElement> } | undefined;
+function findTypeLiteral(node: Node | undefined): TypeLiteralNode | undefined {
+  if (node === undefined || isTypeLiteralNode(node)) return node;
+  // not in function types, e.g. `(args: { … }) => void`
+  if (isTypeReferenceNode(node) || isUnionTypeNode(node)) return node.forEachChild(findTypeLiteral);
+  return undefined;
 }
 
 function getDeclarationName(node: Node) {
@@ -446,10 +455,18 @@ function getDoc(node: Node): Doc {
   const jsDoc = getJSDoc(node);
   return {
     summary: renderComment(jsDoc?.comment),
-    tags: (jsDoc?.tags ?? []).map((tag) => ({
-      name: tag.tagName.text,
-      text: renderComment(tag.comment)
-    }))
+    tags: (jsDoc?.tags ?? []).map((tag) => {
+      // e.g. `Column` for `@see Column`
+      const nameExpression = (tag as Partial<JSDocSeeTag>).nameExpression?.getText();
+      const text = renderComment(tag.comment);
+      return {
+        name: tag.tagName.text,
+        text:
+          nameExpression === undefined
+            ? text
+            : `[\`${nameExpression}\`](#!${nameExpression}) ${text}`.trim()
+      };
+    })
   };
 }
 
@@ -486,7 +503,10 @@ function cleanCode(text: string) {
     .replaceAll('import("react").', 'React.')
     .replaceAll(
       /\{@link(?:code|plain)?\s+([^}|]+?)\s*(?:\|\s*([^}]+?)\s*)?\}/g,
-      (_, target: string, label: string | undefined) => label ?? target
+      (_, target: string, label: string | undefined) => {
+        codeBlockLinks.add(target);
+        return label ?? target;
+      }
     )
     .replaceAll(/NoInfer<([^<>]+)>/g, '$1');
 }
@@ -499,7 +519,18 @@ function resolveLinks(precedingMarkdown: string, api: string, followingMarkdown:
   const slugger = new GithubSlugger();
   const anchors = new Map<string, string>();
   const slugHeadings = (markdown: string, headings?: GeneratedHeading[]) => {
+    let previousLine = '';
     forEachLine(markdown, (line, isInCodeBlock) => {
+      // e.g. "Usage" followed by "---", which the generator never writes
+      if (
+        headings !== undefined &&
+        !isInCodeBlock &&
+        /^ {0,3}(?:=+|-+)\s*$/.test(line) &&
+        previousLine.trim() !== ''
+      ) {
+        throw new Error(`The heading "${previousLine}" must not be in a JSDoc comment`);
+      }
+      previousLine = isInCodeBlock ? '' : line;
       const match = isInCodeBlock ? null : /^#{1,6} (.+)$/.exec(line);
       if (match === null) return;
       const anchor = slugger.slug(match[1].replaceAll('`', ''));
@@ -526,6 +557,7 @@ function resolveLinks(precedingMarkdown: string, api: string, followingMarkdown:
     if (anchor === undefined) throw new Error(`The link to ${target} does not match any heading`);
     return anchor;
   };
+  for (const target of codeBlockLinks) getAnchor(target);
 
   return `${precedingMarkdown}\n\n${api}\n\n${followingMarkdown}`
     .replaceAll(/\]\(#!([^)]+)\)/g, (_, target: string) => `](#${getAnchor(target)})`)
