@@ -30,6 +30,7 @@ import {
   getColSpan,
   getLeftRightKey,
   getNextActivePosition,
+  getViewportRowIndexes,
   isCellEditableUtil,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
@@ -37,7 +38,6 @@ import {
   renderMeasuringCells,
   scrollIntoView
 } from './utils';
-import { iterateOverViewportRowIdx } from './utils/iterators';
 import type {
   CalculatedColumn,
   CellClipboardEvent,
@@ -1094,54 +1094,52 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   function getViewportRows() {
     const { idx: activeIdx, rowIdx: activeRowIdx } = activePosition;
 
-    return iterateOverViewportRowIdx(
+    return getViewportRowIndexes(
       activeRowIdx,
       activePositionIsInViewport,
       rowOverscanStartIdx,
       rowOverscanEndIdx
-    )
-      .map((rowIdx) => {
-        const isActiveRow = rowIdx === activeRowIdx;
+    ).map((rowIdx) => {
+      const isActiveRow = rowIdx === activeRowIdx;
 
-        // if the row is outside the viewport then only render its active column, if any
-        const iterateOverColumns =
-          isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
-            ? iterateOverViewportColumnsForRowOutsideOfViewport
-            : iterateOverViewportColumnsForRow;
+      // if the row is outside the viewport then only render its active column, if any
+      const iterateOverColumns =
+        isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
+          ? iterateOverViewportColumnsForRowOutsideOfViewport
+          : iterateOverViewportColumnsForRow;
 
-        const row = rows[rowIdx];
-        const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
-        let key: K | number = rowIdx;
-        let isRowSelected = false;
-        if (typeof rowKeyGetter === 'function') {
-          key = rowKeyGetter(row);
-          isRowSelected = selectedRows?.has(key) ?? false;
-        }
+      const row = rows[rowIdx];
+      const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
+      let key: K | number = rowIdx;
+      let isRowSelected = false;
+      if (typeof rowKeyGetter === 'function') {
+        key = rowKeyGetter(row);
+        isRowSelected = selectedRows?.has(key) ?? false;
+      }
 
-        return renderRow(key, {
-          // aria-rowindex is 1-based
-          'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
-          'aria-selected': isSelectable ? isRowSelected : undefined,
-          rowIdx,
-          row,
-          iterateOverViewportColumnsForRow: iterateOverColumns,
-          isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
-          isRowSelected,
-          onCellMouseDown: onCellMouseDownLatest,
-          onCellClick: onCellClickLatest,
-          onCellDoubleClick: onCellDoubleClickLatest,
-          onCellContextMenu: onCellContextMenuLatest,
-          rowClass,
-          gridRowStart,
-          activeCellIdx: isActiveRow ? activeIdx : undefined,
-          draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
-          onRowChange: updateRowLatest,
-          setActivePosition: setPositionLatest,
-          activeCellEditor: getCellEditor(rowIdx),
-          isTreeGrid
-        });
-      })
-      .toArray();
+      return renderRow(key, {
+        // aria-rowindex is 1-based
+        'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
+        'aria-selected': isSelectable ? isRowSelected : undefined,
+        rowIdx,
+        row,
+        iterateOverViewportColumnsForRow: iterateOverColumns,
+        isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
+        isRowSelected,
+        onCellMouseDown: onCellMouseDownLatest,
+        onCellClick: onCellClickLatest,
+        onCellDoubleClick: onCellDoubleClickLatest,
+        onCellContextMenu: onCellContextMenuLatest,
+        rowClass,
+        gridRowStart,
+        activeCellIdx: isActiveRow ? activeIdx : undefined,
+        draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
+        onRowChange: updateRowLatest,
+        setActivePosition: setPositionLatest,
+        activeCellEditor: getCellEditor(rowIdx),
+        isTreeGrid
+      });
+    });
   }
 
   // Keep the state and prop in sync

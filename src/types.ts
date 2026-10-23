@@ -281,10 +281,6 @@ export type CellMouseEventHandler<R, SR> = Maybe<
   (args: CellMouseArgs<NoInfer<R>, NoInfer<SR>>, event: CellMouseEvent) => void
 >;
 
-export type IterateOverViewportColumns<TRow, TSummaryRow> = (
-  activeColumnIdx: number
-) => IteratorObject<CalculatedColumn<TRow, TSummaryRow>>;
-
 export type ViewportColumnWithColSpan<TRow, TSummaryRow> = [
   column: CalculatedColumn<TRow, TSummaryRow>,
   isCellActive: boolean,

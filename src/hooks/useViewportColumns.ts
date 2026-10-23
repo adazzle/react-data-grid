@@ -1,18 +1,13 @@
 import { useCallback, useMemo } from 'react';
 
-import { getColSpan, min } from '../utils';
 import {
-  iterateOverColumns,
-  iterateOverColumnsForRow,
-  iterateOverColumnsForRowOutsideOfViewport,
-  iterateOverRowsForColSpanArgs
-} from '../utils/iterators';
-import type {
-  CalculatedColumn,
-  IterateOverViewportColumns,
-  IterateOverViewportColumnsForRow,
-  Maybe
-} from '../types';
+  getColSpan,
+  getViewportColSpanArgs,
+  getViewportColumns,
+  getViewportColumnsWithColSpan,
+  min
+} from '../utils';
+import type { CalculatedColumn, IterateOverViewportColumnsForRow, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
@@ -43,20 +38,22 @@ export function useViewportColumns<R, SR>({
 }: ViewportColumnsArgs<R, SR>) {
   // find the column that spans over a column within the visible columns range and adjust colOverscanStartIdx
   const startIdx = useMemo(() => {
-    if (colOverscanStartIdx === 0) return 0;
+    if (colOverscanStartIdx === 0 || colSpanColumns.length === 0) return colOverscanStartIdx;
+
+    const colSpanArgs = getViewportColSpanArgs(
+      rows,
+      topSummaryRows,
+      bottomSummaryRows,
+      rowOverscanStartIdx,
+      rowOverscanEndIdx
+    );
 
     for (const column of colSpanColumns) {
       if (column.frozen) continue;
       const colIdx = column.idx;
       if (colIdx >= colOverscanStartIdx) break;
 
-      for (const args of iterateOverRowsForColSpanArgs(
-        rows,
-        topSummaryRows,
-        bottomSummaryRows,
-        rowOverscanStartIdx,
-        rowOverscanEndIdx
-      )) {
+      for (const args of colSpanArgs) {
         const colSpan = getColSpan(
           column,
           lastStartFrozenColumnIndex,
@@ -90,54 +87,73 @@ export function useViewportColumns<R, SR>({
       ? min(colOverscanEndIdx, firstEndFrozenColumnIndex - 1)
       : colOverscanEndIdx;
 
-  const iterateOverViewportColumns = useCallback<IterateOverViewportColumns<R, SR>>(
-    (activeColumnIdx) =>
-      iterateOverColumns(
-        columns,
-        lastStartFrozenColumnIndex,
-        firstEndFrozenColumnIndex,
-        startIdx,
-        effectiveOverscanEndIdx,
-        activeColumnIdx
-      ),
-    [
-      startIdx,
-      effectiveOverscanEndIdx,
+  // the columns of the rows without an active cell, shared by all of them
+  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
+    return getViewportColumns(
       columns,
       lastStartFrozenColumnIndex,
-      firstEndFrozenColumnIndex
-    ]
-  );
+      firstEndFrozenColumnIndex,
+      startIdx,
+      effectiveOverscanEndIdx,
+      -1
+    );
+  }, [
+    columns,
+    lastStartFrozenColumnIndex,
+    firstEndFrozenColumnIndex,
+    startIdx,
+    effectiveOverscanEndIdx
+  ]);
 
   const iterateOverViewportColumnsForRow = useCallback<IterateOverViewportColumnsForRow<R, SR>>(
-    (activeColumnIdx = -1, args) =>
-      iterateOverColumnsForRow(
-        iterateOverViewportColumns(activeColumnIdx),
+    (activeColumnIdx = -1, args) => {
+      const rowColumns =
+        activeColumnIdx === -1
+          ? viewportColumns
+          : getViewportColumns(
+              columns,
+              lastStartFrozenColumnIndex,
+              firstEndFrozenColumnIndex,
+              startIdx,
+              effectiveOverscanEndIdx,
+              activeColumnIdx
+            );
+
+      return getViewportColumnsWithColSpan(
+        rowColumns,
         activeColumnIdx,
         lastStartFrozenColumnIndex,
         firstEndFrozenColumnIndex,
         args
-      ),
-    [iterateOverViewportColumns, lastStartFrozenColumnIndex, firstEndFrozenColumnIndex]
+      ).values();
+    },
+    [
+      viewportColumns,
+      columns,
+      lastStartFrozenColumnIndex,
+      firstEndFrozenColumnIndex,
+      startIdx,
+      effectiveOverscanEndIdx
+    ]
   );
 
   const iterateOverViewportColumnsForRowOutsideOfViewport = useCallback<
     IterateOverViewportColumnsForRow<R, SR>
   >(
-    (activeColumnIdx = -1, args) =>
-      iterateOverColumnsForRowOutsideOfViewport(
-        columns,
+    (activeColumnIdx = -1, args) => {
+      const rowColumns =
+        activeColumnIdx >= 0 && activeColumnIdx < columns.length ? [columns[activeColumnIdx]] : [];
+
+      return getViewportColumnsWithColSpan(
+        rowColumns,
+        activeColumnIdx,
         lastStartFrozenColumnIndex,
         firstEndFrozenColumnIndex,
-        activeColumnIdx,
         args
-      ),
+      ).values();
+    },
     [columns, lastStartFrozenColumnIndex, firstEndFrozenColumnIndex]
   );
-
-  const viewportColumns = useMemo((): readonly CalculatedColumn<R, SR>[] => {
-    return iterateOverViewportColumns(-1).toArray();
-  }, [iterateOverViewportColumns]);
 
   return {
     viewportColumns,
