@@ -39,7 +39,8 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
 }
 
 interface PartialGroupRow<TRow> {
-  readonly groups: GroupsMap<TRow>;
+  // `undefined` for the groups on the last level, which only contain rows
+  readonly groups: GroupsMap<TRow> | undefined;
   // all the descendant rows of the group, not just the direct children
   readonly childRows: readonly TRow[];
   readonly startRowIndex: number;
@@ -49,7 +50,7 @@ type GroupsMap<TRow> = ReadonlyMap<string, PartialGroupRow<TRow>>;
 
 // only used while the rows are being grouped
 interface MutablePartialGroupRow<TRow> {
-  readonly groups: MutableGroupsMap<TRow>;
+  readonly groups: MutableGroupsMap<TRow> | undefined;
   readonly childRows: TRow[];
   startRowIndex: number;
 }
@@ -144,21 +145,29 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
     // Group the rows in a single pass, each row is added to every group it belongs to
     const groups: MutableGroupsMap<R> = new Map();
+    const lastLevel = groupBy.length - 1;
 
     for (const row of rawRows) {
       let parentGroups = groups;
 
-      for (const columnKey of groupBy) {
-        const groupKey = getRowGroupKey(row, columnKey);
+      for (let level = 0; level <= lastLevel; level++) {
+        const groupKey = getRowGroupKey(row, groupBy[level]);
         // `getOrInsertComputed` would be slower: V8 doesn't inline it like `get`,
         // and its callback would be created for every row
         let group = parentGroups.get(groupKey);
         if (group === undefined) {
-          group = { groups: new Map(), childRows: [], startRowIndex: 0 };
+          group = {
+            // the groups on the last level don't need a map, which saves one per group
+            groups: level === lastLevel ? undefined : new Map(),
+            childRows: [],
+            startRowIndex: 0
+          };
           parentGroups.set(groupKey, group);
         }
         group.childRows.push(row);
-        parentGroups = group.groups;
+        if (group.groups !== undefined) {
+          parentGroups = group.groups;
+        }
       }
     }
 
@@ -172,7 +181,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         group.startRowIndex = startRowIndex + groupRowsCount;
         groupRowsCount++; // 1 for the group row
         groupRowsCount +=
-          group.groups.size === 0
+          group.groups === undefined
             ? // the group is on the last level, it only contains rows
               group.childRows.length
             : setStartRowIndexes(group.groups, startRowIndex + groupRowsCount);
@@ -220,7 +229,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
         allGroupRows.add(groupRow);
 
         if (isExpanded) {
-          if (childGroups.size === 0) {
+          if (childGroups === undefined) {
             // the group is on the last level, it only contains rows.
             // Push them one by one: spreading them would throw in groups with too many rows
             for (const row of childRows) {
