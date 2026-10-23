@@ -840,17 +840,21 @@ const columns: readonly Column<Row>[] = [
   { key: 'name', name: 'Name' }
 ];
 
+const groupBy = ['country', 'city'];
+
 function MyGrid() {
   return (
     <TreeDataGrid
       columns={columns}
       rows={rows}
-      groupBy={['country', 'city']}
+      groupBy={groupBy}
       // ... other props
     />
   );
 }
 ```
+
+:warning: **Performance:** Define this array outside your component or memoize it with `useMemo`, otherwise all the rows are grouped again on every render.
 
 ###### `expandedGroupIds: ReadonlySet<unknown>`
 
