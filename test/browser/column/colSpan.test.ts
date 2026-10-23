@@ -1,7 +1,7 @@
 import { page, userEvent } from 'vite-plus/test/browser';
 
-import type { Column, ColumnOrColumnGroup } from '../../../src';
-import { getCellsAtRowIndex, safeTab, setup, validateCellPosition } from '../utils';
+import type { Column, ColumnFrozen, ColumnOrColumnGroup } from '../../../src';
+import { getCellsAtRowIndex, safeTab, scrollGrid, setup, validateCellPosition } from '../utils';
 
 const headerCells = page.getHeaderCell();
 
@@ -221,5 +221,72 @@ describe('colSpan', () => {
         await safeTab(shift);
       }
     }
+  });
+
+  describe('when a cell spans columns outside of the overscan range', () => {
+    describe.for(['ROW', 'HEADER', 'SUMMARY'] as const)('in %s rows', (type) => {
+      function setupColSpanOutsideOfOverscan(
+        spanningColumnIdx: number,
+        frozen: (idx: number) => ColumnFrozen
+      ) {
+        const columns: Column<number, number>[] = Array.from({ length: 40 }, (_, idx) => ({
+          key: String(idx),
+          name: String(idx),
+          width: 100,
+          frozen: frozen(idx),
+          colSpan(args) {
+            return idx === spanningColumnIdx &&
+              (args.type === 'HEADER' || (args.type === type && args.row === 0))
+              ? 2
+              : undefined;
+          }
+        }));
+        return setup({ columns, rows: [0, 1], bottomSummaryRows: [0, 1] });
+      }
+
+      // the cells of the row with the spanning cell: the header row, the first row, or the first bottom summary row
+      const spanningRowCells =
+        type === 'HEADER' ? headerCells : getCellsAtRowIndex(type === 'ROW' ? 0 : 2);
+      // the cells of a row without spanning cells
+      const otherRowCells = getCellsAtRowIndex(1);
+
+      function getSpanningRowCellAt(idx: number) {
+        return spanningRowCells.and(page.getBySelector(`[aria-colindex="${idx + 1}"]`));
+      }
+
+      it('should render the columns after an active cell before the viewport', async () => {
+        await setupColSpanOutsideOfOverscan(1, () => false);
+        await userEvent.click(getSpanningRowCellAt(1));
+        scrollGrid({ left: 2000 });
+
+        // the active cell, then the same columns as the other row
+        await expect.element(otherRowCells.first()).toHaveAttribute('aria-colindex', '20');
+        await expect.element(spanningRowCells.first()).toHaveAttribute('aria-colindex', '2');
+        await expect.element(spanningRowCells.first()).toHaveAttribute('aria-colspan', '2');
+        await expect.element(spanningRowCells.nth(1)).toHaveAttribute('aria-colindex', '20');
+      });
+
+      it('should render the end-frozen columns after an active cell after the viewport', async () => {
+        await setupColSpanOutsideOfOverscan(30, (idx) => (idx === 39 ? 'end' : false));
+        scrollGrid({ left: 2000 });
+        await userEvent.click(getSpanningRowCellAt(30));
+        scrollGrid({ left: 0 });
+
+        await expect.element(otherRowCells.first()).toHaveAttribute('aria-colindex', '1');
+        await expect.element(spanningRowCells.nth(-2)).toHaveAttribute('aria-colindex', '31');
+        await expect.element(spanningRowCells.nth(-2)).toHaveAttribute('aria-colspan', '2');
+        await expect.element(spanningRowCells.last()).toHaveAttribute('aria-colindex', '40');
+      });
+
+      it('should render the end-frozen columns after the last cell of the overscan range', async () => {
+        // the overscan range ends at the 20th column
+        await setupColSpanOutsideOfOverscan(19, (idx) => (idx === 39 ? 'end' : false));
+
+        await expect.element(otherRowCells.nth(-2)).toHaveAttribute('aria-colindex', '20');
+        await expect.element(spanningRowCells.nth(-2)).toHaveAttribute('aria-colindex', '20');
+        await expect.element(spanningRowCells.nth(-2)).toHaveAttribute('aria-colspan', '2');
+        await expect.element(spanningRowCells.last()).toHaveAttribute('aria-colindex', '40');
+      });
+    });
   });
 });

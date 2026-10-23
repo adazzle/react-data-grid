@@ -1680,7 +1680,14 @@ Props passed to custom row renderers.
 ```tsx
 interface RenderRowProps<TRow, TSummaryRow = unknown> {
   row: TRow;
-  iterateOverViewportColumnsForRow: IterateOverViewportColumnsForRow<TRow, TSummaryRow>;
+  /**
+   * Calls `callback` for each cell to render in the row, and returns the results.
+   * `activeIdx` is the column index of the row's active cell, if any: that cell is rendered even when it is scrolled out of view.
+   * If virtualization would leave out the active row, it is rendered with only its active cell, if any.
+   * `colSpanArgs` is passed to `column.colSpan`, and the columns that a cell spans are skipped, even the active one.
+   * The callback receives the cell's column, whether the cell is active, its `colSpan`, and its index in the results.
+   */
+  mapViewportColumns: MapViewportColumns<TRow, TSummaryRow>;
   rowIdx: number;
   activeCellIdx: number | undefined;
   isRowSelectionDisabled: boolean;
@@ -1696,7 +1703,26 @@ interface RenderRowProps<TRow, TSummaryRow = unknown> {
 }
 ```
 
-**See also:** [`renderers.renderRow`](#renderers-mayberenderersr-sr), [`<Row />`](#row-)
+**See also:** [`renderers.renderRow`](#renderers-mayberenderersr-sr), [`<Row />`](#row-), [`MapViewportColumns`](#mapviewportcolumnstrow-tsummaryrow-internal)
+
+#### `MapViewportColumns<TRow, TSummaryRow>` (internal)
+
+Type of `mapViewportColumns` in `RenderRowProps`. This helper type is not exported; the shape is shown for reference.
+
+```tsx
+type MapViewportColumns<TRow, TSummaryRow> = <T>(
+  activeIdx: number | undefined,
+  colSpanArgs: ColSpanArgs<TRow, TSummaryRow> | undefined,
+  callback: (
+    column: CalculatedColumn<TRow, TSummaryRow>,
+    isCellActive: boolean,
+    colSpan: number | undefined,
+    index: number
+  ) => T
+) => T[];
+```
+
+**See also:** [`RenderRowProps`](#renderrowpropstrow-tsummaryrow), [`ColSpanArgs`](#colspanargstrow-tsummaryrow)
 
 #### `RenderCellProps<TRow, TSummaryRow>`
 
