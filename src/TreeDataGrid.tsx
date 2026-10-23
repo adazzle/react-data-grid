@@ -35,7 +35,7 @@ export interface TreeDataGridProps<R, SR = unknown, K extends Key = Key> extends
   getRowGroupKey?: Maybe<(row: NoInfer<R>, columnKey: string) => string>;
   expandedGroupIds: ReadonlySet<unknown>;
   onExpandedGroupIdsChange: (expandedGroupIds: Set<unknown>) => void;
-  groupIdGetter?: Maybe<(groupKey: string, parentId?: string) => string>;
+  getGroupId?: Maybe<(groupKey: string, parentId?: string) => string>;
 }
 
 interface PartialGroupRow<TRow> {
@@ -85,7 +85,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   getRowGroupKey: rawGetRowGroupKey,
   expandedGroupIds,
   onExpandedGroupIdsChange,
-  groupIdGetter: rawGroupIdGetter,
+  getGroupId: rawGetGroupId,
   ...props
 }: TreeDataGridProps<R, SR, K>) {
   const contextRenderers = useRenderers<R, SR>();
@@ -94,7 +94,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
   const { leftKey, rightKey } = getLeftRightKey(props.direction);
   const toggleGroupLatest = useLatestFunc(toggleGroup);
   const getRowGroupKey = rawGetRowGroupKey ?? defaultGetRowGroupKey;
-  const groupIdGetter = rawGroupIdGetter ?? defaultGroupIdGetter;
+  const getGroupId = rawGetGroupId ?? defaultGetGroupId;
 
   const { columns, groupBy } = useMemo(() => {
     const columns = rawColumns.toSorted(({ key: aKey }, { key: bKey }) => {
@@ -190,7 +190,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
       let posInSet = 0;
 
       for (const [groupKey, { groups: childGroups, childRows, startRowIndex }] of groups) {
-        const id = groupIdGetter(groupKey, parentId);
+        const id = getGroupId(groupKey, parentId);
         const isExpanded = expandedGroupIds.has(id);
 
         const groupRow: GroupRow<R> = {
@@ -221,7 +221,7 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
     expandGroups(groups, undefined, 0);
 
     return flattenedRows;
-  }, [expandedGroupIds, groupIdGetter, groups, rawRows]);
+  }, [expandedGroupIds, getGroupId, groups, rawRows]);
 
   const rowHeight = useMemo(() => {
     if (typeof rawRowHeight === 'function') {
@@ -486,6 +486,6 @@ function defaultGetRowGroupKey(row: unknown, columnKey: string) {
   return String((row as Record<string, unknown>)[columnKey]);
 }
 
-function defaultGroupIdGetter(groupKey: string, parentId: string | undefined) {
+function defaultGetGroupId(groupKey: string, parentId: string | undefined) {
   return parentId === undefined ? groupKey : `${parentId}__${groupKey}`;
 }

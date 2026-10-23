@@ -90,11 +90,11 @@ function rowKeyGetter(row: Row) {
 }
 function TestGrid({
   groupBy,
-  groupIdGetter,
+  getGroupId,
   getRowGroupKey
 }: {
   groupBy: string[];
-  groupIdGetter: ((groupKey: string, parentId?: string) => string) | undefined;
+  getGroupId: ((groupKey: string, parentId?: string) => string) | undefined;
   getRowGroupKey: ((row: Row, columnKey: string) => string) | undefined;
 }) {
   const [rows, setRows] = useState(initialRows);
@@ -117,19 +117,19 @@ function TestGrid({
       onRowsChange={setRows}
       onCellCopy={onCellCopySpy}
       onCellPaste={onCellPasteSpy}
-      groupIdGetter={groupIdGetter}
+      getGroupId={getGroupId}
     />
   );
 }
 
 interface SetupOptions {
-  groupIdGetter?: (groupKey: string, parentId?: string) => string;
+  getGroupId?: (groupKey: string, parentId?: string) => string;
   getRowGroupKey?: (row: Row, columnKey: string) => string;
 }
 
-function setup(groupBy: string[], { groupIdGetter, getRowGroupKey }: SetupOptions = {}) {
+function setup(groupBy: string[], { getGroupId, getRowGroupKey }: SetupOptions = {}) {
   return page.render(
-    <TestGrid groupBy={groupBy} groupIdGetter={groupIdGetter} getRowGroupKey={getRowGroupKey} />
+    <TestGrid groupBy={groupBy} getGroupId={getGroupId} getRowGroupKey={getRowGroupKey} />
   );
 }
 
@@ -168,19 +168,19 @@ test('should group by multiple columns', async () => {
   await testRowCount(4);
 });
 
-test('should use groupIdGetter when provided', async () => {
-  const groupIdGetter = vi.fn((groupKey: string, parentId?: string) =>
+test('should use getGroupId when provided', async () => {
+  const getGroupId = vi.fn((groupKey: string, parentId?: string) =>
     parentId === undefined ? groupKey : `${groupKey}#${parentId}`
   );
-  await setup(['country', 'year'], { groupIdGetter });
-  expect(groupIdGetter).toHaveBeenCalled();
+  await setup(['country', 'year'], { getGroupId });
+  expect(getGroupId).toHaveBeenCalled();
   await expect.element(treeGrid).toHaveAttribute('aria-rowcount', '13');
   await testHeaderCellsContent(['', 'Country', 'Year', 'Sport', 'Id']);
   await testRowCount(4);
-  groupIdGetter.mockClear();
+  getGroupId.mockClear();
   await userEvent.click(page.getCell({ name: 'USA' }));
   await testRowCount(6);
-  expect(groupIdGetter).toHaveBeenCalled();
+  expect(getGroupId).toHaveBeenCalled();
   await userEvent.click(page.getCell({ name: 'Canada' }));
   await testRowCount(8);
   await userEvent.click(page.getCell({ name: '2020' }));
