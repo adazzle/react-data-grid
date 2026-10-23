@@ -150,11 +150,13 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
       for (const columnKey of groupBy) {
         const groupKey = getRowGroupKey(row, columnKey);
-        const group = parentGroups.getOrInsertComputed(groupKey, () => ({
-          groups: new Map(),
-          childRows: [],
-          startRowIndex: 0
-        }));
+        // `getOrInsertComputed` would be slower: V8 doesn't inline it like `get`,
+        // and its callback would be created for every row
+        let group = parentGroups.get(groupKey);
+        if (group === undefined) {
+          group = { groups: new Map(), childRows: [], startRowIndex: 0 };
+          parentGroups.set(groupKey, group);
+        }
         group.childRows.push(row);
         parentGroups = group.groups;
       }
