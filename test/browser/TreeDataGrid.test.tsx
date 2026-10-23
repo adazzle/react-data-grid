@@ -222,6 +222,31 @@ test('should use groupBy order while grouping', async () => {
   await testRowCount(5);
 });
 
+test('should expand a group with more rows than a function call can take as arguments', async () => {
+  // browsers limit the number of arguments, e.g., in `push(...childRows)`, and a million is above all of their limits
+  const rows = Array.from({ length: 1_000_000 }, (_, id): Row => ({
+    id,
+    country: 'USA',
+    year: 2020
+  }));
+
+  await page.render(
+    <TreeDataGrid
+      columns={[
+        { key: 'country', name: 'Country' },
+        { key: 'id', name: 'Id' }
+      ]}
+      rows={rows}
+      groupBy={['country']}
+      expandedGroupIds={new Set(['USA'])}
+      onExpandedGroupIdsChange={() => {}}
+    />
+  );
+
+  // the header row, the group row, and the rows of the group
+  await expect.element(treeGrid).toHaveAttribute('aria-rowcount', '1000002');
+});
+
 test('should toggle group when group cell is clicked', async () => {
   await setup(['year']);
   await testRowCount(5);

@@ -209,8 +209,11 @@ export function TreeDataGrid<R, SR = unknown, K extends Key = Key>({
 
         if (isExpanded) {
           if (childGroups.size === 0) {
-            // the group is on the last level, it only contains rows
-            flattenedRows.push(...childRows);
+            // the group is on the last level, it only contains rows.
+            // Push them one by one: spreading them would throw in groups with too many rows
+            for (const row of childRows) {
+              flattenedRows.push(row);
+            }
           } else {
             expandGroups(childGroups, id, level + 1);
           }
