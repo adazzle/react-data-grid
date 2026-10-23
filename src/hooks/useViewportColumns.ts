@@ -38,13 +38,27 @@ export function useViewportColumns<R, SR>({
     );
     if (candidateColumns.length === 0) return colOverscanStartIdx;
 
-    const colSpanArgs = getRenderedRowsColSpanArgs(
-      rows,
-      topSummaryRows,
-      bottomSummaryRows,
-      rowOverscanStartIdx,
-      rowOverscanEndIdx
-    );
+    // check header row
+    const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
+
+    // check top summary rows
+    if (topSummaryRows != null) {
+      for (const row of topSummaryRows) {
+        colSpanArgs.push({ type: 'SUMMARY', row });
+      }
+    }
+
+    // check viewport rows
+    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
+    }
+
+    // check bottom summary rows
+    if (bottomSummaryRows != null) {
+      for (const row of bottomSummaryRows) {
+        colSpanArgs.push({ type: 'SUMMARY', row });
+      }
+    }
 
     for (const column of candidateColumns) {
       const colIdx = column.idx;
@@ -155,33 +169,4 @@ export function useViewportColumns<R, SR>({
     mapViewportColumns,
     mapViewportColumnsOutsideOfViewport
   } as const;
-}
-
-// the colSpan args of the header row, the summary rows, and the rows in the overscan range
-function getRenderedRowsColSpanArgs<R, SR>(
-  rows: readonly R[],
-  topSummaryRows: Maybe<readonly SR[]>,
-  bottomSummaryRows: Maybe<readonly SR[]>,
-  rowOverscanStartIdx: number,
-  rowOverscanEndIdx: number
-): ColSpanArgs<R, SR>[] {
-  const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
-
-  if (topSummaryRows != null) {
-    for (const row of topSummaryRows) {
-      colSpanArgs.push({ type: 'SUMMARY', row });
-    }
-  }
-
-  for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-    colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
-  }
-
-  if (bottomSummaryRows != null) {
-    for (const row of bottomSummaryRows) {
-      colSpanArgs.push({ type: 'SUMMARY', row });
-    }
-  }
-
-  return colSpanArgs;
 }
