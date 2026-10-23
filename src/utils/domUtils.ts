@@ -13,11 +13,11 @@ export function scrollIntoView(element: Element | null, behavior: ScrollBehavior
 }
 
 function getRowToScroll(gridEl: HTMLDivElement) {
-  return gridEl.querySelector<HTMLDivElement>('& > [role="row"][tabindex="0"]');
+  return gridEl.querySelector<HTMLDivElement>(':scope > [role="row"][tabindex="0"]');
 }
 
 export function getCellToScroll(gridEl: HTMLDivElement) {
-  return gridEl.querySelector<HTMLDivElement>('& > [role="row"] > [tabindex="0"]');
+  return gridEl.querySelector<HTMLDivElement>(':scope > [role="row"] > [tabindex="0"]');
 }
 
 function focusElement(element: HTMLDivElement | null, shouldScroll: boolean) {
