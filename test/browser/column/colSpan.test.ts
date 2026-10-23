@@ -236,8 +236,7 @@ describe('colSpan', () => {
           frozen: frozen(idx),
           colSpan(args) {
             return idx === spanningColumnIdx &&
-              args.type === type &&
-              (args.type === 'HEADER' || args.row === 0)
+              (args.type === 'HEADER' || (args.type === type && args.row === 0))
               ? 2
               : undefined;
           }
