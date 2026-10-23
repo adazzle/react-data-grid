@@ -30,7 +30,6 @@ import {
   getColSpan,
   getLeftRightKey,
   getNextActivePosition,
-  getViewportRowIndexes,
   isCellEditableUtil,
   isCtrlKeyHeldDown,
   isDefaultCellInput,
@@ -1089,53 +1088,62 @@ export function DataGrid<R, SR = unknown, K extends Key = Key>(props: DataGridPr
   }
 
   function getViewportRows() {
+    const activeRowIdx = activePosition.rowIdx;
+    const viewportRows: React.ReactNode[] = [];
+
+    if (activePositionIsInViewport && activeRowIdx < rowOverscanStartIdx) {
+      viewportRows.push(renderViewportRow(activeRowIdx));
+    }
+    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      viewportRows.push(renderViewportRow(rowIdx));
+    }
+    if (activePositionIsInViewport && activeRowIdx > rowOverscanEndIdx) {
+      viewportRows.push(renderViewportRow(activeRowIdx));
+    }
+
+    return viewportRows;
+  }
+
+  function renderViewportRow(rowIdx: number) {
     const { idx: activeIdx, rowIdx: activeRowIdx } = activePosition;
+    const isActiveRow = rowIdx === activeRowIdx;
 
-    return getViewportRowIndexes(
-      activeRowIdx,
-      activePositionIsInViewport,
-      rowOverscanStartIdx,
-      rowOverscanEndIdx
-    ).map((rowIdx) => {
-      const isActiveRow = rowIdx === activeRowIdx;
+    // if the row is outside the viewport then only render its active column, if any
+    const mapColumns =
+      isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
+        ? mapViewportColumnsOutsideOfViewport
+        : mapViewportColumns;
 
-      // if the row is outside the viewport then only render its active column, if any
-      const mapColumns =
-        isActiveRow && (rowIdx < rowOverscanStartIdx || rowIdx > rowOverscanEndIdx)
-          ? mapViewportColumnsOutsideOfViewport
-          : mapViewportColumns;
+    const row = rows[rowIdx];
+    const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
+    let key: K | number = rowIdx;
+    let isRowSelected = false;
+    if (typeof rowKeyGetter === 'function') {
+      key = rowKeyGetter(row);
+      isRowSelected = selectedRows?.has(key) ?? false;
+    }
 
-      const row = rows[rowIdx];
-      const gridRowStart = headerAndTopSummaryRowsCount + rowIdx + 1;
-      let key: K | number = rowIdx;
-      let isRowSelected = false;
-      if (typeof rowKeyGetter === 'function') {
-        key = rowKeyGetter(row);
-        isRowSelected = selectedRows?.has(key) ?? false;
-      }
-
-      return renderRow(key, {
-        // aria-rowindex is 1-based
-        'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
-        'aria-selected': isSelectable ? isRowSelected : undefined,
-        rowIdx,
-        row,
-        mapViewportColumns: mapColumns,
-        isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
-        isRowSelected,
-        onCellMouseDown: onCellMouseDownLatest,
-        onCellClick: onCellClickLatest,
-        onCellDoubleClick: onCellDoubleClickLatest,
-        onCellContextMenu: onCellContextMenuLatest,
-        rowClass,
-        gridRowStart,
-        activeCellIdx: isActiveRow ? activeIdx : undefined,
-        draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
-        onRowChange: updateRowLatest,
-        setActivePosition: setPositionLatest,
-        activeCellEditor: getCellEditor(rowIdx),
-        isTreeGrid
-      });
+    return renderRow(key, {
+      // aria-rowindex is 1-based
+      'aria-rowindex': headerAndTopSummaryRowsCount + rowIdx + 1,
+      'aria-selected': isSelectable ? isRowSelected : undefined,
+      rowIdx,
+      row,
+      mapViewportColumns: mapColumns,
+      isRowSelectionDisabled: isRowSelectionDisabled?.(row) ?? false,
+      isRowSelected,
+      onCellMouseDown: onCellMouseDownLatest,
+      onCellClick: onCellClickLatest,
+      onCellDoubleClick: onCellDoubleClickLatest,
+      onCellContextMenu: onCellContextMenuLatest,
+      rowClass,
+      gridRowStart,
+      activeCellIdx: isActiveRow ? activeIdx : undefined,
+      draggedOverCellIdx: getDraggedOverCellIdx(rowIdx),
+      onRowChange: updateRowLatest,
+      setActivePosition: setPositionLatest,
+      activeCellEditor: getCellEditor(rowIdx),
+      isTreeGrid
     });
   }
 

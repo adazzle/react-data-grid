@@ -1,13 +1,7 @@
 import { useCallback, useMemo } from 'react';
 
-import {
-  getColSpan,
-  getViewportColSpanArgs,
-  getViewportColumns,
-  mapColumnsWithColSpan,
-  min
-} from '../utils';
-import type { CalculatedColumn, MapViewportColumns, Maybe } from '../types';
+import { getColSpan, getViewportColumns, mapColumnsWithColSpan, min } from '../utils';
+import type { CalculatedColumn, ColSpanArgs, MapViewportColumns, Maybe } from '../types';
 
 interface ViewportColumnsArgs<R, SR> {
   columns: readonly CalculatedColumn<R, SR>[];
@@ -40,13 +34,27 @@ export function useViewportColumns<R, SR>({
   const startIdx = useMemo(() => {
     if (colOverscanStartIdx === 0 || colSpanColumns.length === 0) return colOverscanStartIdx;
 
-    const colSpanArgs = getViewportColSpanArgs(
-      rows,
-      topSummaryRows,
-      bottomSummaryRows,
-      rowOverscanStartIdx,
-      rowOverscanEndIdx
-    );
+    // check header row
+    const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
+
+    // check top summary rows
+    if (topSummaryRows != null) {
+      for (const row of topSummaryRows) {
+        colSpanArgs.push({ type: 'SUMMARY', row });
+      }
+    }
+
+    // check viewport rows
+    for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
+      colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
+    }
+
+    // check bottom summary rows
+    if (bottomSummaryRows != null) {
+      for (const row of bottomSummaryRows) {
+        colSpanArgs.push({ type: 'SUMMARY', row });
+      }
+    }
 
     for (const column of colSpanColumns) {
       if (column.frozen) continue;

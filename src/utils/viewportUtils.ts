@@ -1,61 +1,8 @@
-import type { CalculatedColumn, ColSpanArgs, Maybe } from '../types';
+import type { CalculatedColumn, ColSpanArgs } from '../types';
 import { getColSpan } from './colSpanUtils';
 
 // These functions build arrays with plain loops instead of using generators:
 // iterating over generator objects is much slower, and React Compiler doesn't support `yield`
-
-export function getViewportRowIndexes(
-  activeRowIdx: number,
-  activePositionIsInViewport: boolean,
-  rowOverscanStartIdx: number,
-  rowOverscanEndIdx: number
-): number[] {
-  const rowIndexes: number[] = [];
-
-  if (activePositionIsInViewport && activeRowIdx < rowOverscanStartIdx) {
-    rowIndexes.push(activeRowIdx);
-  }
-  for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-    rowIndexes.push(rowIdx);
-  }
-  if (activePositionIsInViewport && activeRowIdx > rowOverscanEndIdx) {
-    rowIndexes.push(activeRowIdx);
-  }
-
-  return rowIndexes;
-}
-
-export function getViewportColSpanArgs<R, SR>(
-  rows: readonly R[],
-  topSummaryRows: Maybe<readonly SR[]>,
-  bottomSummaryRows: Maybe<readonly SR[]>,
-  rowOverscanStartIdx: number,
-  rowOverscanEndIdx: number
-): ColSpanArgs<R, SR>[] {
-  // header row
-  const colSpanArgs: ColSpanArgs<R, SR>[] = [{ type: 'HEADER' }];
-
-  // top summary rows
-  if (topSummaryRows != null) {
-    for (const row of topSummaryRows) {
-      colSpanArgs.push({ type: 'SUMMARY', row });
-    }
-  }
-
-  // viewport rows
-  for (let rowIdx = rowOverscanStartIdx; rowIdx <= rowOverscanEndIdx; rowIdx++) {
-    colSpanArgs.push({ type: 'ROW', row: rows[rowIdx] });
-  }
-
-  // bottom summary rows
-  if (bottomSummaryRows != null) {
-    for (const row of bottomSummaryRows) {
-      colSpanArgs.push({ type: 'SUMMARY', row });
-    }
-  }
-
-  return colSpanArgs;
-}
 
 /**
  * Returns the columns to render, ordered by index:
