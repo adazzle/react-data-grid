@@ -1827,7 +1827,7 @@ type ColumnOrColumnGroup<R, SR = unknown> = Column<R, SR> | ColumnGroup<R, SR>;
 
 #### `CalculatedColumn`
 
-Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. The `Column` properties it redeclares, like `width` and `renderCell`, are resolved to their default values when not set.
+Extends `Column` with additional computed properties used internally by the grid. This is the type passed to render functions. Every `Column` property is set: the ones with a default value, like `width` and `renderCell`, are resolved to their default value when not set, and the others are `undefined` when not set.
 
 ```tsx
 interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
@@ -1846,6 +1846,16 @@ interface CalculatedColumn<R, SR = unknown> extends Column<R, SR> {
   readonly frozen: ColumnFrozen;
   readonly renderCell: (props: RenderCellContentProps<R, SR>) => ReactNode;
   readonly renderHeaderCell: (props: RenderHeaderCellContentProps<R, SR>) => ReactNode;
+  readonly cellClass: Column<R, SR>['cellClass'];
+  readonly headerCellClass: Column<R, SR>['headerCellClass'];
+  readonly summaryCellClass: Column<R, SR>['summaryCellClass'];
+  readonly renderSummaryCell: Column<R, SR>['renderSummaryCell'];
+  readonly renderGroupCell: Column<R, SR>['renderGroupCell'];
+  readonly renderEditCell: Column<R, SR>['renderEditCell'];
+  readonly editable: Column<R, SR>['editable'];
+  readonly colSpan: Column<R, SR>['colSpan'];
+  readonly sortDescendingFirst: Column<R, SR>['sortDescendingFirst'];
+  readonly editorOptions: Column<R, SR>['editorOptions'];
 }
 ```
 

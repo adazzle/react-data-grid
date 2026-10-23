@@ -29,7 +29,7 @@ function SummaryCell<R, SR>({
   );
 
   function onMouseDown() {
-    setActivePosition({ rowIdx, idx: column.idx });
+    setActivePosition({ idx: column.idx, rowIdx });
   }
 
   return (

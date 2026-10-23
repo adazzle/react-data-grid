@@ -47,7 +47,7 @@ function GroupedRow<R, SR>({
   let idx = row.level;
 
   function handleSelectGroup() {
-    setActivePosition({ rowIdx, idx: -1 }, { shouldFocus: true });
+    setActivePosition({ idx: -1, rowIdx }, { shouldFocus: true });
   }
 
   const selectionValue = useMemo(
